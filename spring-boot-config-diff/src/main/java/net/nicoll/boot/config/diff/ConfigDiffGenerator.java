@@ -41,8 +41,8 @@ public class ConfigDiffGenerator {
 	}
 
 	ConfigDiffResult generateDiff(String leftVersion, String rightVersion) throws IOException {
-		ConfigurationMetadataRepository left = loader.load("1.2.4.RELEASE");
-		ConfigurationMetadataRepository right = loader.load("1.3.0.BUILD-SNAPSHOT");
+		ConfigurationMetadataRepository left = loader.load(leftVersion);
+		ConfigurationMetadataRepository right = loader.load(rightVersion);
 
 		ConfigDiffResult result = new ConfigDiffResult(leftVersion, rightVersion);
 		diffGroup(result, left, right).diffItem(result, left, right);
