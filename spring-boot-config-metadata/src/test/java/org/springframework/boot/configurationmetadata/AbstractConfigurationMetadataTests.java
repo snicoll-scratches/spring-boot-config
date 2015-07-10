@@ -16,8 +16,6 @@
 
 package org.springframework.boot.configurationmetadata;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -26,6 +24,8 @@ import org.junit.rules.ExpectedException;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+
+import static org.junit.Assert.*;
 
 /**
  *

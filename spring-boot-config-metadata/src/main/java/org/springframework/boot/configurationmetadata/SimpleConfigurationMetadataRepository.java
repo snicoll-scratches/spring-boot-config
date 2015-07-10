@@ -38,7 +38,7 @@ public class SimpleConfigurationMetadataRepository implements ConfigurationMetad
 
 	@Override
 	public Map<String, ConfigurationMetadataProperty> getAllProperties() {
-		Map<String,ConfigurationMetadataProperty> properties = new HashMap<String, ConfigurationMetadataProperty>();
+		Map<String, ConfigurationMetadataProperty> properties = new HashMap<String, ConfigurationMetadataProperty>();
 		for (ConfigurationMetadataGroup group : this.allGroups.values()) {
 			properties.putAll(group.getProperties());
 		}
@@ -69,7 +69,7 @@ public class SimpleConfigurationMetadataRepository implements ConfigurationMetad
 	 */
 	public void add(ConfigurationMetadataProperty property, ConfigurationMetadataSource source) {
 		if (source != null) {
-			putIfAbsent(source.getProperties(),property.getId(), property);
+			putIfAbsent(source.getProperties(), property.getId(), property);
 		}
 		putIfAbsent(getGroup(source).getProperties(), property.getId(), property);
 	}
@@ -81,7 +81,7 @@ public class SimpleConfigurationMetadataRepository implements ConfigurationMetad
 	public void include(ConfigurationMetadataRepository repository) {
 		for (ConfigurationMetadataGroup group : repository.getAllGroups().values()) {
 			ConfigurationMetadataGroup existingGroup = this.allGroups.get(group.getId());
-			if (existingGroup == null)  {
+			if (existingGroup == null) {
 				this.allGroups.put(group.getId(), group);
 			}
 			else {

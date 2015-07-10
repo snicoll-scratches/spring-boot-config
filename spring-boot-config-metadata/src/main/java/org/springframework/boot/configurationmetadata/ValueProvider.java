@@ -15,30 +15,31 @@ import java.util.Map;
  */
 public class ValueProvider {
 
-    private String name;
-    private final Map<String, Object> parameters = new LinkedHashMap<>();
+	private String name;
 
-    /**
-     * Return the name of the provider.
-     */
-    public String getName() {
-        return name;
-    }
+	private final Map<String, Object> parameters = new LinkedHashMap<>();
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * Return the name of the provider.
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * Return the parameters.
-     */
-    public Map<String, Object> getParameters() {
-        return parameters;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    @Override
-    public String toString() {
-        return "ValueProvider{" + "name='" + this.name + ", parameters=" + this.parameters +
-                '}';
-    }
+	/**
+	 * Return the parameters.
+	 */
+	public Map<String, Object> getParameters() {
+		return parameters;
+	}
+
+	@Override
+	public String toString() {
+		return "ValueProvider{" + "name='" + this.name + ", parameters=" + this.parameters +
+				'}';
+	}
 }

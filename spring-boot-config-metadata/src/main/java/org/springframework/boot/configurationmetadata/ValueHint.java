@@ -9,34 +9,35 @@ package org.springframework.boot.configurationmetadata;
  */
 public class ValueHint {
 
-    private Object value;
-    private String description;
+	private Object value;
 
-    /**
-     * Return the hint value.
-     */
-    public Object getValue() {
-        return value;
-    }
+	private String description;
 
-    public void setValue(Object value) {
-        this.value = value;
-    }
+	/**
+	 * Return the hint value.
+	 */
+	public Object getValue() {
+		return value;
+	}
 
-    /**
-     * Return the description of the value, if any.
-     */
-    public String getDescription() {
-        return description;
-    }
+	public void setValue(Object value) {
+		this.value = value;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	/**
+	 * Return the description of the value, if any.
+	 */
+	public String getDescription() {
+		return description;
+	}
 
-    @Override
-    public String toString() {
-        return "ValueHint{" + "value=" + this.value + ", description='"
-                + this.description + '\'' + '}';
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	@Override
+	public String toString() {
+		return "ValueHint{" + "value=" + this.value + ", description='"
+				+ this.description + '\'' + '}';
+	}
 }

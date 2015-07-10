@@ -46,7 +46,7 @@ public class CsvMetadataFormatter extends AbstractMetadataFormatter implements M
 			new Optional(), // type
 	};
 
-	static final String[] header = new String[] { "id", "description", "defaultValue", "type" };
+	static final String[] header = new String[] {"id", "description", "defaultValue", "type"};
 
 	@Override
 	public String formatMetadata(ConfigurationMetadataRepository repository) throws IOException {
@@ -80,7 +80,5 @@ public class CsvMetadataFormatter extends AbstractMetadataFormatter implements M
 		}
 		return out.toString();
 	}
-
-
 
 }

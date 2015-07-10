@@ -11,26 +11,26 @@ import java.util.List;
  */
 class ConfigurationMetadataHint {
 
-    private String id;
+	private String id;
 
-    private final List<ValueHint> valueHints = new ArrayList<ValueHint>();
+	private final List<ValueHint> valueHints = new ArrayList<ValueHint>();
 
-    private final List<ValueProvider> valueProviders = new ArrayList<ValueProvider>();
+	private final List<ValueProvider> valueProviders = new ArrayList<ValueProvider>();
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public List<ValueHint> getValueHints() {
-        return valueHints;
-    }
+	public List<ValueHint> getValueHints() {
+		return valueHints;
+	}
 
-    public List<ValueProvider> getValueProviders() {
-        return valueProviders;
-    }
+	public List<ValueProvider> getValueProviders() {
+		return valueProviders;
+	}
 
 }
