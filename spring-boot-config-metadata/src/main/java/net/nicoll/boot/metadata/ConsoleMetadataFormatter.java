@@ -19,10 +19,10 @@ package net.nicoll.boot.metadata;
 import java.text.BreakIterator;
 import java.util.List;
 
-import org.springframework.configurationmetadata.ConfigurationMetadataGroup;
-import org.springframework.configurationmetadata.ConfigurationMetadataProperty;
-import org.springframework.configurationmetadata.ConfigurationMetadataRepository;
-import org.springframework.configurationmetadata.ConfigurationMetadataSource;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataSource;
 import org.springframework.util.StringUtils;
 
 /**

@@ -1,4 +1,4 @@
-package org.springframework.configurationmetadata;
+package org.springframework.boot.configurationmetadata;
 
 /**
  * Hint for a value a given property may have. Provide the value and

@@ -27,8 +27,8 @@ import org.eclipse.aether.resolution.ArtifactResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.configurationmetadata.ConfigurationMetadataRepository;
-import org.springframework.configurationmetadata.ConfigurationMetadataRepositoryJsonBuilder;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepositoryJsonBuilder;
 import org.springframework.core.io.Resource;
 
 /**

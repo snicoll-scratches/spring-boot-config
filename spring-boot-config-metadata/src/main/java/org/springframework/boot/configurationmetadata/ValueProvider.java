@@ -1,6 +1,5 @@
-package org.springframework.configurationmetadata;
+package org.springframework.boot.configurationmetadata;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

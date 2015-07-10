@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.configurationmetadata;
+package org.springframework.boot.configurationmetadata;
 
 import static org.junit.Assert.*;
 

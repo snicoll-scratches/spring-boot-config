@@ -21,7 +21,7 @@ import java.util.List;
 
 import net.nicoll.boot.metadata.ConsoleMetadataFormatter;
 
-import org.springframework.configurationmetadata.ConfigurationMetadataProperty;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 
 /**
  *

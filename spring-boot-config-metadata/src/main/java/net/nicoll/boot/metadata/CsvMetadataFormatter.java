@@ -28,10 +28,10 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvMapWriter;
 import org.supercsv.prefs.CsvPreference;
 
-import org.springframework.configurationmetadata.ConfigurationMetadataGroup;
-import org.springframework.configurationmetadata.ConfigurationMetadataProperty;
-import org.springframework.configurationmetadata.ConfigurationMetadataRepository;
-import org.springframework.configurationmetadata.ConfigurationMetadataSource;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataSource;
 
 /**
  *

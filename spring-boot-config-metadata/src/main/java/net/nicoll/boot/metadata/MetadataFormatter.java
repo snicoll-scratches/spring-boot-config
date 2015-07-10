@@ -18,7 +18,7 @@ package net.nicoll.boot.metadata;
 
 import java.io.IOException;
 
-import org.springframework.configurationmetadata.ConfigurationMetadataRepository;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
 
 /**
  *

@@ -21,8 +21,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.configurationmetadata.ConfigurationMetadataRepository;
-import org.springframework.configurationmetadata.ConfigurationMetadataRepositoryJsonBuilder;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepositoryJsonBuilder;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 

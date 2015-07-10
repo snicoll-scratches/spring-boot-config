@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.configurationmetadata;
+package org.springframework.boot.configurationmetadata;
 
 import java.util.Collection;
 import java.util.Collections;

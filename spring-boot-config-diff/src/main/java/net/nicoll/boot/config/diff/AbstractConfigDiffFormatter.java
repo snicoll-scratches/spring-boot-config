@@ -23,8 +23,8 @@ import java.util.List;
 
 import net.nicoll.boot.metadata.AbstractMetadataFormatter;
 
-import org.springframework.configurationmetadata.ConfigurationMetadataGroup;
-import org.springframework.configurationmetadata.ConfigurationMetadataProperty;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 
 /**
  *

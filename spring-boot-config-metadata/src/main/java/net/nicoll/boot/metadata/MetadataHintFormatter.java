@@ -18,8 +18,8 @@ package net.nicoll.boot.metadata;
 
 import java.io.IOException;
 
-import org.springframework.configurationmetadata.ConfigurationMetadataProperty;
-import org.springframework.configurationmetadata.ConfigurationMetadataRepository;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
 import org.springframework.util.StringUtils;
 
 /**

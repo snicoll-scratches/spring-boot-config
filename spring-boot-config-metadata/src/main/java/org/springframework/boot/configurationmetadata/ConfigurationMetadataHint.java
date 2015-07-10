@@ -1,4 +1,4 @@
-package org.springframework.configurationmetadata;
+package org.springframework.boot.configurationmetadata;
 
 import java.util.ArrayList;
 import java.util.List;
