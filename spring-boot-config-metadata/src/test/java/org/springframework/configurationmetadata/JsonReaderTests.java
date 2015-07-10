@@ -53,13 +53,15 @@ public class JsonReaderTests extends AbstractConfigurationMetadataTests {
 		assertEquals(2, sources.size());
 		List<ConfigurationMetadataItem> items = rawMetadata.getItems();
 		assertEquals(4, items.size());
+        List<ConfigurationMetadataHint> hints = rawMetadata.getHints();
+        assertEquals(1, hints.size());
 
-
-		ConfigurationMetadataSource source = sources.get(0);
+        ConfigurationMetadataSource source = sources.get(0);
 		assertSource(source, "spring.foo", "org.acme.Foo", "org.acme.config.FooApp");
 		assertEquals("foo()", source.getSourceMethod());
 		assertEquals("This is Foo.", source.getDescription());
-		ConfigurationMetadataItem item = items.get(0);
+
+        ConfigurationMetadataItem item = items.get(0);
 		assertProperty(item, "spring.foo.name", "name", String.class, null);
 		assertItem(item, "org.acme.Foo");
 		ConfigurationMetadataItem item2 = items.get(1);
@@ -67,6 +69,45 @@ public class JsonReaderTests extends AbstractConfigurationMetadataTests {
 		assertEquals("Foo description.", item2.getDescription());
 		assertNull(item2.getSourceMethod());
 		assertItem(item2, "org.acme.Foo");
+
+        ConfigurationMetadataHint hint = hints.get(0);
+        assertEquals("spring.foo.counter", hint.getId());
+        assertEquals(1, hint.getValueHints().size());
+        ValueHint valueHint = hint.getValueHints().get(0);
+        assertEquals(42, valueHint.getValue());
+        assertEquals("Because that's the answer to any question, choose it.",
+                valueHint.getDescription());
+        assertEquals(1, hint.getValueProviders().size());
+        ValueProvider valueProvider = hint.getValueProviders().get(0);
+        assertEquals("handle-as", valueProvider.getName());
+        assertEquals(1, valueProvider.getParameters().size());
+        assertEquals(Integer.class.getName(), valueProvider.getParameters().get("target"));
+	}
+
+	@Test
+	public void metadataHints() throws IOException {
+		RawConfigurationMetadata rawMetadata = reader.read(getInputStreamFor("bar"));
+		List<ConfigurationMetadataHint> hints = rawMetadata.getHints();
+		assertEquals(1, hints.size());
+
+		ConfigurationMetadataHint hint = hints.get(0);
+		assertEquals("spring.bar.description", hint.getId());
+		assertEquals(2, hint.getValueHints().size());
+		ValueHint valueHint = hint.getValueHints().get(0);
+		assertEquals("one", valueHint.getValue());
+		assertEquals("One.", valueHint.getDescription());
+		ValueHint valueHint2 = hint.getValueHints().get(1);
+		assertEquals("two", valueHint2.getValue());
+		assertEquals(null, valueHint2.getDescription());
+
+		assertEquals(2, hint.getValueProviders().size());
+		ValueProvider valueProvider = hint.getValueProviders().get(0);
+		assertEquals("handle-as", valueProvider.getName());
+		assertEquals(1, valueProvider.getParameters().size());
+		assertEquals(String.class.getName(), valueProvider.getParameters().get("target"));
+		ValueProvider valueProvider2 = hint.getValueProviders().get(1);
+		assertEquals("any", valueProvider2.getName());
+		assertEquals(0, valueProvider2.getParameters().size());
 	}
 
 	@Test

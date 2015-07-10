@@ -36,5 +36,30 @@
       "sourceType": "org.springframework.boot.BarProperties",
       "defaultValue": 0
     }
+  ],
+  "hints": [
+    {
+      "name": "spring.bar.description",
+      "values": [
+        {
+          "value": "one",
+          "description": "One."
+        },
+        {
+          "value": "two"
+        }
+      ],
+      "providers": [
+        {
+          "name": "handle-as",
+          "parameters": {
+            "target": "java.lang.String"
+          }
+        },
+        {
+          "name": "any"
+        }
+      ]
+    }
   ]
 }

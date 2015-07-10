@@ -166,6 +166,9 @@ public class ConfigurationMetadataRepositoryJsonBuilderTests extends AbstractCon
 		ConfigurationMetadataSource source2 = group.getSources().get("org.springframework.boot.FooProperties");
 		contains(source2.getProperties(), "spring.foo.name", "spring.foo.counter");
 		assertEquals(2, source2.getProperties().size());
+		validatePropertyHints(repo.getAllProperties().get("spring.foo.name"), 0, 0);
+		validatePropertyHints(repo.getAllProperties().get("spring.foo.description"), 0, 0);
+		validatePropertyHints(repo.getAllProperties().get("spring.foo.counter"), 1, 1);
 	}
 
 	private void validateBar(ConfigurationMetadataRepository repo) {
@@ -177,6 +180,14 @@ public class ConfigurationMetadataRepositoryJsonBuilderTests extends AbstractCon
 		ConfigurationMetadataSource source2 = group.getSources().get("org.springframework.boot.BarProperties");
 		contains(source2.getProperties(), "spring.bar.name", "spring.bar.counter");
 		assertEquals(2, source2.getProperties().size());
+		validatePropertyHints(repo.getAllProperties().get("spring.bar.name"), 0, 0);
+		validatePropertyHints(repo.getAllProperties().get("spring.bar.description"), 2, 2);
+		validatePropertyHints(repo.getAllProperties().get("spring.bar.counter"), 0, 0);
+	}
+
+	private void validatePropertyHints(ConfigurationMetadataProperty property, int valueHints, int valueProviders) {
+		assertEquals(valueHints, property.getValueHints().size());
+		assertEquals(valueProviders, property.getValueHints().size());
 	}
 
 	private void contains(Map<String, ?> source, String... keys) {

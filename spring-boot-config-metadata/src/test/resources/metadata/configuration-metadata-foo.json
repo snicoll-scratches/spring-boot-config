@@ -36,5 +36,24 @@
       "sourceType": "org.springframework.boot.FooProperties",
       "defaultValue": 0
     }
+  ],
+  "hints": [
+    {
+      "name": "spring.foo.counter",
+      "values": [
+        {
+          "value": 42,
+          "description": "Because that's the answer to any question, choose it."
+        }
+      ],
+      "providers": [
+        {
+          "name": "handle-as",
+          "parameters": {
+            "target": "java.lang.Integer"
+          }
+        }
+      ]
+    }
   ]
 }

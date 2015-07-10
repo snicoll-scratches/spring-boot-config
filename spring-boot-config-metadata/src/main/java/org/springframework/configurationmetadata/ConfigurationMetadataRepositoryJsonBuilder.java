@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONException;
 
@@ -121,6 +122,14 @@ public class ConfigurationMetadataRepositoryJsonBuilder {
 				source = metadata.getSource(sourceType);
 			}
 			repository.add(item, source);
+		}
+		Map<String, ConfigurationMetadataProperty> allProperties = repository.getAllProperties();
+		for (ConfigurationMetadataHint hint : metadata.getHints()) {
+			ConfigurationMetadataProperty property = allProperties.get(hint.getId());
+			if (property != null) {
+				property.getValueHints().addAll(hint.getValueHints());
+				property.getValueProviders().addAll(hint.getValueProviders());
+			}
 		}
 		return repository;
 	}

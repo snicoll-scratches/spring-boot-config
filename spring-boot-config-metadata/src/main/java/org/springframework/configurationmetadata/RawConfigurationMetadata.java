@@ -31,9 +31,13 @@ class RawConfigurationMetadata {
 
 	private final List<ConfigurationMetadataItem> items;
 
-	RawConfigurationMetadata(List<ConfigurationMetadataSource> sources, List<ConfigurationMetadataItem> items) {
+	private final List<ConfigurationMetadataHint> hints;
+
+	RawConfigurationMetadata(List<ConfigurationMetadataSource> sources,
+							 List<ConfigurationMetadataItem> items,List<ConfigurationMetadataHint> hints) {
 		this.sources = new ArrayList<ConfigurationMetadataSource>(sources);
 		this.items = new ArrayList<ConfigurationMetadataItem>(items);
+		this.hints = new ArrayList<ConfigurationMetadataHint>(hints);
 		for (ConfigurationMetadataItem item : this.items) {
 			resolveName(item);
 		}
@@ -54,6 +58,10 @@ class RawConfigurationMetadata {
 
 	public List<ConfigurationMetadataItem> getItems() {
 		return this.items;
+	}
+
+	public List<ConfigurationMetadataHint> getHints() {
+		return hints;
 	}
 
 	/**

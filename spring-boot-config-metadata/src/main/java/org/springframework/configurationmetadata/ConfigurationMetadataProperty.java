@@ -16,6 +16,9 @@
 
 package org.springframework.configurationmetadata;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Define a configuration item.
  *
@@ -33,6 +36,10 @@ public class ConfigurationMetadataProperty {
 	private String description;
 
 	private Object defaultValue;
+
+	private final List<ValueHint> valueHints = new ArrayList<ValueHint>();
+
+	private final List<ValueProvider> valueProviders = new ArrayList<ValueProvider>();
 
 	private boolean deprecated;
 
@@ -97,6 +104,23 @@ public class ConfigurationMetadataProperty {
 
 	public void setDefaultValue(Object defaultValue) {
 		this.defaultValue = defaultValue;
+	}
+
+	/**
+	 * The list of well-defined values, if any. If no extra {@link ValueProvider provider} is
+	 * specified, these values  are to be considered a closed-set of the available options
+	 * for this item.
+	 */
+	public List<ValueHint> getValueHints() {
+		return valueHints;
+	}
+
+	/**
+	 * The value providers that are applicable to this item. Only one {@link ValueProvider} is
+	 * enabled for an item: the first in the list  that is supported should be used.
+	 */
+	public List<ValueProvider> getValueProviders() {
+		return valueProviders;
 	}
 
 	/**

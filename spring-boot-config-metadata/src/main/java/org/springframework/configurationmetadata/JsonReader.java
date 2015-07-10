@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -46,7 +47,8 @@ class JsonReader {
 		JSONObject json = readJson(in, charset);
 		List<ConfigurationMetadataSource> groups = parseAllSources(json);
 		List<ConfigurationMetadataItem> items = parseAllItems(json);
-		return new RawConfigurationMetadata(groups, items);
+		List<ConfigurationMetadataHint> hints = parseAllHints(json);
+		return new RawConfigurationMetadata(groups, items, hints);
 	}
 
 	private List<ConfigurationMetadataSource> parseAllSources(JSONObject root) {
@@ -75,6 +77,19 @@ class JsonReader {
 		return result;
 	}
 
+	private List<ConfigurationMetadataHint> parseAllHints(JSONObject root) {
+		List<ConfigurationMetadataHint> result = new ArrayList<ConfigurationMetadataHint>();
+		if (!root.has("hints")) {
+			return result;
+		}
+		JSONArray items = root.getJSONArray("hints");
+		for (int i = 0; i < items.length(); i++) {
+			JSONObject item = items.getJSONObject(i);
+			result.add(parseHint(item));
+		}
+		return result;
+	}
+
 	private ConfigurationMetadataSource parseSource(JSONObject json) {
 		ConfigurationMetadataSource source = new ConfigurationMetadataSource();
 		source.setGroupId(json.getString("name"));
@@ -90,24 +105,56 @@ class JsonReader {
 		item.setId(json.getString("name"));
 		item.setType(json.optString("type", null));
 		item.setDescription(json.optString("description", null));
-		item.setDefaultValue(readDefaultValue(json));
+		item.setDefaultValue(readItemValue(json.opt("defaultValue")));
 		item.setDeprecated(json.optBoolean("deprecated", false));
 		item.setSourceType(json.optString("sourceType", null));
 		item.setSourceMethod(json.optString("sourceMethod", null));
 		return item;
 	}
 
-	private Object readDefaultValue(JSONObject json) {
-		Object defaultValue = json.opt("defaultValue");
-		if (defaultValue instanceof JSONArray) {
-			JSONArray array = (JSONArray) defaultValue;
+	private ConfigurationMetadataHint parseHint(JSONObject json) {
+		ConfigurationMetadataHint hint = new ConfigurationMetadataHint();
+		hint.setId(json.getString("name"));
+		if (json.has("values")) {
+			JSONArray values = json.getJSONArray("values");
+			for (int i = 0; i < values.length(); i++) {
+				JSONObject value = values.getJSONObject(i);
+				ValueHint valueHint = new ValueHint();
+				valueHint.setValue(readItemValue(value.get("value")));
+				valueHint.setDescription(value.optString("description", null));
+				hint.getValueHints().add(valueHint);
+			}
+		}
+		if (json.has("providers")) {
+			JSONArray providers = json.getJSONArray("providers");
+			for (int i = 0; i < providers.length(); i++) {
+				JSONObject provider = providers.getJSONObject(i);
+				ValueProvider valueProvider = new ValueProvider();
+				valueProvider.setName(provider.getString("name"));
+				if (provider.has("parameters")) {
+					JSONObject parameters = provider.getJSONObject("parameters");
+					Iterator<?> keys = parameters.keys();
+					while (keys.hasNext()) {
+						String key = (String) keys.next();
+						valueProvider.getParameters().put(key, readItemValue(parameters.get(key)));
+					}
+				}
+				hint.getValueProviders().add(valueProvider);
+			}
+		}
+		return hint;
+	}
+
+	private Object readItemValue(Object value) {
+		if (value instanceof JSONArray) {
+			JSONArray array = (JSONArray) value;
 			Object[] content = new Object[array.length()];
 			for (int i = 0; i < array.length(); i++) {
 				content[i] = array.get(i);
 			}
 			return content;
 		}
-		return defaultValue;
+		return value;
 	}
 
 	private JSONObject readJson(InputStream in, Charset charset) throws IOException {
