@@ -29,7 +29,7 @@ import org.json.JSONException;
  * Load a {@link ConfigurationMetadataRepository} from the content of arbitrary resource(s).
  *
  * @author Stephane Nicoll
- * @since 1.2.0
+ * @since 1.3.0
  */
 public class ConfigurationMetadataRepositoryJsonBuilder {
 

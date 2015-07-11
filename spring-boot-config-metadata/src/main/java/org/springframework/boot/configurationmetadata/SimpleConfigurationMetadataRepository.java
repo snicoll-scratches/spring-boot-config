@@ -25,7 +25,7 @@ import java.util.Map;
  * The default {@link ConfigurationMetadataRepository} implementation.
  *
  * @author Stephane Nicoll
- * @since 1.2.0
+ * @since 1.3.0
  */
 public class SimpleConfigurationMetadataRepository implements ConfigurationMetadataRepository {
 

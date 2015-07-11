@@ -22,7 +22,7 @@ import java.util.Map;
  * A repository of configuration metadata.
  *
  * @author Stephane Nicoll
- * @since 1.2.0
+ * @since 1.3.0
  */
 public interface ConfigurationMetadataRepository {
 
