@@ -43,7 +43,7 @@ class ConfigurationMetadataItem extends ConfigurationMetadataProperty {
 	}
 
 	/**
-	 * The full name of the method (include parenthesis and argument types) that contributed this
+	 * The full name of the method (including parenthesis and argument types) that contributed this
 	 * property. For example, the name of a getter in a {@code @ConfigurationProperties} annotated
 	 * class.
 	 */

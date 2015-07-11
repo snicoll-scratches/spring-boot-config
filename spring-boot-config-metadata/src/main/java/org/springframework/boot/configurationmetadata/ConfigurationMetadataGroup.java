@@ -21,7 +21,9 @@ import java.util.Map;
 
 /**
  * Gather a collection of {@link ConfigurationMetadataProperty} that are sharing
- * a common prefix.
+ * a {@link #getId() common prefix}. Provide access to all the
+ * {@link ConfigurationMetadataSource sources} that have contributed properties
+ * to the group.
  *
  * @author Stephane Nicoll
  * @since 1.3.0
@@ -41,7 +43,8 @@ public class ConfigurationMetadataGroup {
 	}
 
 	/**
-	 * Return the id of the group.
+	 * Return the id of the group, used as a common prefix for all properties
+	 * associated to it.
 	 */
 	public String getId() {
 		return this.id;

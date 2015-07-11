@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Define a configuration item.
+ * Define a configuration property. Each property is fully identified by
+ * its {@link #getId() id} who is composed of a namespace prefix (the
+ * {@link ConfigurationMetadataGroup#getId() group id}), if any and the
+ * {@link #getName() name} of the property.
  *
  * @author Stephane Nicoll
  * @since 1.3.0
@@ -69,10 +72,9 @@ public class ConfigurationMetadataProperty {
 	/**
 	 * The class name of the data type of the property. For example, {@code java.lang.String}.
 	 * <p>For consistency, the type of a primitive is specified using its wrapper counterpart,
-	 * i.e. {@code boolean} becomes {@code java.lang.Boolean}. Collections type are harmonized
-	 * to their interface counterpart and defines the actual generic types, i.e.
-	 * {@code java.util.HashMap<java.lang.String,java.lang.Integer>} becomes
-	 * {@code java.util.Map<java.lang.String,java.lang.Integer>}
+	 * i.e. {@code boolean} becomes {@code java.lang.Boolean}. If the type holds generic
+	 * information, these are provided as  well, i.e. a {@code HashMap} of String to Integer
+	 * would be defined as {@code java.util.HashMap<java.lang.String,java.lang.Integer>}.
 	 * <p>Note that this class may be a complex type that gets converted from a String as values
 	 * are bound.
 	 */
@@ -108,7 +110,7 @@ public class ConfigurationMetadataProperty {
 
 	/**
 	 * The list of well-defined values, if any. If no extra {@link ValueProvider provider} is
-	 * specified, these values  are to be considered a closed-set of the available options
+	 * specified, these values  are to be considered a closed-set of the available values
 	 * for this item.
 	 */
 	public List<ValueHint> getValueHints() {
@@ -117,14 +119,14 @@ public class ConfigurationMetadataProperty {
 
 	/**
 	 * The value providers that are applicable to this item. Only one {@link ValueProvider} is
-	 * enabled for an item: the first in the list  that is supported should be used.
+	 * enabled for an item: the first in the list that is supported should be used.
 	 */
 	public List<ValueProvider> getValueProviders() {
 		return valueProviders;
 	}
 
 	/**
-	 * Specify if the property is deprecated
+	 * Specify if the property is deprecated.
 	 */
 	public boolean isDeprecated() {
 		return this.deprecated;

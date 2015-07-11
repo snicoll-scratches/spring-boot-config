@@ -17,6 +17,7 @@
 package org.springframework.boot.configurationmetadata;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import org.json.JSONException;
@@ -31,11 +32,13 @@ import static org.junit.Assert.*;
  */
 public class JsonReaderTests extends AbstractConfigurationMetadataTests {
 
+	private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+
 	private final JsonReader reader = new JsonReader();
 
 	@Test
 	public void emptyMetadata() throws IOException {
-		RawConfigurationMetadata rawMetadata = reader.read(getInputStreamFor("empty"));
+		RawConfigurationMetadata rawMetadata = readFor("empty");
 		assertEquals(0, rawMetadata.getSources().size());
 		assertEquals(0, rawMetadata.getItems().size());
 	}
@@ -43,12 +46,12 @@ public class JsonReaderTests extends AbstractConfigurationMetadataTests {
 	@Test
 	public void invalidMetadata() throws IOException {
 		thrown.expect(JSONException.class);
-		reader.read(getInputStreamFor("invalid"));
+		readFor("invalid");
 	}
 
 	@Test
 	public void simpleMetadata() throws IOException {
-		RawConfigurationMetadata rawMetadata = reader.read(getInputStreamFor("foo"));
+		RawConfigurationMetadata rawMetadata = readFor("foo");
 		List<ConfigurationMetadataSource> sources = rawMetadata.getSources();
 		assertEquals(2, sources.size());
 		List<ConfigurationMetadataItem> items = rawMetadata.getItems();
@@ -86,7 +89,7 @@ public class JsonReaderTests extends AbstractConfigurationMetadataTests {
 
 	@Test
 	public void metadataHints() throws IOException {
-		RawConfigurationMetadata rawMetadata = reader.read(getInputStreamFor("bar"));
+		RawConfigurationMetadata rawMetadata = readFor("bar");
 		List<ConfigurationMetadataHint> hints = rawMetadata.getHints();
 		assertEquals(1, hints.size());
 
@@ -112,7 +115,7 @@ public class JsonReaderTests extends AbstractConfigurationMetadataTests {
 
 	@Test
 	public void rootMetadata() throws IOException {
-		RawConfigurationMetadata rawMetadata = reader.read(getInputStreamFor("root"));
+		RawConfigurationMetadata rawMetadata = readFor("root");
 		List<ConfigurationMetadataSource> sources = rawMetadata.getSources();
 		assertEquals(0, sources.size());
 		List<ConfigurationMetadataItem> items = rawMetadata.getItems();
@@ -121,6 +124,10 @@ public class JsonReaderTests extends AbstractConfigurationMetadataTests {
 		ConfigurationMetadataItem item = items.get(0);
 		assertProperty(item, "spring.root.name", "spring.root.name", String.class, null);
 
+	}
+
+	RawConfigurationMetadata readFor(String path) throws IOException {
+		return this.reader.read(getInputStreamFor(path), DEFAULT_CHARSET);
 	}
 
 }

@@ -20,9 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A source of configuration metadata. Also defines where
- * the source is declared, for instance if it is defined
- * as a {@code @Bean}.
+ * A source of configuration metadata. Also defines where the source is declared,
+ * for instance if it is defined as a {@code @Bean}.
  *
  * @author Stephane Nicoll
  * @since 1.3.0
@@ -54,9 +53,9 @@ public class ConfigurationMetadataSource {
 	}
 
 	/**
-	 * The type of the source. Usually this is the fully qualified name
-	 * of a class that defines one more configuration item. This class may or
-	 * may not be available at runtime.
+	 * The type of the source. Usually this is the fully qualified name of a
+	 * class that defines configuration items. This class may or may not be
+	 * available at runtime.
 	 */
 	public String getType() {
 		return this.type;
@@ -79,7 +78,7 @@ public class ConfigurationMetadataSource {
 
 	/**
 	 * The type where this source is defined. This can be identical
-	 * to the {@linkplain #getType() type} if the source is self-defined.
+	 * to the {@link #getType() type} if the source is self-defined.
 	 */
 	public String getSourceType() {
 		return this.sourceType;

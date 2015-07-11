@@ -35,13 +35,7 @@ import org.json.JSONObject;
  */
 class JsonReader {
 
-	public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
-
 	private static final int BUFFER_SIZE = 4096;
-
-	public RawConfigurationMetadata read(InputStream in) throws IOException {
-		return read(in, DEFAULT_CHARSET);
-	}
 
 	public RawConfigurationMetadata read(InputStream in, Charset charset) throws IOException {
 		JSONObject json = readJson(in, charset);

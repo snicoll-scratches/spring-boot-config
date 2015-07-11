@@ -69,7 +69,6 @@ public class ConfigurationMetadataRepositoryJsonBuilder {
 	 */
 	public ConfigurationMetadataRepositoryJsonBuilder withJsonResource(InputStream in)
 			throws IOException {
-
 		return withJsonResource(in, defaultCharset);
 	}
 
