@@ -16,7 +16,6 @@
 
 package net.nicoll.boot.metadata;
 
-import java.text.BreakIterator;
 import java.util.List;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
@@ -58,9 +57,9 @@ public class ConsoleMetadataFormatter extends AbstractMetadataFormatter implemen
 			item.append(defaultValueToString(defaultValue));
 		}
 		item.append(" # (").append(property.getType()).append(")");
-		String description = property.getDescription();
+		String description = property.getShortDescription();
 		if (StringUtils.hasText(description)) {
-			item.append(" - ").append(descriptionToTagLine(description));
+			item.append(" - ").append(description);
 		}
 		else {
 			item.append(" --- NO DESCRIPTION");
@@ -74,18 +73,6 @@ public class ConsoleMetadataFormatter extends AbstractMetadataFormatter implemen
 		}
 		else {
 			return defaultValue.toString();
-		}
-	}
-
-	public static String descriptionToTagLine(String description) {
-		int dot = description.indexOf(".");
-		if (dot != -1) {
-			BreakIterator breakIterator = BreakIterator.getSentenceInstance();
-			breakIterator.setText(description);
-			return description.substring(breakIterator.first(), breakIterator.next()).trim();
-		}
-		else {
-			return description;
 		}
 	}
 

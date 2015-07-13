@@ -16,7 +16,6 @@
 
 package net.nicoll.boot.metadata;
 
-import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,10 +25,8 @@ import java.util.List;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
-import org.springframework.util.StringUtils;
 
 /**
- *
  * @author Stephane Nicoll
  */
 public abstract class AbstractMetadataFormatter {
@@ -39,18 +36,6 @@ public abstract class AbstractMetadataFormatter {
 	public static final Comparator<ConfigurationMetadataGroup> GROUP_COMPARATOR = new GroupComparator();
 
 	public static final Comparator<ConfigurationMetadataProperty> PROPERTY_COMPARATOR = new PropertyComparator();
-
-
-	protected String extractTagLine(ConfigurationMetadataProperty property, String defaultValue) {
-		String description = property.getDescription();
-		if (StringUtils.hasText(description)) {
-			BreakIterator breakIterator = BreakIterator.getSentenceInstance();
-			breakIterator.setText(description);
-			return description.substring(breakIterator.first(), breakIterator.next());
-		}
-		return defaultValue;
-	}
-
 
 	protected List<ConfigurationMetadataGroup> sortGroups(Collection<ConfigurationMetadataGroup> groups) {
 		List<ConfigurationMetadataGroup> result

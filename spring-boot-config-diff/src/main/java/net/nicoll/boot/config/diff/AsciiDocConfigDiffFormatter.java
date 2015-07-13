@@ -62,7 +62,7 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 			}
 			out.append(" |");
 			if (property.getDescription() != null) {
-				out.append(ConsoleMetadataFormatter.descriptionToTagLine(property.getDescription()));
+				out.append(property.getShortDescription());
 			}
 			out.append(NEW_LINE);
 		}

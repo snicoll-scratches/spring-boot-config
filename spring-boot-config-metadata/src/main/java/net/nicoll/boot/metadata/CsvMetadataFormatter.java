@@ -68,7 +68,7 @@ public class CsvMetadataFormatter extends AbstractMetadataFormatter implements M
 				for (ConfigurationMetadataProperty property : properties) {
 					content.clear();
 					content.put("id", property.getId());
-					content.put("description", extractTagLine(property, null));
+					content.put("description", property.getShortDescription());
 					content.put("defaultValue", property.getDefaultValue());
 					content.put("type", property.getType());
 					writer.write(content, header, processors);
