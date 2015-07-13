@@ -13,6 +13,8 @@ public class ValueHint {
 
 	private String description;
 
+	private String shortDescription;
+
 	/**
 	 * Return the hint value.
 	 */
@@ -25,7 +27,8 @@ public class ValueHint {
 	}
 
 	/**
-	 * Return the description of the value, if any.
+	 * A description of this value, if any. Can be multi-lines.
+	 * @see #getShortDescription()
 	 */
 	public String getDescription() {
 		return description;
@@ -33,6 +36,18 @@ public class ValueHint {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * A single-line, single-sentence description of this hint, if any.
+	 * @see #getDescription()
+	 */
+	public String getShortDescription() {
+		return shortDescription;
+	}
+
+	public void setShortDescription(String shortDescription) {
+		this.shortDescription = shortDescription;
 	}
 
 	@Override

@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Gather a collection of {@link ConfigurationMetadataProperty} that are sharing
- * a {@link #getId() common prefix}. Provide access to all the
+ * Gather a collection of {@link ConfigurationMetadataProperty properties} that
+ * are sharing  a {@link #getId() common prefix}. Provide access to all the
  * {@link ConfigurationMetadataSource sources} that have contributed properties
  * to the group.
  *

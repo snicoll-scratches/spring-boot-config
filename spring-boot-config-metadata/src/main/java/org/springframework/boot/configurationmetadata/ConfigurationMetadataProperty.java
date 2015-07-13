@@ -38,6 +38,8 @@ public class ConfigurationMetadataProperty {
 
 	private String description;
 
+	private String shortDescription;
+
 	private Object defaultValue;
 
 	private final List<ValueHint> valueHints = new ArrayList<ValueHint>();
@@ -87,7 +89,8 @@ public class ConfigurationMetadataProperty {
 	}
 
 	/**
-	 * A short description of the property, if any.
+	 * A description of the property, if any. Can be multi-lines.
+	 * @see #getShortDescription()
 	 */
 	public String getDescription() {
 		return this.description;
@@ -95,6 +98,18 @@ public class ConfigurationMetadataProperty {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * A single-line, single-sentence description of this property, if any.
+	 * @see #getDescription()
+	 */
+	public String getShortDescription() {
+		return shortDescription;
+	}
+
+	public void setShortDescription(String shortDescription) {
+		this.shortDescription = shortDescription;
 	}
 
 	/**

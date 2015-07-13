@@ -20,9 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,6 +38,8 @@ import org.json.JSONObject;
 class JsonReader {
 
 	private static final int BUFFER_SIZE = 4096;
+
+	private static final String NEW_LINE = System.getProperty("line.separator");
 
 	public RawConfigurationMetadata read(InputStream in, Charset charset) throws IOException {
 		JSONObject json = readJson(in, charset);
@@ -88,7 +92,9 @@ class JsonReader {
 		ConfigurationMetadataSource source = new ConfigurationMetadataSource();
 		source.setGroupId(json.getString("name"));
 		source.setType(json.optString("type", null));
-		source.setDescription(json.optString("description", null));
+		String description = json.optString("description", null);
+		source.setDescription(description);
+		source.setShortDescription(extractShortDescription(description));
 		source.setSourceType(json.optString("sourceType", null));
 		source.setSourceMethod(json.optString("sourceMethod", null));
 		return source;
@@ -98,7 +104,9 @@ class JsonReader {
 		ConfigurationMetadataItem item = new ConfigurationMetadataItem();
 		item.setId(json.getString("name"));
 		item.setType(json.optString("type", null));
-		item.setDescription(json.optString("description", null));
+		String description = json.optString("description", null);
+		item.setDescription(description);
+		item.setShortDescription(extractShortDescription(description));
 		item.setDefaultValue(readItemValue(json.opt("defaultValue")));
 		item.setDeprecated(json.optBoolean("deprecated", false));
 		item.setSourceType(json.optString("sourceType", null));
@@ -115,7 +123,9 @@ class JsonReader {
 				JSONObject value = values.getJSONObject(i);
 				ValueHint valueHint = new ValueHint();
 				valueHint.setValue(readItemValue(value.get("value")));
-				valueHint.setDescription(value.optString("description", null));
+				String description = value.optString("description", null);
+				valueHint.setDescription(description);
+				valueHint.setShortDescription(extractShortDescription(description));
 				hint.getValueHints().add(valueHint);
 			}
 		}
@@ -149,6 +159,32 @@ class JsonReader {
 			return content;
 		}
 		return value;
+	}
+
+	static String extractShortDescription(String description) {
+		if (description == null) {
+			return null;
+		}
+		int dot = description.indexOf(".");
+		if (dot != -1) {
+			BreakIterator breakIterator = BreakIterator.getSentenceInstance(Locale.US);
+			breakIterator.setText(description);
+			String text = description.substring(breakIterator.first(), breakIterator.next()).trim();
+			return removeSpaceBetweenLine(text);
+		}
+		else {
+			String[] lines = description.split(NEW_LINE);
+			return lines[0].trim();
+		}
+	}
+
+	private static String removeSpaceBetweenLine(String text) {
+		String[] lines = text.split(NEW_LINE);
+		StringBuilder sb = new StringBuilder();
+		for (String line : lines) {
+			sb.append(line.trim()).append(" ");
+		}
+		return sb.toString().trim();
 	}
 
 	private JSONObject readJson(InputStream in, Charset charset) throws IOException {

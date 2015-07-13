@@ -34,6 +34,8 @@ public class ConfigurationMetadataSource {
 
 	private String description;
 
+	private String shortDescription;
+
 	private String sourceType;
 
 	private String sourceMethod;
@@ -66,7 +68,8 @@ public class ConfigurationMetadataSource {
 	}
 
 	/**
-	 * The description of this source, if any.
+	 * A description of this source, if any. Can be multi-lines.
+	 * @see #getShortDescription()
 	 */
 	public String getDescription() {
 		return this.description;
@@ -74,6 +77,18 @@ public class ConfigurationMetadataSource {
 
 	void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * A single-line, single-sentence description of this source, if any.
+	 * @see #getDescription()
+	 */
+	public String getShortDescription() {
+		return shortDescription;
+	}
+
+	public void setShortDescription(String shortDescription) {
+		this.shortDescription = shortDescription;
 	}
 
 	/**
