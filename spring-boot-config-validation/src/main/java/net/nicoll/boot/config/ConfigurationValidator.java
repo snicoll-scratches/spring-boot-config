@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -25,6 +26,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.bind.RelaxedNames;
 import org.springframework.boot.configurationprocessor.metadata.ConfigurationMetadata;
+import org.springframework.boot.configurationprocessor.metadata.ItemDeprecation;
 import org.springframework.boot.configurationprocessor.metadata.ItemMetadata;
 import org.springframework.boot.configurationprocessor.metadata.JsonMarshaller;
 import org.springframework.context.annotation.Bean;
@@ -49,9 +51,9 @@ public class ConfigurationValidator implements CommandLineRunner {
 	@Autowired
 	private ConfigurationMetadata configurationMetadata;
 
-	private final Map<String, List<ItemMetadata>> items = new HashMap<String, List<ItemMetadata>>();
+	private final Map<String, List<ItemMetadata>> items = new HashMap<>();
 
-	private final Map<String, List<ItemMetadata>> groups = new HashMap<String, List<ItemMetadata>>();
+	private final Map<String, List<ItemMetadata>> groups = new HashMap<>();
 
 	@PostConstruct
 	public void initialize() {
@@ -60,7 +62,7 @@ public class ConfigurationValidator implements CommandLineRunner {
 					(item.isOfItemType(ItemMetadata.ItemType.PROPERTY) ? this.items : this.groups);
 			List<ItemMetadata> list = mapToUse.get(item.getName());
 			if (list == null) {
-				list = new ArrayList<ItemMetadata>();
+				list = new ArrayList<>();
 				mapToUse.put(item.getName(), list);
 			}
 			list.add(item);
@@ -70,16 +72,13 @@ public class ConfigurationValidator implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		List<String> found = new ArrayList<String>();
-		List<String> undocumented = new ArrayList<String>();
-		List<String> unresolved = new ArrayList<String>();
+		List<String> found = new ArrayList<>();
+		List<String> undocumented = new ArrayList<>();
+		List<String> unresolved = new ArrayList<>();
 
 		// Generate relax names for all properties
-		List<ConfigKeyCandidates> advertized = new ArrayList<ConfigKeyCandidates>();
-		for (Object item : advertizedProperties.keySet()) {
-			advertized.add(new ConfigKeyCandidates((String) item));
-		}
-
+		List<ConfigKeyCandidates> advertized = advertizedProperties.keySet()
+				.stream().map(item -> new ConfigKeyCandidates((String) item)).collect(Collectors.toList());
 
 		// Check advertized properties
 		for (ConfigKeyCandidates propertyItem : advertized) {
@@ -95,7 +94,17 @@ public class ConfigurationValidator implements CommandLineRunner {
 		// Check non advertized properties
 		for (String key : this.items.keySet()) {
 			if (!found.contains(key)) {
-				undocumented.add(key);
+				String value = key;
+				List<ItemMetadata> candidates = this.items.get(key);
+				ItemDeprecation deprecation = candidates.get(0).getDeprecation();
+				if (deprecation != null) {
+					value += " (deprecated";
+					if (deprecation.getReplacement() != null) {
+						value += " see " + deprecation.getReplacement();
+					}
+					value += ")";
+				}
+				undocumented.add(value);
 			}
 		}
 
