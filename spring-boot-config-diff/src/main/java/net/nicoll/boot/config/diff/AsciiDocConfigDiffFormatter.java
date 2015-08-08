@@ -37,17 +37,11 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 		out.append("Configuration properties change between `").append(result.getLeftVersion())
 				.append("` and `").append(result.getRightVersion()).append("`").append(NEW_LINE);
 		out.append(NEW_LINE);
-		out.append("The following keys were **deprecated**:").append(NEW_LINE);
-		out.append(NEW_LINE);
 		out.append(".Deprecated keys in `").append(result.getRightVersion()).append("`").append(NEW_LINE);
 		appendDeprecatedProperties(out, result);
 		out.append(NEW_LINE);
-		out.append("The following keys were **added**:").append(NEW_LINE);
-		out.append(NEW_LINE);
 		out.append(".New keys in `").append(result.getRightVersion()).append("`").append(NEW_LINE);
 		appendProperties(out, result, true);
-		out.append(NEW_LINE);
-		out.append("The following keys were **removed**:").append(NEW_LINE);
 		out.append(NEW_LINE);
 		out.append(".Removed keys in `").append(result.getRightVersion()).append("`").append(NEW_LINE);
 		appendProperties(out, result, false);
