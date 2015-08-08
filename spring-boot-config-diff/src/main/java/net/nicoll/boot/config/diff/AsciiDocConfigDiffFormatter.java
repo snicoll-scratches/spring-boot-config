@@ -22,6 +22,7 @@ import java.util.List;
 import net.nicoll.boot.metadata.ConsoleMetadataFormatter;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
+import org.springframework.boot.configurationmetadata.Deprecation;
 
 /**
  *
@@ -35,6 +36,11 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 		out.append("Configuration properties change between `").append(result.getLeftVersion())
 				.append("` and `").append(result.getRightVersion()).append("`").append(NEW_LINE);
 		out.append(NEW_LINE);
+		out.append("The following keys were **deprecated**:").append(NEW_LINE);
+		out.append(NEW_LINE);
+		out.append(".Deprecated keys in `").append(result.getRightVersion()).append("`").append(NEW_LINE);
+		appendDeprecatedProperties(out, result);
+		out.append(NEW_LINE);
 		out.append("The following keys were **added**:").append(NEW_LINE);
 		out.append(NEW_LINE);
 		out.append(".New keys in `").append(result.getRightVersion()).append("`").append(NEW_LINE);
@@ -45,6 +51,29 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 		out.append(".Removed keys in `").append(result.getRightVersion()).append("`").append(NEW_LINE);
 		appendProperties(out, result, false);
 		return out.toString();
+	}
+
+	private void appendDeprecatedProperties(StringBuilder out, ConfigDiffResult result) {
+		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties =
+				sortProperties(result.getPropertiesDiffFor(ConfigDiffType.EQUALS), true);
+		out.append("|======================").append(NEW_LINE);
+		out.append("|Key  |Replacement |Reason").append(NEW_LINE);
+		for (ConfigDiffEntry<ConfigurationMetadataProperty> diff : properties) {
+			if (!diff.getLeft().isDeprecated() && diff.getRight().isDeprecated()) {
+				ConfigurationMetadataProperty property = diff.getRight();
+				Deprecation deprecation = property.getDeprecation();
+				out.append("|`").append(property.getId()).append("` |");
+				if (deprecation.getReplacement() != null) {
+					out.append("`").append(deprecation.getReplacement()).append("`");
+				}
+				out.append(" |");
+				if (deprecation.getReason() != null) {
+					out.append(deprecation.getReason());
+				}
+				out.append(NEW_LINE);
+			}
+		}
+		out.append("|======================").append(NEW_LINE);
 	}
 
 	private void appendProperties(StringBuilder out, ConfigDiffResult result, boolean added) {
