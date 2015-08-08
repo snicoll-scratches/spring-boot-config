@@ -25,6 +25,7 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataPrope
 import org.springframework.boot.configurationmetadata.Deprecation;
 
 /**
+ * Renders the diff in asciidoc format.
  *
  * @author Stephane Nicoll
  */
@@ -58,27 +59,26 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 				sortProperties(result.getPropertiesDiffFor(ConfigDiffType.EQUALS), true);
 		out.append("|======================").append(NEW_LINE);
 		out.append("|Key  |Replacement |Reason").append(NEW_LINE);
-		for (ConfigDiffEntry<ConfigurationMetadataProperty> diff : properties) {
-			if (!diff.getLeft().isDeprecated() && diff.getRight().isDeprecated()) {
-				ConfigurationMetadataProperty property = diff.getRight();
-				Deprecation deprecation = property.getDeprecation();
-				out.append("|`").append(property.getId()).append("` |");
-				if (deprecation.getReplacement() != null) {
-					out.append("`").append(deprecation.getReplacement()).append("`");
-				}
-				out.append(" |");
-				if (deprecation.getReason() != null) {
-					out.append(deprecation.getReason());
-				}
-				out.append(NEW_LINE);
+		properties.stream().filter(diff -> !diff.getLeft().isDeprecated()
+				&& diff.getRight().isDeprecated()).forEach(diff -> {
+			ConfigurationMetadataProperty property = diff.getRight();
+			Deprecation deprecation = property.getDeprecation();
+			out.append("|`").append(property.getId()).append("` |");
+			if (deprecation.getReplacement() != null) {
+				out.append("`").append(deprecation.getReplacement()).append("`");
 			}
-		}
+			out.append(" |");
+			if (deprecation.getReason() != null) {
+				out.append(deprecation.getReason());
+			}
+			out.append(NEW_LINE);
+		});
 		out.append("|======================").append(NEW_LINE);
 	}
 
 	private void appendProperties(StringBuilder out, ConfigDiffResult result, boolean added) {
-		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties =
-				sortProperties(result.getPropertiesDiffFor(added ? ConfigDiffType.ADD : ConfigDiffType.DELETE), !added);
+		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = sortProperties(
+				result.getPropertiesDiffFor(added ? ConfigDiffType.ADD : ConfigDiffType.DELETE), !added);
 		out.append("|======================").append(NEW_LINE);
 		out.append("|Key  |Default value |Description").append(NEW_LINE);
 		for (ConfigDiffEntry<ConfigurationMetadataProperty> diff : properties) {
