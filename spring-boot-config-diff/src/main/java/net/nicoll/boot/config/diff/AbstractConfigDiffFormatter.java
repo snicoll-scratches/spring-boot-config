@@ -26,10 +26,6 @@ import net.nicoll.boot.metadata.AbstractMetadataFormatter;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 
-/**
- *
- * @author Stephane Nicoll
- */
 public abstract class AbstractConfigDiffFormatter extends AbstractMetadataFormatter implements ConfigDiffFormatter {
 
 
@@ -37,13 +33,10 @@ public abstract class AbstractConfigDiffFormatter extends AbstractMetadataFormat
 			List<ConfigDiffEntry<ConfigurationMetadataGroup>> groups, final boolean useLeft) {
 		List<ConfigDiffEntry<ConfigurationMetadataGroup>> result =
 				new ArrayList<ConfigDiffEntry<ConfigurationMetadataGroup>>(groups);
-		Collections.sort(result, new Comparator<ConfigDiffEntry<ConfigurationMetadataGroup>>() {
-			@Override
-			public int compare(ConfigDiffEntry<ConfigurationMetadataGroup> o1, ConfigDiffEntry<ConfigurationMetadataGroup> o2) {
-				ConfigurationMetadataGroup first = (useLeft ? o1.getLeft() : o1.getRight());
-				ConfigurationMetadataGroup second = (useLeft ? o2.getLeft() : o2.getRight());
-				return GROUP_COMPARATOR.compare(first, second);
-			}
+		Collections.sort(result, (o1, o2) -> {
+			ConfigurationMetadataGroup first = (useLeft ? o1.getLeft() : o1.getRight());
+			ConfigurationMetadataGroup second = (useLeft ? o2.getLeft() : o2.getRight());
+			return GROUP_COMPARATOR.compare(first, second);
 		});
 		return result;
 	}
@@ -52,13 +45,10 @@ public abstract class AbstractConfigDiffFormatter extends AbstractMetadataFormat
 			List<ConfigDiffEntry<ConfigurationMetadataProperty>> groups, final boolean useLeft) {
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> result =
 				new ArrayList<ConfigDiffEntry<ConfigurationMetadataProperty>>(groups);
-		Collections.sort(result, new Comparator<ConfigDiffEntry<ConfigurationMetadataProperty>>() {
-			@Override
-			public int compare(ConfigDiffEntry<ConfigurationMetadataProperty> o1, ConfigDiffEntry<ConfigurationMetadataProperty> o2) {
-				ConfigurationMetadataProperty first = (useLeft ? o1.getLeft() : o1.getRight());
-				ConfigurationMetadataProperty second = (useLeft ? o2.getLeft() : o2.getRight());
-				return PROPERTY_COMPARATOR.compare(first, second);
-			}
+		Collections.sort(result, (o1, o2) -> {
+			ConfigurationMetadataProperty first = (useLeft ? o1.getLeft() : o1.getRight());
+			ConfigurationMetadataProperty second = (useLeft ? o2.getLeft() : o2.getRight());
+			return PROPERTY_COMPARATOR.compare(first, second);
 		});
 		return result;
 	}
