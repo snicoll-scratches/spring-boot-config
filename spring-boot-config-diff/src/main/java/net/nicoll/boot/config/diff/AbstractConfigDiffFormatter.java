@@ -18,10 +18,10 @@ package net.nicoll.boot.config.diff;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import net.nicoll.boot.metadata.AbstractMetadataFormatter;
+import net.nicoll.boot.metadata.MetadataUtils;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
@@ -36,7 +36,7 @@ public abstract class AbstractConfigDiffFormatter extends AbstractMetadataFormat
 		Collections.sort(result, (o1, o2) -> {
 			ConfigurationMetadataGroup first = (useLeft ? o1.getLeft() : o1.getRight());
 			ConfigurationMetadataGroup second = (useLeft ? o2.getLeft() : o2.getRight());
-			return GROUP_COMPARATOR.compare(first, second);
+			return MetadataUtils.GROUP_COMPARATOR.compare(first, second);
 		});
 		return result;
 	}
@@ -48,7 +48,7 @@ public abstract class AbstractConfigDiffFormatter extends AbstractMetadataFormat
 		Collections.sort(result, (o1, o2) -> {
 			ConfigurationMetadataProperty first = (useLeft ? o1.getLeft() : o1.getRight());
 			ConfigurationMetadataProperty second = (useLeft ? o2.getLeft() : o2.getRight());
-			return PROPERTY_COMPARATOR.compare(first, second);
+			return MetadataUtils.PROPERTY_COMPARATOR.compare(first, second);
 		});
 		return result;
 	}
