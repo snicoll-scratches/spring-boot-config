@@ -157,7 +157,7 @@ public class ConfigurationValidator implements CommandLineRunner {
 		JsonMarshaller marshaller = new JsonMarshaller();
 		ConfigurationMetadata metadata = new ConfigurationMetadata();
 		for (Resource resource : resources) {
-			metadata.addAll(readMetadata(marshaller, resource));
+			metadata.merge(readMetadata(marshaller, resource));
 		}
 		return metadata;
 	}
