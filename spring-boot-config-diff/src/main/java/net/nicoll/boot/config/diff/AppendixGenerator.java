@@ -1,6 +1,8 @@
 package net.nicoll.boot.config.diff;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import net.nicoll.boot.config.diff.support.AetherDependencyResolver;
 import net.nicoll.boot.config.diff.support.ConfigurationMetadataRepositoryLoader;
@@ -20,6 +22,7 @@ public class AppendixGenerator {
 		ConfigurationMetadataRepositoryLoader loader =
 				new ConfigurationMetadataRepositoryLoader(AetherDependencyResolver.withAllRepositories());
 		ConfigurationMetadataRepository repo = loader.load("1.3.0.BUILD-SNAPSHOT");
+		attachRootPropertyToGroup(repo);
 
 		List<ConfigurationMetadataGroup> groups = MetadataUtils.sortGroups(repo.getAllGroups().values());
 		StringBuilder sb = new StringBuilder();
@@ -32,7 +35,7 @@ public class AppendixGenerator {
 				if (property.getDefaultValue() != null) {
 					sb.append(defaultValueToString(property.getDefaultValue()));
 				}
-				sb.append(" # ").append(cleanDescription(property.getShortDescription()))
+				sb.append(" # ").append(cleanDescription(property.getDescription()))
 						.append(NEW_LINE);
 			}
 			sb.append(NEW_LINE);
@@ -40,6 +43,31 @@ public class AppendixGenerator {
 
 		System.out.println(sb.toString());
 
+	}
+
+	/**
+	 * Attempt to attach a property from the root group to an existing group.
+	 * @param repository
+	 */
+	private static void attachRootPropertyToGroup(ConfigurationMetadataRepository repository) {
+		ConfigurationMetadataGroup rootGroup = repository.getAllGroups().get(
+				ConfigurationMetadataRepository.ROOT_GROUP);
+		Iterator<Map.Entry<String, ConfigurationMetadataProperty>> it = rootGroup.getProperties().entrySet().iterator();
+		while (it.hasNext()) {
+			ConfigurationMetadataProperty property = it.next().getValue();
+			String id = property.getId();
+			int lastdot = id.lastIndexOf('.');
+			if (lastdot != -1) {
+				String groupId = id.substring(0, lastdot);
+				ConfigurationMetadataGroup group = repository.getAllGroups().get(groupId);
+				if (group != null) {
+					System.out.println("Please consider moving property " + id + " to group " +
+							"" + groupId + " (currently on the root group).");
+					group.getProperties().put(id, property);
+					it.remove();
+				}
+			}
+		}
 
 	}
 
@@ -56,9 +84,9 @@ public class AppendixGenerator {
 		if (description == null) {
 			return "";
 		}
-		description = Character.toLowerCase(description.charAt(0)) + description.substring(1);
-		if (description.endsWith(".")) {
-			return description.substring(0, description.length() -1);
+		description = Character.toUpperCase(description.charAt(0)) + description.substring(1);
+		if (!description.endsWith(".")) {
+			description += ".";
 		}
 		return description;
 	}
