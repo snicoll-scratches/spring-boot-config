@@ -26,7 +26,7 @@ public class ConfigDiffSample {
 
 	public static void main(String[] args) throws Exception {
 		ConfigDiffResult configDiffResult = new ConfigDiffGenerator(AetherDependencyResolver.withAllRepositories())
-				.generateDiff("1.3.0.RC1", "1.3.0.BUILD-SNAPSHOT");
+				.generateDiff("1.2.7.RELEASE", "1.3.0.RELEASE");
 
 		ConfigDiffFormatter formatter = new AsciiDocConfigDiffFormatter();
 
