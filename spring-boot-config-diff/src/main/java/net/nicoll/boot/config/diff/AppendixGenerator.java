@@ -21,7 +21,7 @@ public class AppendixGenerator {
 	public static void main(String[] args) throws Exception {
 		ConfigurationMetadataRepositoryLoader loader =
 				new ConfigurationMetadataRepositoryLoader(AetherDependencyResolver.withAllRepositories());
-		ConfigurationMetadataRepository repo = loader.load("1.4.1.BUILD-SNAPSHOT");
+		ConfigurationMetadataRepository repo = loader.load("1.5.0.BUILD-SNAPSHOT");
 		attachRootPropertyToGroup(repo);
 
 		List<ConfigurationMetadataGroup> groups = MetadataUtils.sortGroups(repo.getAllGroups().values());
