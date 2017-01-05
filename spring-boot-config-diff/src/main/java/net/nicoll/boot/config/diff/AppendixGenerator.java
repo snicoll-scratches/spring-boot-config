@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.nicoll.boot.config.diff.support.AetherDependencyResolver;
-import net.nicoll.boot.config.diff.support.ConfigurationMetadataRepositoryLoader;
+import net.nicoll.boot.config.loader.AetherDependencyResolver;
+import net.nicoll.boot.config.loader.ConfigurationMetadataRepositoryLoader;
 import net.nicoll.boot.metadata.MetadataUtils;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;

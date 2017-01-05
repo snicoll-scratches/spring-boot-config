@@ -18,6 +18,7 @@
 
     <modules>
         <module>spring-boot-config-diff</module>
+		<module>spring-boot-config-loader</module>
         <module>spring-boot-config-metadata</module>
         <module>spring-boot-config-samples</module>
         <module>spring-boot-config-validation</module>
@@ -37,6 +38,11 @@
                 <artifactId>spring-boot-config-diff</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
+			<dependency>
+				<groupId>net.nicoll.scratch.boot.config</groupId>
+				<artifactId>spring-boot-config-loader</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
             <dependency>
                 <groupId>net.nicoll.scratch.boot.config</groupId>
                 <artifactId>spring-boot-config-metadata</artifactId>

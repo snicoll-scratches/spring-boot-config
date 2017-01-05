@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.nicoll.boot.config.diff.support.AetherDependencyResolver;
-import net.nicoll.boot.config.diff.support.ConfigurationMetadataRepositoryLoader;
+import net.nicoll.boot.config.loader.AetherDependencyResolver;
+import net.nicoll.boot.config.loader.ConfigurationMetadataRepositoryLoader;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;

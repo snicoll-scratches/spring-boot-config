@@ -16,7 +16,7 @@
 
 package net.nicoll.boot.config.diff;
 
-import net.nicoll.boot.config.diff.support.AetherDependencyResolver;
+import net.nicoll.boot.config.loader.AetherDependencyResolver;
 
 /**
  *

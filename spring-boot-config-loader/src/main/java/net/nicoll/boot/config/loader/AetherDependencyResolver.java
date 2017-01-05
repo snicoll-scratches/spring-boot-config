@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.nicoll.boot.config.diff.support;
+package net.nicoll.boot.config.loader;
 
 import java.io.File;
 import java.util.Arrays;
@@ -118,9 +118,4 @@ public class AetherDependencyResolver {
 		return new File(System.getProperty("user.home"), ".m2");
 	}
 
-
-	public static void main(String[] args) throws Exception {
-		System.out.println(AetherDependencyResolver.withAllRepositories()
-				.resolveDependency("org.springframework.boot:spring-boot:1.2.6.RELEASE"));
-	}
 }

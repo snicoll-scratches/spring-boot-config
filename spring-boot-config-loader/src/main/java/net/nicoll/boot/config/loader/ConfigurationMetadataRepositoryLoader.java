@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.nicoll.boot.config.diff.support;
+package net.nicoll.boot.config.loader;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +52,7 @@ public class ConfigurationMetadataRepositoryLoader {
 		load(builder, "org.springframework.boot:spring-boot-actuator:" + version, true);
 		load(builder, "org.springframework.boot:spring-boot-autoconfigure:" + version, true);
 		load(builder, "org.springframework.boot:spring-boot-devtools:" + version, false);
+		load(builder, "org.springframework.boot:spring-boot-test-autoconfigure:" + version, false);
 		return builder.build();
 	}
 
