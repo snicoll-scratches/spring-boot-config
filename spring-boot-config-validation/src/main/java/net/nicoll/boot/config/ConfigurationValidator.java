@@ -1,7 +1,5 @@
 package net.nicoll.boot.config;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,9 +10,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.annotation.PostConstruct;
 
+import net.nicoll.boot.config.loader.AetherDependencyResolver;
+import net.nicoll.boot.config.loader.ConfigurationMetadataLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -23,23 +22,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.bind.RelaxedNames;
 import org.springframework.boot.configurationprocessor.metadata.ConfigurationMetadata;
 import org.springframework.boot.configurationprocessor.metadata.ItemDeprecation;
 import org.springframework.boot.configurationprocessor.metadata.ItemMetadata;
-import org.springframework.boot.configurationprocessor.metadata.JsonMarshaller;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-/**
- *
- * @author Stephane Nicoll
- */
-@EnableAutoConfiguration
-@Configuration
+@SpringBootApplication
 public class ConfigurationValidator implements CommandLineRunner {
 
 	private static final Log logger = LogFactory.getLog(ConfigurationValidator.class);
@@ -151,25 +142,10 @@ public class ConfigurationValidator implements CommandLineRunner {
 
 
 	@Bean
-	public ConfigurationMetadata configurationMetadata() throws IOException {
-		Resource[] resources = new PathMatchingResourcePatternResolver()
-				.getResources("classpath*:META-INF/spring-configuration-metadata.json");
-		JsonMarshaller marshaller = new JsonMarshaller();
-		ConfigurationMetadata metadata = new ConfigurationMetadata();
-		for (Resource resource : resources) {
-			metadata.merge(readMetadata(marshaller, resource));
-		}
-		return metadata;
-	}
-
-	private ConfigurationMetadata readMetadata(JsonMarshaller marshaller, Resource resource) throws IOException {
-		InputStream in = resource.getInputStream();
-		try {
-			return marshaller.read(in);
-		}
-		finally {
-			in.close();
-		}
+	public ConfigurationMetadata configurationMetadata() throws Exception {
+		ConfigurationMetadataLoader loader =
+				new ConfigurationMetadataLoader(AetherDependencyResolver.withAllRepositories());
+		return loader.loadConfigurationMetadata("1.5.0.BUILD-SNAPSHOT");
 	}
 
 	@Bean

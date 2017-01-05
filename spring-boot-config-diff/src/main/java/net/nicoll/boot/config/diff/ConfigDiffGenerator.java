@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.nicoll.boot.config.loader.AetherDependencyResolver;
-import net.nicoll.boot.config.loader.ConfigurationMetadataRepositoryLoader;
+import net.nicoll.boot.config.loader.ConfigurationMetadataLoader;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
@@ -34,15 +34,15 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepos
  */
 public class ConfigDiffGenerator {
 
-	private final ConfigurationMetadataRepositoryLoader loader;
+	private final ConfigurationMetadataLoader loader;
 
 	public ConfigDiffGenerator(AetherDependencyResolver dependencyResolver) {
-		this.loader = new ConfigurationMetadataRepositoryLoader(dependencyResolver);
+		this.loader = new ConfigurationMetadataLoader(dependencyResolver);
 	}
 
 	ConfigDiffResult generateDiff(String leftVersion, String rightVersion) throws IOException {
-		ConfigurationMetadataRepository left = loader.load(leftVersion);
-		ConfigurationMetadataRepository right = loader.load(rightVersion);
+		ConfigurationMetadataRepository left = loader.loadRepository(leftVersion);
+		ConfigurationMetadataRepository right = loader.loadRepository(rightVersion);
 
 		ConfigDiffResult result = new ConfigDiffResult(leftVersion, rightVersion);
 		diffGroup(result, left, right).diffItem(result, left, right);

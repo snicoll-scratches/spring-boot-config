@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.nicoll.boot.config.loader.AetherDependencyResolver;
-import net.nicoll.boot.config.loader.ConfigurationMetadataRepositoryLoader;
+import net.nicoll.boot.config.loader.ConfigurationMetadataLoader;
 import net.nicoll.boot.metadata.MetadataUtils;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
@@ -19,9 +19,9 @@ public class AppendixGenerator {
 
 
 	public static void main(String[] args) throws Exception {
-		ConfigurationMetadataRepositoryLoader loader =
-				new ConfigurationMetadataRepositoryLoader(AetherDependencyResolver.withAllRepositories());
-		ConfigurationMetadataRepository repo = loader.load("1.5.0.BUILD-SNAPSHOT");
+		ConfigurationMetadataLoader loader =
+				new ConfigurationMetadataLoader(AetherDependencyResolver.withAllRepositories());
+		ConfigurationMetadataRepository repo = loader.loadRepository("1.5.0.BUILD-SNAPSHOT");
 		attachRootPropertyToGroup(repo);
 
 		List<ConfigurationMetadataGroup> groups = MetadataUtils.sortGroups(repo.getAllGroups().values());
