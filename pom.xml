@@ -17,6 +17,7 @@
     </properties>
 
     <modules>
+		<module>spring-boot-config-analyzer</module>
         <module>spring-boot-config-diff</module>
 		<module>spring-boot-config-loader</module>
         <module>spring-boot-config-metadata</module>
