@@ -1,7 +1,7 @@
 package net.nicoll.boot.config.diff.analyzer;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -24,6 +24,26 @@ public class EnumDefaultValueAnalyzer {
 
 	private static final String NEW_LINE = System.getProperty("line.separator");
 
+	private static final List<String> EXCLUDES = Arrays.asList(
+			"management.ssl.client-auth", // no default
+			"security.oauth2.client.authentication-scheme", // Bound to 3rd party pojo
+			"security.oauth2.client.client-authentication-scheme", // Ditto :(
+			"server.ssl.client-auth", // no default
+			"spring.artemis.mode", // no default
+			"spring.cache.type", // no default
+			"spring.data.cassandra.consistency-level", // no default
+			"spring.data.cassandra.serial-consistency-level", // no default
+			"spring.jackson.default-property-inclusion", // no default
+			"spring.jms.listener.acknowledge-mode", // no default
+			"spring.jms.template.delivery-mode", // no default
+			"spring.jooq.sql-dialect", // no default
+			"spring.jpa.database", // no default
+			"spring.kafka.listener.ack-mode", // no default
+			"spring.mvc.message-codes-resolver-format", // no default
+			"spring.rabbitmq.listener.acknowledge-mode", // no default
+			"spring.session.store-type" // no default
+	);
+
 	private static final Logger logger = LoggerFactory.getLogger(EnumDefaultValueAnalyzer.class);
 
 
@@ -38,18 +58,30 @@ public class EnumDefaultValueAnalyzer {
 					MetadataUtils.sortProperties(group.getProperties().values());
 			for (ConfigurationMetadataProperty property : properties) {
 				if (property.getDefaultValue() == null && isEnum(property.getType())) {
-					matchingProperties.add(property);
+					if (EXCLUDES.contains(property.getId())) {
+						System.out.println("Validate that " + property.getId()
+								+ " has still no default value.");
+					}
+					else {
+						matchingProperties.add(property);
+					}
 				}
 			}
 		}
 		matchingProperties.sort(Comparator.comparing(ConfigurationMetadataProperty::getId));
 		StringBuilder sb = new StringBuilder();
-		for (ConfigurationMetadataProperty property : matchingProperties) {
-			sb.append("  {").append(NEW_LINE);
-			sb.append("    \"name\": \"").append(property.getId()).append(",")
-					.append(NEW_LINE).append("    \"defaultValue\": ")
-					.append("TODO").append(NEW_LINE).append("  },")
-					.append(NEW_LINE);
+		sb.append(NEW_LINE).append(NEW_LINE);
+		if (matchingProperties.isEmpty()) {
+			sb.append("All other enums have default values");
+		}
+		else {
+			for (ConfigurationMetadataProperty property : matchingProperties) {
+				sb.append("  {").append(NEW_LINE);
+				sb.append("    \"name\": \"").append(property.getId()).append("\",")
+						.append(NEW_LINE).append("    \"defaultValue\": ")
+						.append("TODO").append(NEW_LINE).append("  },")
+						.append(NEW_LINE);
+			}
 		}
 		System.out.println(sb.toString());
 
