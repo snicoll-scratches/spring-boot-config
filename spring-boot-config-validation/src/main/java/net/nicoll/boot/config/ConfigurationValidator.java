@@ -145,7 +145,7 @@ public class ConfigurationValidator implements CommandLineRunner {
 	public ConfigurationMetadata configurationMetadata() throws Exception {
 		ConfigurationMetadataLoader loader =
 				new ConfigurationMetadataLoader(AetherDependencyResolver.withAllRepositories());
-		return loader.loadConfigurationMetadata("1.5.0.BUILD-SNAPSHOT");
+		return loader.loadConfigurationMetadata("2.0.0.BUILD-SNAPSHOT");
 	}
 
 	@Bean
