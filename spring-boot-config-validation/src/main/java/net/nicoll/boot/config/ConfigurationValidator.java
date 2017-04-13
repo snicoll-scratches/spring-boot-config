@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,7 @@ public class ConfigurationValidator implements CommandLineRunner {
 		List<String> found = new ArrayList<>();
 		List<String> undocumented = new ArrayList<>();
 		List<String> unresolved = new ArrayList<>();
+		Map<String, List<String>> groups = new LinkedHashMap<>();
 
 		// Generate relax names for all properties
 		List<ConfigKeyCandidates> advertized = advertizedProperties.keySet()
@@ -99,22 +101,52 @@ public class ConfigurationValidator implements CommandLineRunner {
 			}
 		}
 
+		// Check all the ".*" properties and match against the undocumented ones
+		for (String key : unresolved) {
+			if (key.endsWith(".*")) {
+				String group = key.substring(0, key.length() - 2);
+				List<String> matching = new ArrayList<>();
+				undocumented.removeIf(item -> {
+					if (item.startsWith(group)) {
+						matching.add(item);
+						return true;
+					}
+					return false;
+				});
+				groups.put(group, matching);
+			}
+		}
+		groups.keySet().forEach(item -> unresolved.remove(item + ".*"));
+		
+
 		StringBuilder sb = new StringBuilder("\n");
 		sb.append("Configuration key statistics").append("\n");
 		sb.append("Advertized keys: ").append(advertizedProperties.size()).append("\n");
 		sb.append("Repository items: ").append(configurationMetadata.getItems().size()).append("\n");
 		sb.append("Matching items: ").append(found.size()).append("\n");
 		sb.append("Unresolved items (found in documentation but not in generated metadata): ").append(unresolved.size()).append("\n");
+		sb.append("Groups (group defined in the documentation but not each individual elements): ").append(groups.size()).append("\n");
 		sb.append("Undocumented items (found in generated metadata but not in documentation): ").append(undocumented.size()).append("\n");
 		sb.append("\n");
 		sb.append("\n");
-		sb.append("Unresolved items").append("\n");
-		sb.append("----------------").append("\n");
-		Collections.sort(unresolved);
-		for (String id : unresolved) {
-			sb.append(id).append("\n");
+		if (!unresolved.isEmpty()) {
+			sb.append("Unresolved items").append("\n");
+			sb.append("----------------").append("\n");
+			Collections.sort(unresolved);
+			for (String id : unresolved) {
+				sb.append(id).append("\n");
+			}
+			sb.append("\n");
 		}
-		sb.append("\n");
+		if (!groups.isEmpty()) {
+			sb.append("Groups").append("\n");
+			sb.append("----------------").append("\n");
+			for (Map.Entry<String, List<String>> group : groups.entrySet()) {
+				sb.append(group.getKey()).append(" with ")
+						.append(group.getValue().size()).append(" elements").append("\n");
+			}
+			sb.append("\n");
+		}
 		sb.append("Undocumented items").append("\n");
 		sb.append("--------------------").append("\n");
 		List<String> ids = new ArrayList<String>();
