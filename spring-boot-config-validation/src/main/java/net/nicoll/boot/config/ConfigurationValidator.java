@@ -67,6 +67,7 @@ public class ConfigurationValidator implements CommandLineRunner {
 		List<String> found = new ArrayList<>();
 		List<String> undocumented = new ArrayList<>();
 		List<String> unresolved = new ArrayList<>();
+		List<String> deprecated = new ArrayList<>();
 		Map<String, List<String>> groups = new LinkedHashMap<>();
 
 		// Generate relax names for all properties
@@ -96,8 +97,11 @@ public class ConfigurationValidator implements CommandLineRunner {
 						value += " see " + deprecation.getReplacement();
 					}
 					value += ")";
+					deprecated.add(value);
 				}
-				undocumented.add(value);
+				else {
+					undocumented.add(value);
+				}
 			}
 		}
 
@@ -127,6 +131,7 @@ public class ConfigurationValidator implements CommandLineRunner {
 		sb.append("Unresolved items (found in documentation but not in generated metadata): ").append(unresolved.size()).append("\n");
 		sb.append("Groups (group defined in the documentation but not each individual elements): ").append(groups.size()).append("\n");
 		sb.append("Undocumented items (found in generated metadata but not in documentation): ").append(undocumented.size()).append("\n");
+		sb.append("Deprecated items (found in generated metadata but not in documentation): ").append(deprecated.size()).append("\n");
 		sb.append("\n");
 		sb.append("\n");
 		if (!unresolved.isEmpty()) {
@@ -147,16 +152,27 @@ public class ConfigurationValidator implements CommandLineRunner {
 			}
 			sb.append("\n");
 		}
-		sb.append("Undocumented items").append("\n");
-		sb.append("--------------------").append("\n");
-		List<String> ids = new ArrayList<String>();
-		for (String item : undocumented) {
-			ids.add(item);
-
+		if (!undocumented.isEmpty()) {
+			sb.append("Undocumented items").append("\n");
+			sb.append("--------------------").append("\n");
+			List<String> ids = new ArrayList<String>();
+			ids.addAll(undocumented);
+			Collections.sort(ids);
+			for (String id : ids) {
+				sb.append(id).append("\n");
+			}
+			sb.append("\n");
 		}
-		Collections.sort(ids);
-		for (String id : ids) {
-			sb.append(id).append("\n");
+		if (!deprecated.isEmpty()) {
+			sb.append("Deprecated items").append("\n");
+			sb.append("--------------------").append("\n");
+			List<String> ids = new ArrayList<String>();
+			ids.addAll(deprecated);
+			Collections.sort(ids);
+			for (String id : ids) {
+				sb.append(id).append("\n");
+			}
+			sb.append("\n");
 		}
 
 		logger.info(sb.toString());
