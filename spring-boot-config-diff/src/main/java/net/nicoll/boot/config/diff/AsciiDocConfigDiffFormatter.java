@@ -53,8 +53,7 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 				sortProperties(result.getPropertiesDiffFor(ConfigDiffType.EQUALS), true);
 		out.append("|======================").append(NEW_LINE);
 		out.append("|Key  |Replacement |Reason").append(NEW_LINE);
-		properties.stream().filter(diff -> !diff.getLeft().isDeprecated()
-				&& diff.getRight().isDeprecated()).forEach(diff -> {
+		properties.stream().filter(this::isDeprecatedInRelease).forEach(diff -> {
 			ConfigurationMetadataProperty property = diff.getRight();
 			Deprecation deprecation = property.getDeprecation();
 			out.append("|`").append(property.getId()).append("` |");
@@ -70,12 +69,20 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 		out.append("|======================").append(NEW_LINE);
 	}
 
+	private boolean isDeprecatedInRelease(
+			ConfigDiffEntry<ConfigurationMetadataProperty> diff) {
+		return !diff.getLeft().isDeprecated()
+				&& diff.getRight().isDeprecated()
+				&& Deprecation.Level.ERROR != diff.getRight().getDeprecation().getLevel();
+	}
+
 	private void appendProperties(StringBuilder out, ConfigDiffResult result, boolean added) {
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = sortProperties(
 				result.getPropertiesDiffFor(added ? ConfigDiffType.ADD : ConfigDiffType.DELETE), !added);
 		out.append("|======================").append(NEW_LINE);
 		out.append("|Key  |Default value |Description").append(NEW_LINE);
-		for (ConfigDiffEntry<ConfigurationMetadataProperty> diff : properties) {
+		properties.stream()
+				.filter(diff -> (!added || !diff.getRight().isDeprecated())).forEach(diff -> {
 			ConfigurationMetadataProperty property = (added ? diff.getRight() : diff.getLeft());
 			// |`spring.foo` | | Bla bla bla
 			out.append("|`").append(property.getId()).append("` |");
@@ -88,7 +95,7 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 				out.append(property.getShortDescription());
 			}
 			out.append(NEW_LINE);
-		}
+		});
 		out.append("|======================").append(NEW_LINE);
 	}
 }

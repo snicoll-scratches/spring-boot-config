@@ -27,6 +27,7 @@ import net.nicoll.boot.config.loader.ConfigurationMetadataLoader;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
+import org.springframework.boot.configurationmetadata.Deprecation;
 
 /**
  *
@@ -82,7 +83,7 @@ public class ConfigDiffGenerator {
 		for (ConfigurationMetadataProperty leftProperty : leftProperties.values()) {
 			String id = leftProperty.getId();
 			ConfigurationMetadataProperty rightProperty = rightProperties.get(id);
-			if (rightProperty == null) {
+			if (rightProperty == null || isErrorMetadata(rightProperty) ) {
 				result.register(ConfigDiffType.DELETE, leftProperty, null);
 			}
 			else {
@@ -97,6 +98,11 @@ public class ConfigDiffGenerator {
 			}
 		}
 		return this;
+	}
+
+	private boolean isErrorMetadata(ConfigurationMetadataProperty property) {
+		return property.isDeprecated() && property.getDeprecation() != null
+				&& property.getDeprecation().getLevel() == Deprecation.Level.ERROR;
 	}
 
 	private boolean equals(ConfigurationMetadataGroup left, ConfigurationMetadataGroup right) {
