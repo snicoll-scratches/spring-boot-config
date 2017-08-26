@@ -108,7 +108,7 @@ public class DeprecatedPropertiesMetadataGenerator {
 
 		private String detectReason(ConfigurationMetadataProperty property) {
 			String id = property.getId();
-			// TODO: add reason for well knonw keys
+			// TODO: add reason for well known keys
 
 			return null;
 		}
