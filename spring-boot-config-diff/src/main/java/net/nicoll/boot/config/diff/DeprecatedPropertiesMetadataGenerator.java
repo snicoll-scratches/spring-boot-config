@@ -123,6 +123,9 @@ public class DeprecatedPropertiesMetadataGenerator {
 			if (name.startsWith("endpoints") || name.startsWith("management")) {
 				return "spring-boot-actuator";
 			}
+			if (name.startsWith("spring.devtools")) {
+				return "spring-boot-devtools";
+			}
 			return "spring-boot-autoconfigure";
 		}
 	}
