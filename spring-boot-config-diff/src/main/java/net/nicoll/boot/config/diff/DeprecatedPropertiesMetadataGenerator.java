@@ -63,7 +63,7 @@ public class DeprecatedPropertiesMetadataGenerator {
 
 
 			List<DeprecatedItem> items = deleted.stream()
-					.filter(e -> !e.getLeft().isDeprecated())
+					.filter(this::filterAlreadyDeprecatedItem)
 					.map(e -> new DeprecatedItem(e.getLeft(),
 							detectReplacement(e.getLeft()), detectReason(e.getLeft())))
 					.collect(Collectors.toList());
@@ -83,6 +83,13 @@ public class DeprecatedPropertiesMetadataGenerator {
 			}
 			return sb.toString();
 		}
+
+		private boolean filterAlreadyDeprecatedItem(
+				ConfigDiffEntry<ConfigurationMetadataProperty> entry) {
+			return !entry.getLeft().isDeprecated()
+					&& (entry.getRight() == null || !entry.getRight().isDeprecated());
+		}
+
 
 		private String detectReplacement(ConfigurationMetadataProperty property) {
 			String[] parts = property.getId().split("\\.");
