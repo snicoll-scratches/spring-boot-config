@@ -84,7 +84,7 @@ public class ConfigDiffGenerator {
 			String id = leftProperty.getId();
 			ConfigurationMetadataProperty rightProperty = rightProperties.get(id);
 			if (rightProperty == null || isErrorMetadata(rightProperty) ) {
-				result.register(ConfigDiffType.DELETE, leftProperty, null);
+				result.register(ConfigDiffType.DELETE, leftProperty, rightProperty);
 			}
 			else {
 				matches.add(id);
