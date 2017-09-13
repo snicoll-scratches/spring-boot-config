@@ -79,6 +79,7 @@ public class DeprecatedPropertiesMetadataGenerator {
 				groupItems.sort(Comparator.comparing(DeprecatedItem::getName));
 				sb.append(String.format("Add to `%s`%n%n", e.getKey()));
 				sb.append(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(groupItems));
+				//groupItems.forEach(i -> sb.append(String.format("%s%n", i.getName())));
 				sb.append(String.format("%n"));
 			}
 			return sb.toString();
