@@ -62,6 +62,7 @@ public class ConfigurationMetadataLoader {
 	private void loadAll(Consumer consumer, String version) throws IOException {
 		load(consumer, "org.springframework.boot:spring-boot:" + version, true);
 		load(consumer, "org.springframework.boot:spring-boot-actuator:" + version, true);
+		load(consumer, "org.springframework.boot:spring-boot-actuator-autoconfigure:" + version, true);
 		load(consumer, "org.springframework.boot:spring-boot-autoconfigure:" + version, true);
 		load(consumer, "org.springframework.boot:spring-boot-devtools:" + version, false);
 		load(consumer, "org.springframework.boot:spring-boot-test-autoconfigure:" + version, false);
