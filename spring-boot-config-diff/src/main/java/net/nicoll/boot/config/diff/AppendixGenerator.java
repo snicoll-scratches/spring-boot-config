@@ -3,6 +3,7 @@ package net.nicoll.boot.config.diff;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import net.nicoll.boot.config.loader.AetherDependencyResolver;
 import net.nicoll.boot.config.loader.ConfigurationMetadataLoader;
@@ -29,7 +30,9 @@ public class AppendixGenerator {
 		for (ConfigurationMetadataGroup group : groups) {
 			sb.append("# ").append(group.getId()).append(NEW_LINE);
 			List<ConfigurationMetadataProperty> properties =
-					MetadataUtils.sortProperties(group.getProperties().values());
+					MetadataUtils.sortProperties(group.getProperties().values())
+							.stream().filter(p -> !p.isDeprecated())
+							.collect(Collectors.toList());
 			for (ConfigurationMetadataProperty property : properties) {
 				sb.append(property.getId()).append("=");
 				if (property.getDefaultValue() != null) {
