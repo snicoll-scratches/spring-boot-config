@@ -1,0 +1,25 @@
+{
+  "properties": [
+    {
+      "name": "test.add",
+      "type": "java.lang.String",
+      "description": "Test add.",
+      "defaultValue": "new"
+    },
+    {
+      "name": "test.equal",
+      "type": "java.lang.String",
+      "description": "Test equality.",
+      "defaultValue": "test"
+    },
+    {
+      "name": "test.deprecate",
+      "type": "java.lang.String",
+      "description": "Test deprecate.",
+      "defaultValue": "wrong",
+      "deprecation": {
+        "level": "error"
+      }
+    }
+  ]
+}

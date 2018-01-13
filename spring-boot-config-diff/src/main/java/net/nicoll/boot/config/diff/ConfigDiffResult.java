@@ -30,7 +30,6 @@ import org.springframework.util.MultiValueMap;
  */
 public class ConfigDiffResult {
 
-
 	private final String leftVersion;
 
 	private final String rightVersion;
@@ -70,12 +69,14 @@ public class ConfigDiffResult {
 		return content;
 	}
 
-	void register(ConfigDiffType type, ConfigurationMetadataGroup left, ConfigurationMetadataGroup right) {
-		this.groups.add(type, new ConfigDiffEntry<ConfigurationMetadataGroup>(left, right));
+	void register(ConfigDiffType type, ConfigurationMetadataGroup left,
+			ConfigurationMetadataGroup right) {
+		this.groups.add(type, new ConfigDiffEntry<>(left, right));
 	}
 
-	void register(ConfigDiffType type, ConfigurationMetadataProperty left, ConfigurationMetadataProperty right) {
-		this.properties.add(type, new ConfigDiffEntry<ConfigurationMetadataProperty>(left, right));
+	void register(ConfigDiffType type, ConfigurationMetadataProperty left,
+			ConfigurationMetadataProperty right) {
+		this.properties.add(type, new ConfigDiffEntry<>(left, right));
 	}
 
 }

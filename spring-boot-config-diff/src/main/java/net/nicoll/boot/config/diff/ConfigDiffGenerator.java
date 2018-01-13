@@ -27,7 +27,6 @@ import net.nicoll.boot.config.loader.ConfigurationMetadataLoader;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
-import org.springframework.boot.configurationmetadata.Deprecation;
 
 /**
  *
@@ -37,8 +36,12 @@ public class ConfigDiffGenerator {
 
 	private final ConfigurationMetadataLoader loader;
 
+	protected ConfigDiffGenerator(ConfigurationMetadataLoader loader) {
+		this.loader = loader;
+	}
+
 	public ConfigDiffGenerator(AetherDependencyResolver dependencyResolver) {
-		this.loader = new ConfigurationMetadataLoader(dependencyResolver);
+		this(new ConfigurationMetadataLoader(dependencyResolver));
 	}
 
 	ConfigDiffResult generateDiff(String leftVersion, String rightVersion) throws IOException {
@@ -77,18 +80,23 @@ public class ConfigDiffGenerator {
 
 	protected ConfigDiffGenerator diffItem(ConfigDiffResult result,
 			ConfigurationMetadataRepository left, ConfigurationMetadataRepository right) {
-		List<String> matches = new ArrayList<String>();
+		List<String> matches = new ArrayList<>();
 		Map<String, ConfigurationMetadataProperty> leftProperties = left.getAllProperties();
 		Map<String, ConfigurationMetadataProperty> rightProperties = right.getAllProperties();
 		for (ConfigurationMetadataProperty leftProperty : leftProperties.values()) {
 			String id = leftProperty.getId();
 			ConfigurationMetadataProperty rightProperty = rightProperties.get(id);
-			if (rightProperty == null || isErrorMetadata(rightProperty) ) {
-				result.register(ConfigDiffType.DELETE, leftProperty, rightProperty);
+			if (rightProperty == null) {
+				result.register(ConfigDiffType.DELETE, leftProperty, null);
+			}
+			else if (rightProperty.isDeprecated()) {
+				matches.add(id);
+				result.register(ConfigDiffType.DEPRECATE, leftProperty, rightProperty);
 			}
 			else {
 				matches.add(id);
-				ConfigDiffType diffType = (equals(leftProperty, rightProperty) ? ConfigDiffType.EQUALS : ConfigDiffType.MODIFY);
+				ConfigDiffType diffType = (equals(leftProperty, rightProperty)
+						? ConfigDiffType.EQUALS : ConfigDiffType.MODIFY);
 				result.register(diffType, leftProperty, rightProperty);
 			}
 		}
@@ -98,11 +106,6 @@ public class ConfigDiffGenerator {
 			}
 		}
 		return this;
-	}
-
-	private boolean isErrorMetadata(ConfigurationMetadataProperty property) {
-		return property.isDeprecated() && property.getDeprecation() != null
-				&& property.getDeprecation().getLevel() == Deprecation.Level.ERROR;
 	}
 
 	private boolean equals(ConfigurationMetadataGroup left, ConfigurationMetadataGroup right) {

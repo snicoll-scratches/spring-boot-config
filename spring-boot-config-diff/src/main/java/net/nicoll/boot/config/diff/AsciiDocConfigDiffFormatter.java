@@ -32,7 +32,7 @@ import org.springframework.boot.configurationmetadata.Deprecation;
 public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 
 	@Override
-	public String formatDiff(ConfigDiffResult result) throws IOException {
+	public String formatDiff(ConfigDiffResult result) {
 		StringBuilder out = new StringBuilder();
 		out.append("Configuration properties change between `").append(result.getLeftVersion())
 				.append("` and `").append(result.getRightVersion()).append("`").append(NEW_LINE);
@@ -50,7 +50,7 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 
 	private void appendDeprecatedProperties(StringBuilder out, ConfigDiffResult result) {
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties =
-				sortProperties(result.getPropertiesDiffFor(ConfigDiffType.EQUALS), true);
+				sortProperties(result.getPropertiesDiffFor(ConfigDiffType.DEPRECATE), false);
 		out.append("|======================").append(NEW_LINE);
 		out.append("|Key  |Replacement |Reason").append(NEW_LINE);
 		properties.stream().filter(this::isDeprecatedInRelease).forEach(diff -> {
@@ -71,9 +71,7 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 
 	private boolean isDeprecatedInRelease(
 			ConfigDiffEntry<ConfigurationMetadataProperty> diff) {
-		return !diff.getLeft().isDeprecated()
-				&& diff.getRight().isDeprecated()
-				&& Deprecation.Level.ERROR != diff.getRight().getDeprecation().getLevel();
+		return Deprecation.Level.ERROR != diff.getRight().getDeprecation().getLevel();
 	}
 
 	private void appendProperties(StringBuilder out, ConfigDiffResult result, boolean added) {

@@ -22,11 +22,30 @@ package net.nicoll.boot.config.diff;
  */
 public enum ConfigDiffType {
 
+	/**
+	 * The entry hasn't changed.
+	 */
 	EQUALS,
 
+	/**
+	 * The entry has been added.
+	 */
 	ADD,
 
+	/**
+	 * The entry has been modified.
+	 */
 	MODIFY,
 
+	/**
+	 * The entry has been made deprecated. It may or may not still exist in the
+	 * previous version.
+	 */
+	DEPRECATE,
+
+	/**
+	 * The entry does has been removed.
+	 */
 	DELETE
+
 }
