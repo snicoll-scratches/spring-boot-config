@@ -21,7 +21,7 @@ import org.springframework.boot.configurationmetadata.Deprecation;
 public class DeprecatedPropertiesRepository {
 
 	public static void main(String[] args) throws Exception {
-		String previous = "1.5.8.RELEASE";
+		String previous = "1.5.9.RELEASE";
 		String current = "2.0.0.BUILD-SNAPSHOT";
 
 		AetherDependencyResolver dependencyResolver = AetherDependencyResolver
