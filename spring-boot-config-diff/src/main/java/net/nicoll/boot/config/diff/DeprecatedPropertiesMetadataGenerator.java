@@ -21,8 +21,8 @@ import org.springframework.util.MultiValueMap;
  * allows to use the new deprecation level feature that allows to flag removed properties
  * for IDE inspection.
  * <p>
- * The generator does not try to guess what the replacement could be (the algorithm
- * would be fussy anyway). This generated list must be reviewed to add replacement keys.
+ * This generator tries to guess what the replacement could be using an approximate
+ * algorithm so that the generated list must be reviewed manually.
  *
  * @author Stephane Nicoll
  */
