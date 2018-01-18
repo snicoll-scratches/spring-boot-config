@@ -23,6 +23,7 @@
         <module>spring-boot-config-metadata</module>
         <module>spring-boot-config-samples</module>
         <module>spring-boot-config-validation</module>
+		<module>spring-boot-config-validator</module>
     </modules>
 
     <dependencyManagement>

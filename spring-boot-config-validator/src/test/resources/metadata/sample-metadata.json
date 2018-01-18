@@ -1,0 +1,29 @@
+{
+  "properties": [
+    {
+      "name": "test.two",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "wrong.one",
+      "deprecation": {
+        "reason": "This is no longer supported.",
+        "level": "error"
+      }
+    },
+    {
+      "name": "wrong.two",
+      "deprecation": {
+        "replacement": "test.two",
+        "level": "error"
+      }
+    },
+    {
+      "name": "wrong.three",
+      "deprecation": {
+        "reason": "Do not use this.",
+        "level": "error"
+      }
+    }
+  ]
+}
