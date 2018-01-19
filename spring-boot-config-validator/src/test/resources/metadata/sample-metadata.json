@@ -5,6 +5,10 @@
       "type": "java.lang.String"
     },
     {
+      "name": "test.four",
+      "type": "java.lang.Map<java.lang.String,java.lang.String>"
+    },
+    {
       "name": "wrong.one",
       "deprecation": {
         "reason": "This is no longer supported.",
@@ -13,6 +17,7 @@
     },
     {
       "name": "wrong.two",
+      "type": "java.lang.String",
       "deprecation": {
         "replacement": "test.two",
         "level": "error"
@@ -22,6 +27,13 @@
       "name": "wrong.three",
       "deprecation": {
         "reason": "Do not use this.",
+        "level": "error"
+      }
+    },
+    {
+      "name": "wrong.four.test",
+      "deprecation": {
+        "replacement": "test.four.test",
         "level": "error"
       }
     }

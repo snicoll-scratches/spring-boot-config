@@ -10,7 +10,6 @@ import org.apache.commons.logging.LogFactory;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepositoryJsonBuilder;
-import org.springframework.boot.configurationmetadata.Deprecation;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -19,26 +18,24 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 /**
  * An {@link ApplicationListener} that inspects the {@link ConfigurableEnvironment
- * environment} for configuration keys that are no longer managed by Spring Boot.
+ * environment} for legacy configuration keys.
  *
  * @author Stephane Nicoll
  * @since 2.0.0
  */
-public class ConfigurationValidatorListener
+public class LegacyPropertiesAnalyzerListener
 		implements ApplicationListener<ApplicationPreparedEvent> {
 
-	private static final Log logger = LogFactory.getLog(ConfigurationValidatorListener.class);
+	private static final Log logger = LogFactory.getLog(LegacyPropertiesAnalyzerListener.class);
 
 	@Override
 	public void onApplicationEvent(ApplicationPreparedEvent event) {
 		ConfigurationMetadataRepository repository = loadRepository();
 		ConfigurableEnvironment environment =
 				event.getApplicationContext().getEnvironment();
-		ConfigurationPropertiesAnalyzer validator = new ConfigurationPropertiesAnalyzer(
+		LegacyPropertiesAnalyzer validator = new LegacyPropertiesAnalyzer(
 				repository, environment);
-		String report = validator.createMatchingPropertiesReport(p ->
-				p.getDeprecation() != null
-						&& p.getDeprecation().getLevel() == Deprecation.Level.ERROR);
+		String report = validator.analyseAndCreateReport();
 		if (report != null) {
 			logger.error(report);
 		}
