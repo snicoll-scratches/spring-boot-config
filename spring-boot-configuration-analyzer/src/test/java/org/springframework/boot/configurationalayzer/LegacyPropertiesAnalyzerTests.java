@@ -1,4 +1,4 @@
-package net.nicoll.boot.config.validator;
+package org.springframework.boot.configurationalayzer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import org.springframework.boot.configurationalayzer.LegacyPropertiesAnalyzer;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepositoryJsonBuilder;
 import org.springframework.boot.configurationmetadata.SimpleConfigurationMetadataRepository;

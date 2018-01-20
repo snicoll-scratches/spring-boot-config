@@ -1,4 +1,4 @@
-package net.nicoll.boot.config.validator;
+package org.springframework.boot.configurationalayzer;
 
 import java.io.IOException;
 import java.io.InputStream;

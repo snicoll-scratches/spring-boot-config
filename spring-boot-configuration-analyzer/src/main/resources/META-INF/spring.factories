@@ -1,1 +1,1 @@
-org.springframework.context.ApplicationListener=net.nicoll.boot.config.validator.LegacyPropertiesAnalyzerListener
+org.springframework.context.ApplicationListener=org.springframework.boot.configurationalayzer.LegacyPropertiesAnalyzerListener
