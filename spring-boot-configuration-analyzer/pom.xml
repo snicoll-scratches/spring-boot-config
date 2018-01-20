@@ -8,8 +8,9 @@
 		<artifactId>spring-boot-config</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>spring-boot-config-validator</artifactId>
-	<name>Spring Boot Config :: Validator</name>
+	<artifactId>spring-boot-configuration-analyzer</artifactId>
+	<name>Spring Boot Configuration Analyzer</name>
+	<description>Spring Boot Configuration Analyzer</description>
 
 	<properties>
 		<spring.boot.version>2.0.0.M7</spring.boot.version>
