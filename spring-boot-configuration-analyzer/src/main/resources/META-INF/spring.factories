@@ -1,1 +1,2 @@
-org.springframework.context.ApplicationListener=org.springframework.boot.configurationalayzer.LegacyPropertiesAnalyzerListener
+org.springframework.context.ApplicationListener=\
+org.springframework.boot.configurationalayzer.LegacyPropertiesAnalyzerListener
