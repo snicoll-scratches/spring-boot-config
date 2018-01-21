@@ -47,8 +47,8 @@ public class LegacyPropertiesAnalyzerTests {
 		assertThat(propertySources).hasSize(3);
 		createReport(loadRepository("metadata/sample-metadata.json"));
 		assertThat(mapToNames(propertySources)).containsExactly("one",
-				"two-auto-migration", "two", "mockProperties");
-		assertMappedProperty(propertySources.get("two-auto-migration"),
+				"migrate-two", "two", "mockProperties");
+		assertMappedProperty(propertySources.get("migrate-two"),
 				"test.two", "another", getOrigin(two, "wrong.two"));
 	}
 
@@ -62,7 +62,7 @@ public class LegacyPropertiesAnalyzerTests {
 				"line 000 wrong.one", "line 003 wrong.two");
 		assertThat(report).contains("wrong.one - reason: This is no longer supported.");
 		assertThat(report).contains("wrong.two -> test.two");
-		System.out.println(report);
+		System.out.println(report); // TODO
 	}
 
 	private List<String> mapToNames(PropertySources sources) {

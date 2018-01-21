@@ -141,7 +141,7 @@ class LegacyPropertiesAnalyzer {
 		if (matches.isEmpty()) {
 			return null;
 		}
-		String target = name + "-auto-migration";
+		String target = "migrate-" + name;
 		Map<String, OriginTrackedValue> content = new LinkedHashMap<>();
 		for (LegacyProperty candidate : matches) {
 			OriginTrackedValue value = OriginTrackedValue.of(
