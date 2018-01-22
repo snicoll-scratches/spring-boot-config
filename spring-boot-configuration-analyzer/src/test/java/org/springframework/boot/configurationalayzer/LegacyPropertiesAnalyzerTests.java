@@ -12,6 +12,7 @@ import org.springframework.boot.configurationmetadata.SimpleConfigurationMetadat
 import org.springframework.boot.env.PropertiesPropertySourceLoader;
 import org.springframework.boot.origin.Origin;
 import org.springframework.boot.origin.OriginLookup;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.PropertySources;
@@ -28,7 +29,7 @@ import static org.assertj.core.api.Assertions.*;
  */
 public class LegacyPropertiesAnalyzerTests {
 
-	private final MockEnvironment environment = new MockEnvironment();
+	private ConfigurableEnvironment environment = new MockEnvironment();
 
 	@Test
 	public void reportIsNullWithNoMatchingKeys() {
@@ -63,7 +64,7 @@ public class LegacyPropertiesAnalyzerTests {
 		String report = createWarningReport(loadRepository(
 				"metadata/sample-metadata.json"));
 		assertThat(report).isNotNull();
-		assertThat(report).containsSequence("Property source 'test'",
+		assertThat(report).containsSubsequence("Property source 'test'",
 				"wrong.four.test", "Line: 5", "test.four.test",
 				"wrong.two", "Line: 2", "test.two");
 		assertThat(report).doesNotContain("wrong.one");
@@ -78,7 +79,7 @@ public class LegacyPropertiesAnalyzerTests {
 		String report = createErrorReport(loadRepository(
 				"metadata/sample-metadata.json"));
 		assertThat(report).isNotNull();
-		assertThat(report).containsSequence("Property source 'test2'",
+		assertThat(report).containsSubsequence("Property source 'test2'",
 				"wrong.one", "Line: 2", "This is no longer supported.");
 		assertThat(report).doesNotContain("wrong.four.test")
 				.doesNotContain("wrong.two");
@@ -93,10 +94,10 @@ public class LegacyPropertiesAnalyzerTests {
 		String report = createErrorReport(loadRepository(
 				"metadata/sample-metadata.json"));
 		assertThat(report).isNotNull();
-		assertThat(report).containsSequence(
+		assertThat(report).containsSubsequence(
 				"Property source 'first'", "wrong.three", "Line: 6", "none",
-				"Property source 'second'","wrong.one", "Line: 2",
-				"This is no longer supported." );
+				"Property source 'second'", "wrong.one", "Line: 2",
+				"This is no longer supported.");
 		assertThat(report).doesNotContain("null").doesNotContain("server.port")
 				.doesNotContain("debug");
 	}
@@ -149,17 +150,13 @@ public class LegacyPropertiesAnalyzerTests {
 	}
 
 	private String createWarningReport(ConfigurationMetadataRepository repository) {
-		String report = createAnalyzer(repository).analyseLegacyProperties()
+		return createAnalyzer(repository).analyseLegacyProperties()
 				.createWarningReport();
-		System.out.println(report); // TODO
-		return report;
 	}
 
 	private String createErrorReport(ConfigurationMetadataRepository repository) {
-		String report = createAnalyzer(repository).analyseLegacyProperties()
+		return createAnalyzer(repository).analyseLegacyProperties()
 				.createErrorReport();
-		System.out.println(report); // TODO
-		return report;
 	}
 
 	private LegacyPropertiesAnalyzer createAnalyzer(

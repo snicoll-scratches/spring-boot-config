@@ -21,7 +21,8 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 /**
  * An {@link ApplicationListener} that inspects the {@link ConfigurableEnvironment
- * environment} for legacy configuration keys.
+ * environment} for legacy configuration keys. Automatically renames the keys that
+ * have a matching replacement and log a report of what  was discovered.
  *
  * @author Stephane Nicoll
  * @since 2.0.0

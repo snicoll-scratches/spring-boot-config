@@ -52,6 +52,7 @@ class LegacyProperty {
 		return this.lineNumber;
 	}
 
+
 	private static class LegacyPropertyComparator implements Comparator<LegacyProperty> {
 
 		@Override

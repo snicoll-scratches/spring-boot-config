@@ -39,6 +39,11 @@ class LegacyPropertiesAnalyzer {
 		this.environment = environment;
 	}
 
+	/**
+	 * Analyse the {@link ConfigurableEnvironment environment} and attempt to rename
+	 * legacy properties if a replacement exists.
+	 * @return the analysis
+	 */
 	public LegacyPropertiesAnalysis analyseLegacyProperties() {
 		LegacyPropertiesAnalysis analysis = new LegacyPropertiesAnalysis();
 		Map<String, List<LegacyProperty>> properties = getMatchingProperties(deprecatedFilter());
@@ -142,7 +147,7 @@ class LegacyPropertiesAnalyzer {
 		if (source.getUnderlyingSource() instanceof PropertySource) {
 			return ((PropertySource) source.getUnderlyingSource()).getName();
 		}
-		return source.getUnderlyingSource().toString(); // YOLO
+		return source.getUnderlyingSource().toString();
 	}
 
 }

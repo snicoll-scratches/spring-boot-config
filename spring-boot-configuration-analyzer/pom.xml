@@ -13,7 +13,7 @@
 	<description>Spring Boot Configuration Analyzer</description>
 
 	<properties>
-		<spring.boot.version>2.0.0.M7</spring.boot.version>
+		<spring.boot.version>2.0.0.BUILD-SNAPSHOT</spring.boot.version>
 	</properties>
 
 	<dependencies>
