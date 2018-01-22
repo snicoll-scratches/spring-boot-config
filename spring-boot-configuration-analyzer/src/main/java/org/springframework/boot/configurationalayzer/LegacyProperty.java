@@ -34,7 +34,7 @@ class LegacyProperty {
 		if (origin instanceof TextResourceOrigin) {
 			TextResourceOrigin textOrigin = (TextResourceOrigin) origin;
 			if (textOrigin.getLocation() != null) {
-				return textOrigin.getLocation().getLine() + 1; //TODO
+				return textOrigin.getLocation().getLine() + 1;
 			}
 		}
 		return null;
