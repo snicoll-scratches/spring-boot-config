@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import org.springframework.boot.configurationalayzer.LegacyPropertiesAnalyzer;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepositoryJsonBuilder;
 import org.springframework.boot.configurationmetadata.SimpleConfigurationMetadataRepository;
@@ -33,19 +32,22 @@ public class LegacyPropertiesAnalyzerTests {
 
 	@Test
 	public void reportIsNullWithNoMatchingKeys() {
-		String report = createReport(new SimpleConfigurationMetadataRepository());
+		String report = createWarningReport(new SimpleConfigurationMetadataRepository());
 		assertThat(report).isNull();
 	}
 
 	@Test
 	public void replacementKeysAreRemapped() throws IOException {
 		MutablePropertySources propertySources = this.environment.getPropertySources();
-		PropertySource<?> one = loadPropertySource("one", "config/config-one.properties");
-		PropertySource<?> two = loadPropertySource("two", "config/config-two.properties");
+		PropertySource<?> one = loadPropertySource("one",
+				"config/config-error.properties");
+		PropertySource<?> two = loadPropertySource("two",
+				"config/config-warnings.properties");
 		propertySources.addFirst(one);
 		propertySources.addAfter("one", two);
 		assertThat(propertySources).hasSize(3);
-		createReport(loadRepository("metadata/sample-metadata.json"));
+		createAnalyzer(loadRepository("metadata/sample-metadata.json"))
+				.analyseLegacyProperties();
 		assertThat(mapToNames(propertySources)).containsExactly("one",
 				"migrate-two", "two", "mockProperties");
 		assertMappedProperty(propertySources.get("migrate-two"),
@@ -53,16 +55,50 @@ public class LegacyPropertiesAnalyzerTests {
 	}
 
 	@Test
-	public void reportWithOrigin() throws IOException {
+	public void warningReport() throws IOException {
 		this.environment.getPropertySources().addFirst(loadPropertySource("test",
-				"config/sample-error.properties"));
-		String report = createReport(loadRepository("metadata/sample-metadata.json"));
+				"config/config-warnings.properties"));
+		this.environment.getPropertySources().addFirst(loadPropertySource("ignore",
+				"config/config-error.properties"));
+		String report = createWarningReport(loadRepository(
+				"metadata/sample-metadata.json"));
 		assertThat(report).isNotNull();
 		assertThat(report).containsSequence("Property source 'test'",
-				"line 000 wrong.one", "line 003 wrong.two");
-		assertThat(report).contains("wrong.one - reason: This is no longer supported.");
-		assertThat(report).contains("wrong.two -> test.two");
-		System.out.println(report); // TODO
+				"wrong.four.test", "Line: 5", "test.four.test",
+				"wrong.two", "Line: 2", "test.two");
+		assertThat(report).doesNotContain("wrong.one");
+	}
+
+	@Test
+	public void errorReport() throws IOException {
+		this.environment.getPropertySources().addFirst(loadPropertySource("test1",
+				"config/config-warnings.properties"));
+		this.environment.getPropertySources().addFirst(loadPropertySource("test2",
+				"config/config-error.properties"));
+		String report = createErrorReport(loadRepository(
+				"metadata/sample-metadata.json"));
+		assertThat(report).isNotNull();
+		assertThat(report).containsSequence("Property source 'test2'",
+				"wrong.one", "Line: 2", "This is no longer supported.");
+		assertThat(report).doesNotContain("wrong.four.test")
+				.doesNotContain("wrong.two");
+	}
+
+	@Test
+	public void errorReportNoReplacement() throws IOException {
+		this.environment.getPropertySources().addFirst(loadPropertySource("first",
+				"config/config-error-no-replacement.properties"));
+		this.environment.getPropertySources().addFirst(loadPropertySource("second",
+				"config/config-error.properties"));
+		String report = createErrorReport(loadRepository(
+				"metadata/sample-metadata.json"));
+		assertThat(report).isNotNull();
+		assertThat(report).containsSequence(
+				"Property source 'first'", "wrong.three", "Line: 6", "none",
+				"Property source 'second'","wrong.one", "Line: 2",
+				"This is no longer supported." );
+		assertThat(report).doesNotContain("null").doesNotContain("server.port")
+				.doesNotContain("debug");
 	}
 
 	private List<String> mapToNames(PropertySources sources) {
@@ -78,7 +114,8 @@ public class LegacyPropertiesAnalyzerTests {
 		return ((OriginLookup<String>) propertySource).getOrigin(name);
 	}
 
-	private void assertMappedProperty(PropertySource<?> propertySource, String name, Object value, Origin origin) {
+	private void assertMappedProperty(PropertySource<?> propertySource, String name,
+			Object value, Origin origin) {
 		assertThat(propertySource.containsProperty(name)).isTrue();
 		assertThat(propertySource.getProperty(name)).isEqualTo(value);
 		if (origin != null) {
@@ -111,9 +148,23 @@ public class LegacyPropertiesAnalyzerTests {
 		}
 	}
 
-	private String createReport(ConfigurationMetadataRepository repository) {
-		return new LegacyPropertiesAnalyzer(repository, this.environment)
-				.analyseAndCreateReport();
+	private String createWarningReport(ConfigurationMetadataRepository repository) {
+		String report = createAnalyzer(repository).analyseLegacyProperties()
+				.createWarningReport();
+		System.out.println(report); // TODO
+		return report;
+	}
+
+	private String createErrorReport(ConfigurationMetadataRepository repository) {
+		String report = createAnalyzer(repository).analyseLegacyProperties()
+				.createErrorReport();
+		System.out.println(report); // TODO
+		return report;
+	}
+
+	private LegacyPropertiesAnalyzer createAnalyzer(
+			ConfigurationMetadataRepository repository) {
+		return new LegacyPropertiesAnalyzer(repository, this.environment);
 	}
 
 }

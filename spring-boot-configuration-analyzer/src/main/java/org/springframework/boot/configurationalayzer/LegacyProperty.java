@@ -34,7 +34,7 @@ class LegacyProperty {
 		if (origin instanceof TextResourceOrigin) {
 			TextResourceOrigin textOrigin = (TextResourceOrigin) origin;
 			if (textOrigin.getLocation() != null) {
-				return textOrigin.getLocation().getLine();
+				return textOrigin.getLocation().getLine() + 1; //TODO
 			}
 		}
 		return null;
@@ -56,9 +56,6 @@ class LegacyProperty {
 
 		@Override
 		public int compare(LegacyProperty p1, LegacyProperty p2) {
-			if (p1.getLineNumber() != null && p2.getLineNumber() != null) {
-				return p1.getLineNumber().compareTo(p2.getLineNumber());
-			}
 			return p1.getMetadata().getId().compareTo(p2.getMetadata().getId());
 		}
 	}

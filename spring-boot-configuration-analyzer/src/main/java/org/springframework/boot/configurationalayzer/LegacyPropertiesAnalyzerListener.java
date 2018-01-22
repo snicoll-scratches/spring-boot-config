@@ -10,7 +10,10 @@ import org.apache.commons.logging.LogFactory;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepositoryJsonBuilder;
+import org.springframework.boot.context.event.ApplicationFailedEvent;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.event.SpringApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.io.Resource;
@@ -24,24 +27,47 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
  * @since 2.0.0
  */
 public class LegacyPropertiesAnalyzerListener
-		implements ApplicationListener<ApplicationPreparedEvent> {
+		implements ApplicationListener<SpringApplicationEvent> {
 
 	private static final Log logger = LogFactory.getLog(LegacyPropertiesAnalyzerListener.class);
 
+	private LegacyPropertiesAnalysis analysis;
+
+	private boolean analysisLogged;
+
 	@Override
-	public void onApplicationEvent(ApplicationPreparedEvent event) {
+	public void onApplicationEvent(SpringApplicationEvent event) {
+		if (event instanceof ApplicationPreparedEvent) {
+			onApplicationPreparedEvent((ApplicationPreparedEvent) event);
+		}
+		if (event instanceof ApplicationReadyEvent
+				|| event instanceof ApplicationFailedEvent) {
+			logLegacyPropertiesAnalysis();
+		}
+	}
+
+	private void onApplicationPreparedEvent(ApplicationPreparedEvent event) {
 		ConfigurationMetadataRepository repository = loadRepository();
 		ConfigurableEnvironment environment =
 				event.getApplicationContext().getEnvironment();
 		LegacyPropertiesAnalyzer validator = new LegacyPropertiesAnalyzer(
 				repository, environment);
-		String report = validator.analyseAndCreateReport();
-		if (report != null) {
-			logger.error(report);
+		this.analysis = validator.analyseLegacyProperties();
+	}
+
+	private void logLegacyPropertiesAnalysis() {
+		if (this.analysis == null || this.analysisLogged) {
+			return;
 		}
-		else {
-			logger.info("No error found in the environment");
+		String warningReport = this.analysis.createWarningReport();
+		String errorReport = this.analysis.createErrorReport();
+		if (warningReport != null) {
+			logger.warn(warningReport);
 		}
+		if (errorReport != null) {
+			logger.error(errorReport);
+		}
+		this.analysisLogged = true;
 	}
 
 	private ConfigurationMetadataRepository loadRepository() {

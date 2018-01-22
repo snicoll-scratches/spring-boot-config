@@ -6,7 +6,7 @@
     },
     {
       "name": "test.four",
-      "type": "java.lang.Map<java.lang.String,java.lang.String>"
+      "type": "java.util.Map<java.lang.String,java.lang.String>"
     },
     {
       "name": "wrong.one",
@@ -26,12 +26,12 @@
     {
       "name": "wrong.three",
       "deprecation": {
-        "reason": "Do not use this.",
         "level": "error"
       }
     },
     {
       "name": "wrong.four.test",
+      "type": "java.lang.String",
       "deprecation": {
         "replacement": "test.four.test",
         "level": "error"
