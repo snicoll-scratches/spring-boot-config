@@ -20,18 +20,6 @@ class LegacyPropertiesAnalysis {
 
 	private final Map<String, PropertySourceAnalysis> content = new LinkedHashMap<>();
 
-	public boolean isEmpty() {
-		for (Map.Entry<String, PropertySourceAnalysis> entry : this.content.entrySet()) {
-			if (!entry.getValue().handledProperties.isEmpty()) {
-				return false;
-			}
-			if (!entry.getValue().notHandledProperties.isEmpty()) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	/**
 	 * Create a report for all the legacy properties that were automatically renamed. If
 	 * no such legacy properties were found, return {@code null}.
@@ -104,6 +92,12 @@ class LegacyPropertiesAnalysis {
 		});
 	}
 
+	/**
+	 * Register a new property source.
+	 * @param name the name of the property source
+	 * @param handledProperties the properties that were renamed
+	 * @param notHandledProperties the properties that are no longer supported
+	 */
 	void register(String name, List<LegacyProperty> handledProperties,
 			List<LegacyProperty> notHandledProperties) {
 		List<LegacyProperty> handled = (handledProperties != null
@@ -112,6 +106,7 @@ class LegacyPropertiesAnalysis {
 				? new ArrayList<>(notHandledProperties) : Collections.emptyList());
 		this.content.put(name, new PropertySourceAnalysis(handled, notHandled));
 	}
+
 
 	private static class PropertySourceAnalysis {
 
@@ -126,4 +121,5 @@ class LegacyPropertiesAnalysis {
 		}
 
 	}
+
 }
