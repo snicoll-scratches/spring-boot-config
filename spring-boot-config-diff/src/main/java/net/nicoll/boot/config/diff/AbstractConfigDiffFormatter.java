@@ -26,7 +26,8 @@ import net.nicoll.boot.metadata.MetadataUtils;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 
-public abstract class AbstractConfigDiffFormatter extends AbstractMetadataFormatter implements ConfigDiffFormatter {
+public abstract class AbstractConfigDiffFormatter
+		extends AbstractMetadataFormatter implements ConfigDiffFormatter {
 
 
 	protected List<ConfigDiffEntry<ConfigurationMetadataGroup>> sortGroups(

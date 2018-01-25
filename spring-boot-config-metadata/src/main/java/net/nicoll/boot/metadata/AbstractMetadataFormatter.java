@@ -27,8 +27,6 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataPrope
  */
 public abstract class AbstractMetadataFormatter {
 
-	protected static final String NEW_LINE = System.getProperty("line.separator");
-
 	protected List<ConfigurationMetadataGroup> sortGroups(Collection<ConfigurationMetadataGroup> groups) {
 		return MetadataUtils.sortGroups(groups);
 	}

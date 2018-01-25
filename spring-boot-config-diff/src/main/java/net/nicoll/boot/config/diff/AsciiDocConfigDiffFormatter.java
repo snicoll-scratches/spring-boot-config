@@ -34,16 +34,16 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 	@Override
 	public String formatDiff(ConfigDiffResult result) {
 		StringBuilder out = new StringBuilder();
-		out.append("Configuration properties change between `").append(result.getLeftVersion())
-				.append("` and `").append(result.getRightVersion()).append("`").append(NEW_LINE);
-		out.append(NEW_LINE);
-		out.append(".Deprecated keys in `").append(result.getRightVersion()).append("`").append(NEW_LINE);
+		out.append(String.format("Configuration properties change between `%s` and "
+				+ "`%s`%n", result.getLeftVersion(), result.getRightVersion()));
+		out.append(System.lineSeparator());
+		out.append(String.format(".Deprecated keys in `%s`%n",result.getRightVersion()));
 		appendDeprecatedProperties(out, result);
-		out.append(NEW_LINE);
-		out.append(".New keys in `").append(result.getRightVersion()).append("`").append(NEW_LINE);
+		out.append(System.lineSeparator());
+		out.append(String.format(".New keys in `%s`%n",result.getRightVersion()));
 		appendProperties(out, result, true);
-		out.append(NEW_LINE);
-		out.append(".Removed keys in `").append(result.getRightVersion()).append("`").append(NEW_LINE);
+		out.append(System.lineSeparator());
+		out.append(String.format(".Removed keys in `%s``n", result.getRightVersion()));
 		appendProperties(out, result, false);
 		return out.toString();
 	}
@@ -51,8 +51,8 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 	private void appendDeprecatedProperties(StringBuilder out, ConfigDiffResult result) {
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties =
 				sortProperties(result.getPropertiesDiffFor(ConfigDiffType.DEPRECATE), false);
-		out.append("|======================").append(NEW_LINE);
-		out.append("|Key  |Replacement |Reason").append(NEW_LINE);
+		out.append(String.format("|======================%n"));
+		out.append(String.format("|Key  |Replacement |Reason%n"));
 		properties.stream().filter(this::isDeprecatedInRelease).forEach(diff -> {
 			ConfigurationMetadataProperty property = diff.getRight();
 			Deprecation deprecation = property.getDeprecation();
@@ -64,9 +64,9 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 			if (deprecation.getReason() != null) {
 				out.append(deprecation.getReason());
 			}
-			out.append(NEW_LINE);
+			out.append(System.lineSeparator());
 		});
-		out.append("|======================").append(NEW_LINE);
+		out.append(String.format("|======================%n"));
 	}
 
 	private boolean isDeprecatedInRelease(
@@ -77,8 +77,8 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 	private void appendProperties(StringBuilder out, ConfigDiffResult result, boolean added) {
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = sortProperties(
 				result.getPropertiesDiffFor(added ? ConfigDiffType.ADD : ConfigDiffType.DELETE), !added);
-		out.append("|======================").append(NEW_LINE);
-		out.append("|Key  |Default value |Description").append(NEW_LINE);
+		out.append(String.format("|======================%n"));
+		out.append(String.format("|Key  |Default value |Description%n"));
 		properties.stream()
 				.filter(diff -> (!added || !diff.getRight().isDeprecated())).forEach(diff -> {
 			ConfigurationMetadataProperty property = (added ? diff.getRight() : diff.getLeft());
@@ -92,8 +92,8 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 			if (property.getDescription() != null) {
 				out.append(property.getShortDescription());
 			}
-			out.append(NEW_LINE);
+			out.append(System.lineSeparator());
 		});
-		out.append("|======================").append(NEW_LINE);
+		out.append(String.format("|======================%n"));
 	}
 }

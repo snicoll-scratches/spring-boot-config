@@ -35,16 +35,16 @@ public class ConsoleMetadataFormatter extends AbstractMetadataFormatter implemen
 		StringBuilder out = new StringBuilder();
 		List<ConfigurationMetadataGroup> groups = sortGroups(repository.getAllGroups().values());
 		for (ConfigurationMetadataGroup group : groups) {
-			out.append("========================================").append(NEW_LINE);
+			out.append(String.format("========================================%n"));
 			StringBuilder sb = new StringBuilder();
 			for (ConfigurationMetadataSource source : group.getSources().values()) {
 				sb.append(source.getType()).append(" ");
 			}
-			out.append("Group --- ").append(group.getId()).append("(").append(sb.toString().trim()).append(")")
-					.append(NEW_LINE).append("========================================").append(NEW_LINE);
+			out.append(String.format("Group --- %s(%s)%n",group.getId(), sb.toString().trim()));
+			out.append(String.format("========================================%n"));
 			List<ConfigurationMetadataProperty> properties = sortProperties(group.getProperties().values());
 			for (ConfigurationMetadataProperty property : properties) {
-				out.append(formatProperty(property)).append(NEW_LINE);
+				out.append(formatProperty(property)).append(System.lineSeparator());
 			}
 		}
 		return out.toString();

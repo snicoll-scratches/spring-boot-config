@@ -26,7 +26,8 @@ import org.springframework.util.StringUtils;
  *
  * @author Stephane Nicoll
  */
-public class MetadataHintFormatter extends AbstractMetadataFormatter implements MetadataFormatter {
+public class MetadataHintFormatter
+		extends AbstractMetadataFormatter implements MetadataFormatter {
 
 	@Override
 	public String formatMetadata(ConfigurationMetadataRepository repository) throws IOException {
@@ -34,7 +35,8 @@ public class MetadataHintFormatter extends AbstractMetadataFormatter implements 
 		for (ConfigurationMetadataProperty property : repository.getAllProperties().values()) {
 			if (hasDocumentationHints(property)) {
 				out.append("Hints - ").append(property.getId()).append(" (")
-						.append(property.getDescription()).append(")").append(NEW_LINE);
+						.append(property.getDescription()).append(")")
+						.append(System.lineSeparator());
 			}
 		}
 		return out.toString();
