@@ -25,9 +25,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.bind.RelaxedNames;
-import org.springframework.boot.configurationprocessor.metadata.ConfigurationMetadata;
-import org.springframework.boot.configurationprocessor.metadata.ItemDeprecation;
-import org.springframework.boot.configurationprocessor.metadata.ItemMetadata;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
+import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
+import org.springframework.boot.configurationmetadata.Deprecation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
@@ -41,22 +42,16 @@ public class ConfigurationValidator implements CommandLineRunner {
 	private Properties advertizedProperties;
 
 	@Autowired
-	private ConfigurationMetadata configurationMetadata;
+	private ConfigurationMetadataRepository configurationMetadataRepository;
 
-	private final Map<String, List<ItemMetadata>> items = new HashMap<>();
+	private Map<String, ConfigurationMetadataProperty> items = new HashMap<>();
 
-	private final Map<String, List<ItemMetadata>> groups = new HashMap<>();
+	private Map<String, ConfigurationMetadataGroup> groups = new HashMap<>();
 
 	@PostConstruct
 	public void initialize() {
-		for (ItemMetadata item : configurationMetadata.getItems()) {
-			Map<String, List<ItemMetadata>> mapToUse =
-					(item.isOfItemType(ItemMetadata.ItemType.PROPERTY)
-							? this.items : this.groups);
-			List<ItemMetadata> list = mapToUse.computeIfAbsent(
-					item.getName(), k -> new ArrayList<>());
-			list.add(item);
-		}
+		this.items = this.configurationMetadataRepository.getAllProperties();
+		this.groups = this.configurationMetadataRepository.getAllGroups();
 	}
 
 
@@ -88,8 +83,8 @@ public class ConfigurationValidator implements CommandLineRunner {
 		for (String key : this.items.keySet()) {
 			if (!found.contains(key)) {
 				String value = key;
-				List<ItemMetadata> candidates = this.items.get(key);
-				ItemDeprecation deprecation = candidates.get(0).getDeprecation();
+				ConfigurationMetadataProperty candidate = this.items.get(key);
+				Deprecation deprecation = candidate.getDeprecation();
 				if (deprecation != null) {
 					value += " (deprecated";
 					if (deprecation.getReplacement() != null) {
@@ -120,12 +115,12 @@ public class ConfigurationValidator implements CommandLineRunner {
 			}
 		}
 		groups.keySet().forEach(item -> unresolved.remove(item + ".*"));
-		
+
 
 		StringBuilder sb = new StringBuilder("\n");
 		sb.append("Configuration key statistics").append("\n");
 		sb.append("Advertized keys: ").append(advertizedProperties.size()).append("\n");
-		sb.append("Repository items: ").append(configurationMetadata.getItems().size()).append("\n");
+		sb.append("Repository items: ").append(this.items.size()).append("\n");
 		sb.append("Matching items: ").append(found.size()).append("\n");
 		sb.append("Unresolved items (found in documentation but not in generated metadata): ").append(unresolved.size()).append("\n");
 		sb.append("Groups (group defined in the documentation but not each individual elements): ").append(groups.size()).append("\n");
@@ -187,10 +182,10 @@ public class ConfigurationValidator implements CommandLineRunner {
 
 
 	@Bean
-	public ConfigurationMetadata configurationMetadata() throws Exception {
+	public ConfigurationMetadataRepository configurationMetadataRepository() throws Exception {
 		ConfigurationMetadataLoader loader =
 				new ConfigurationMetadataLoader(AetherDependencyResolver.withAllRepositories());
-		return loader.loadConfigurationMetadata("2.0.0.BUILD-SNAPSHOT");
+		return loader.loadRepository("2.0.0.BUILD-SNAPSHOT");
 	}
 
 	@Bean
