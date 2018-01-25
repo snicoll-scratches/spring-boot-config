@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepositoryJsonBuilder;
-import org.springframework.boot.configurationprocessor.metadata.ConfigurationMetadata;
 
 /**
  *
@@ -47,13 +46,6 @@ public class ConfigurationMetadataLoader {
 
 	public ConfigurationMetadataRepository loadRepository(String version) throws IOException {
 		ConfigurationMetadataRepositoryJsonBuilder builder = ConfigurationMetadataRepositoryJsonBuilder.create();
-		Consumer consumer = builder::withJsonResource;
-		loadAll(consumer, version);
-		return builder.build();
-	}
-
-	public ConfigurationMetadata loadConfigurationMetadata(String version) throws IOException {
-		ConfigurationMetadataJsonBuilder builder = new ConfigurationMetadataJsonBuilder();
 		Consumer consumer = builder::withJsonResource;
 		loadAll(consumer, version);
 		return builder.build();
