@@ -87,9 +87,10 @@ public class ConfigDiffGenerator {
 			String id = leftProperty.getId();
 			ConfigurationMetadataProperty rightProperty = rightProperties.get(id);
 			if (rightProperty == null) {
+				matches.add(id);
 				result.register(ConfigDiffType.DELETE, leftProperty, null);
 			}
-			else if (rightProperty.isDeprecated()) {
+			else if (rightProperty.isDeprecated() && !leftProperty.isDeprecated()) {
 				matches.add(id);
 				result.register(ConfigDiffType.DEPRECATE, leftProperty, rightProperty);
 			}
