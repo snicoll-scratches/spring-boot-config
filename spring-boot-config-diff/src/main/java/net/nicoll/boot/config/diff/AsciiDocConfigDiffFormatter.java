@@ -16,8 +16,11 @@
 
 package net.nicoll.boot.config.diff;
 
-import java.io.IOException;
+import java.text.BreakIterator;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 import net.nicoll.boot.metadata.ConsoleMetadataFormatter;
 
@@ -37,63 +40,130 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 		out.append(String.format("Configuration properties change between `%s` and "
 				+ "`%s`%n", result.getLeftVersion(), result.getRightVersion()));
 		out.append(System.lineSeparator());
-		out.append(String.format(".Deprecated keys in `%s`%n",result.getRightVersion()));
+		out.append(String.format(".Deprecated keys in `%s`%n", result.getRightVersion()));
 		appendDeprecatedProperties(out, result);
 		out.append(System.lineSeparator());
-		out.append(String.format(".New keys in `%s`%n",result.getRightVersion()));
-		appendProperties(out, result, true);
+		out.append(String.format(".New keys in `%s`%n", result.getRightVersion()));
+		appendAddedProperties(out, result);
 		out.append(System.lineSeparator());
-		out.append(String.format(".Removed keys in `%s``n", result.getRightVersion()));
-		appendProperties(out, result, false);
+		out.append(String.format(".Removed keys in `%s``%n", result.getRightVersion()));
+		appendRemovedProperties(out, result);
 		return out.toString();
 	}
 
 	private void appendDeprecatedProperties(StringBuilder out, ConfigDiffResult result) {
-		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties =
-				sortProperties(result.getPropertiesDiffFor(ConfigDiffType.DEPRECATE), false);
+		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = sortProperties(
+				result.getPropertiesDiffFor(ConfigDiffType.DEPRECATE), false)
+				.stream().filter(this::isDeprecatedInRelease)
+				.collect(Collectors.toList());
 		out.append(String.format("|======================%n"));
 		out.append(String.format("|Key  |Replacement |Reason%n"));
-		properties.stream().filter(this::isDeprecatedInRelease).forEach(diff -> {
+		properties.forEach(diff -> {
 			ConfigurationMetadataProperty property = diff.getRight();
-			Deprecation deprecation = property.getDeprecation();
-			out.append("|`").append(property.getId()).append("` |");
-			if (deprecation.getReplacement() != null) {
-				out.append("`").append(deprecation.getReplacement()).append("`");
-			}
-			out.append(" |");
-			if (deprecation.getReason() != null) {
-				out.append(deprecation.getReason());
-			}
-			out.append(System.lineSeparator());
+			appendDeprecatedProperty(out, property);
 		});
 		out.append(String.format("|======================%n"));
 	}
 
 	private boolean isDeprecatedInRelease(
 			ConfigDiffEntry<ConfigurationMetadataProperty> diff) {
-		return Deprecation.Level.ERROR != diff.getRight().getDeprecation().getLevel();
+		return diff.getRight().getDeprecation() != null &&
+				Deprecation.Level.ERROR != diff.getRight().getDeprecation().getLevel();
 	}
 
-	private void appendProperties(StringBuilder out, ConfigDiffResult result, boolean added) {
+	private void appendAddedProperties(StringBuilder out, ConfigDiffResult result) {
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = sortProperties(
-				result.getPropertiesDiffFor(added ? ConfigDiffType.ADD : ConfigDiffType.DELETE), !added);
+				result.getPropertiesDiffFor(ConfigDiffType.ADD), false);
 		out.append(String.format("|======================%n"));
 		out.append(String.format("|Key  |Default value |Description%n"));
-		properties.stream()
-				.filter(diff -> (!added || !diff.getRight().isDeprecated())).forEach(diff -> {
-			ConfigurationMetadataProperty property = (added ? diff.getRight() : diff.getLeft());
-			// |`spring.foo` | | Bla bla bla
-			out.append("|`").append(property.getId()).append("` |");
-			if (property.getDefaultValue() != null) {
-				out.append("`").append(ConsoleMetadataFormatter
-						.defaultValueToString(property.getDefaultValue())).append("`");
-			}
-			out.append(" |");
-			if (property.getDescription() != null) {
-				out.append(property.getShortDescription());
-			}
-			out.append(System.lineSeparator());
+		properties.forEach(diff -> {
+			appendRegularProperty(out, diff.getRight());
+
 		});
 		out.append(String.format("|======================%n"));
+	}
+
+	private void appendRemovedProperties(StringBuilder out,
+			ConfigDiffResult result) {
+		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = getRemovedProperties(result);
+		out.append(String.format("|======================%n"));
+		out.append(String.format("|Key  |Replacement |Reason%n"));
+		properties.forEach(diff -> {
+					if (diff.getRight() != null) {
+						appendDeprecatedProperty(out, diff.getRight());
+					}
+					else {
+						appendRegularProperty(out, diff.getLeft());
+					}
+				}
+		);
+		out.append(String.format("|======================%n"));
+	}
+
+	private List<ConfigDiffEntry<ConfigurationMetadataProperty>> getRemovedProperties(
+			ConfigDiffResult result) {
+		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = new ArrayList<>(
+				result.getPropertiesDiffFor(ConfigDiffType.DELETE));
+		properties.addAll(result.getPropertiesDiffFor(ConfigDiffType.DEPRECATE).stream()
+				.filter(p -> !isDeprecatedInRelease(p)).collect(Collectors.toList()));
+		return sortProperties(properties, null);
+	}
+
+	private void appendRegularProperty(StringBuilder out,
+			ConfigurationMetadataProperty property) {
+		out.append("|`").append(property.getId()).append("` |");
+		if (property.getDefaultValue() != null) {
+			out.append("`").append(ConsoleMetadataFormatter
+					.defaultValueToString(property.getDefaultValue())).append("`");
+		}
+		out.append(" |");
+		if (property.getDescription() != null) {
+			out.append(property.getShortDescription());
+		}
+		out.append(System.lineSeparator());
+	}
+
+	private void appendDeprecatedProperty(StringBuilder out, ConfigurationMetadataProperty property) {
+		Deprecation deprecation = property.getDeprecation();
+		out.append("|`").append(property.getId()).append("` |");
+		if (deprecation.getReplacement() != null) {
+			out.append("`").append(deprecation.getReplacement()).append("`");
+		}
+		out.append(" |");
+		if (deprecation.getReason() != null) {
+			out.append(SentenceExtractor.getFirstSentence(deprecation.getReason()));
+		}
+		out.append(System.lineSeparator());
+	}
+
+	private static class SentenceExtractor {
+
+		static String getFirstSentence(String text) {
+			if (text == null) {
+				return null;
+			}
+			int dot = text.indexOf('.');
+			if (dot != -1) {
+				BreakIterator breakIterator = BreakIterator.getSentenceInstance(Locale.US);
+				breakIterator.setText(text);
+				String sentence = text
+						.substring(breakIterator.first(), breakIterator.next()).trim();
+				return removeSpaceBetweenLine(sentence);
+			}
+			else {
+				String[] lines = text.split(System.lineSeparator());
+				return lines[0].trim();
+			}
+		}
+
+		private static String removeSpaceBetweenLine(String text) {
+			String[] lines = text.split(System.lineSeparator());
+			StringBuilder sb = new StringBuilder();
+			for (String line : lines) {
+				sb.append(line.trim()).append(" ");
+			}
+			return sb.toString().trim();
+		}
+
 	}
 }

@@ -33,7 +33,7 @@ public abstract class AbstractConfigDiffFormatter
 	protected List<ConfigDiffEntry<ConfigurationMetadataGroup>> sortGroups(
 			List<ConfigDiffEntry<ConfigurationMetadataGroup>> groups, final boolean useLeft) {
 		List<ConfigDiffEntry<ConfigurationMetadataGroup>> result =
-				new ArrayList<ConfigDiffEntry<ConfigurationMetadataGroup>>(groups);
+				new ArrayList<>(groups);
 		Collections.sort(result, (o1, o2) -> {
 			ConfigurationMetadataGroup first = (useLeft ? o1.getLeft() : o1.getRight());
 			ConfigurationMetadataGroup second = (useLeft ? o2.getLeft() : o2.getRight());
@@ -43,13 +43,24 @@ public abstract class AbstractConfigDiffFormatter
 	}
 
 	protected List<ConfigDiffEntry<ConfigurationMetadataProperty>> sortProperties(
-			List<ConfigDiffEntry<ConfigurationMetadataProperty>> groups, final boolean useLeft) {
+			List<ConfigDiffEntry<ConfigurationMetadataProperty>> groups, Boolean useLeft) {
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> result =
-				new ArrayList<ConfigDiffEntry<ConfigurationMetadataProperty>>(groups);
-		Collections.sort(result, (o1, o2) -> {
-			ConfigurationMetadataProperty first = (useLeft ? o1.getLeft() : o1.getRight());
-			ConfigurationMetadataProperty second = (useLeft ? o2.getLeft() : o2.getRight());
-			return MetadataUtils.PROPERTY_COMPARATOR.compare(first, second);
+				new ArrayList<>(groups);
+		result.sort((o1, o2) -> {
+			if (useLeft != null) {
+				ConfigurationMetadataProperty first = (useLeft ? o1.getLeft()
+						: o1.getRight());
+				ConfigurationMetadataProperty second = (useLeft ? o2.getLeft()
+						: o2.getRight());
+				return MetadataUtils.PROPERTY_COMPARATOR.compare(first, second);
+			}
+			else {
+				ConfigurationMetadataProperty first = (o1.getLeft() != null
+						? o1.getLeft() : o1.getRight());
+				ConfigurationMetadataProperty second = (o2.getLeft() != null
+						? o2.getLeft() : o2.getRight());
+				return MetadataUtils.PROPERTY_COMPARATOR.compare(first, second);
+			}
 		});
 		return result;
 	}
