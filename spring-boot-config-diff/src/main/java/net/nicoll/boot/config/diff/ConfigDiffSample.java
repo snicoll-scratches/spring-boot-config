@@ -25,11 +25,12 @@ import net.nicoll.boot.config.loader.AetherDependencyResolver;
 public class ConfigDiffSample {
 
 	public static void main(String[] args) throws Exception {
-		ConfigDiffResult configDiffResult = new ConfigDiffGenerator(AetherDependencyResolver.withAllRepositories())
-				.generateDiff("2.0.0.M7", "2.0.0.BUILD-SNAPSHOT");
-
+		ConfigDiffGenerator configDiffGenerator = new ConfigDiffGenerator(
+				AetherDependencyResolver.withAllRepositories());
+		ConfigDiffResult configDiffResult = configDiffGenerator.generateDiff(
+				"2.0.0.M7", "2.0.0.BUILD-SNAPSHOT");
 		ConfigDiffFormatter formatter = new AsciiDocConfigDiffFormatter();
-
 		System.out.println(formatter.formatDiff(configDiffResult));
 	}
+
 }
