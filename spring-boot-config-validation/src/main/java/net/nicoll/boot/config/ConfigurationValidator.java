@@ -51,12 +51,10 @@ public class ConfigurationValidator implements CommandLineRunner {
 	public void initialize() {
 		for (ItemMetadata item : configurationMetadata.getItems()) {
 			Map<String, List<ItemMetadata>> mapToUse =
-					(item.isOfItemType(ItemMetadata.ItemType.PROPERTY) ? this.items : this.groups);
-			List<ItemMetadata> list = mapToUse.get(item.getName());
-			if (list == null) {
-				list = new ArrayList<>();
-				mapToUse.put(item.getName(), list);
-			}
+					(item.isOfItemType(ItemMetadata.ItemType.PROPERTY)
+							? this.items : this.groups);
+			List<ItemMetadata> list = mapToUse.computeIfAbsent(
+					item.getName(), k -> new ArrayList<>());
 			list.add(item);
 		}
 	}
@@ -72,7 +70,8 @@ public class ConfigurationValidator implements CommandLineRunner {
 
 		// Generate relax names for all properties
 		List<ConfigKeyCandidates> advertized = advertizedProperties.keySet()
-				.stream().map(item -> new ConfigKeyCandidates((String) item)).collect(Collectors.toList());
+				.stream().map(item -> new ConfigKeyCandidates((String) item))
+				.collect(Collectors.toList());
 
 		// Check advertized properties
 		for (ConfigKeyCandidates propertyItem : advertized) {
@@ -155,8 +154,7 @@ public class ConfigurationValidator implements CommandLineRunner {
 		if (!undocumented.isEmpty()) {
 			sb.append("Undocumented items").append("\n");
 			sb.append("--------------------").append("\n");
-			List<String> ids = new ArrayList<String>();
-			ids.addAll(undocumented);
+			List<String> ids = new ArrayList<>(undocumented);
 			Collections.sort(ids);
 			for (String id : ids) {
 				sb.append(id).append("\n");
@@ -166,8 +164,7 @@ public class ConfigurationValidator implements CommandLineRunner {
 		if (!deprecated.isEmpty()) {
 			sb.append("Deprecated items").append("\n");
 			sb.append("--------------------").append("\n");
-			List<String> ids = new ArrayList<String>();
-			ids.addAll(deprecated);
+			List<String> ids = new ArrayList<>(deprecated);
 			Collections.sort(ids);
 			for (String id : ids) {
 				sb.append(id).append("\n");
@@ -199,7 +196,8 @@ public class ConfigurationValidator implements CommandLineRunner {
 	@Bean
 	public PropertiesFactoryBean advertizedProperties() {
 		PropertiesFactoryBean factory = new PropertiesFactoryBean();
-		factory.setLocation(new PathMatchingResourcePatternResolver().getResource("classpath:advertized.properties"));
+		factory.setLocation(new PathMatchingResourcePatternResolver()
+				.getResource("classpath:advertized.properties"));
 		return factory;
 	}
 
