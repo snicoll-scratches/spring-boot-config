@@ -27,11 +27,13 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataPrope
  */
 public abstract class AbstractMetadataFormatter {
 
-	protected List<ConfigurationMetadataGroup> sortGroups(Collection<ConfigurationMetadataGroup> groups) {
+	protected List<ConfigurationMetadataGroup> sortGroups(
+			Collection<ConfigurationMetadataGroup> groups) {
 		return MetadataUtils.sortGroups(groups);
 	}
 
-	protected List<ConfigurationMetadataProperty> sortProperties(Collection<ConfigurationMetadataProperty> properties) {
+	protected List<ConfigurationMetadataProperty> sortProperties(
+			Collection<ConfigurationMetadataProperty> properties) {
 		return MetadataUtils.sortProperties(properties);
 	}
 

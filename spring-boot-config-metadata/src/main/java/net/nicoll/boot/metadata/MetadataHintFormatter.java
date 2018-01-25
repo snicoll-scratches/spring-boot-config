@@ -48,9 +48,6 @@ public class MetadataHintFormatter
 			return false;
 		}
 		String content = description.toLowerCase();
-		if (content.contains("possible values") || content.contains("can be")) {
-			return true;
-		}
-		return false;
+		return content.contains("possible values") || content.contains("can be");
 	}
 }

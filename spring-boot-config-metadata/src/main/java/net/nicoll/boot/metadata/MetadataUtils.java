@@ -24,7 +24,7 @@ public abstract class MetadataUtils {
 			Collection<ConfigurationMetadataGroup> groups) {
 		List<ConfigurationMetadataGroup> result
 				= new ArrayList<ConfigurationMetadataGroup>(groups);
-		Collections.sort(result, GROUP_COMPARATOR);
+		result.sort(GROUP_COMPARATOR);
 		return result;
 	}
 
@@ -32,7 +32,7 @@ public abstract class MetadataUtils {
 			Collection<ConfigurationMetadataProperty> properties) {
 		List<ConfigurationMetadataProperty> result =
 				new ArrayList<ConfigurationMetadataProperty>(properties);
-		Collections.sort(result, PROPERTY_COMPARATOR);
+		result.sort(PROPERTY_COMPARATOR);
 		return result;
 	}
 
