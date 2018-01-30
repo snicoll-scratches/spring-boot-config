@@ -44,7 +44,7 @@ public enum ConfigDiffType {
 	DEPRECATE,
 
 	/**
-	 * The entry does has been removed.
+	 * The entry has been removed.
 	 */
 	DELETE
 
