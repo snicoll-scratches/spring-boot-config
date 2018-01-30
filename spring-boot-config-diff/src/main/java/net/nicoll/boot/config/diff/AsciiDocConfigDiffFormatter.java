@@ -16,10 +16,8 @@
 
 package net.nicoll.boot.config.diff;
 
-import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 import net.nicoll.boot.metadata.ConsoleMetadataFormatter;
@@ -136,34 +134,4 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 		out.append(System.lineSeparator());
 	}
 
-	private static class SentenceExtractor {
-
-		static String getFirstSentence(String text) {
-			if (text == null) {
-				return null;
-			}
-			int dot = text.indexOf('.');
-			if (dot != -1) {
-				BreakIterator breakIterator = BreakIterator.getSentenceInstance(Locale.US);
-				breakIterator.setText(text);
-				String sentence = text
-						.substring(breakIterator.first(), breakIterator.next()).trim();
-				return removeSpaceBetweenLine(sentence);
-			}
-			else {
-				String[] lines = text.split(System.lineSeparator());
-				return lines[0].trim();
-			}
-		}
-
-		private static String removeSpaceBetweenLine(String text) {
-			String[] lines = text.split(System.lineSeparator());
-			StringBuilder sb = new StringBuilder();
-			for (String line : lines) {
-				sb.append(line.trim()).append(" ");
-			}
-			return sb.toString().trim();
-		}
-
-	}
 }
