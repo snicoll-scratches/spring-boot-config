@@ -1,6 +1,7 @@
 package net.nicoll.boot.config.diff;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,9 @@ public class DeprecatedPropertiesMetadataGenerator {
 
 	private static class DeprecatedPropertyJsonFormatter implements ConfigDiffFormatter {
 
+		private final List<String> knownExcludes = Arrays.asList("security.oauth2",
+				"spring.datasource.dbcp", "spring.mobile", "spring.social");
+
 		private final ConfigurationMetadataRepository repository;
 
 		private DeprecatedPropertyJsonFormatter(
@@ -63,9 +67,8 @@ public class DeprecatedPropertiesMetadataGenerator {
 
 
 			List<DeprecatedItem> items = deleted.stream()
-					.filter(this::filterAlreadyDeprecatedItem)
-					.map(e -> new DeprecatedItem(e.getLeft(),
-							detectReplacement(e.getLeft()), detectReason(e.getLeft())))
+					.filter(this::isValidCandidate)
+					.map(this::toDeprecatedItem)
 					.collect(Collectors.toList());
 
 			MultiValueMap<String, DeprecatedItem> groups = new LinkedMultiValueMap<>();
@@ -85,12 +88,29 @@ public class DeprecatedPropertiesMetadataGenerator {
 			return sb.toString();
 		}
 
-		private boolean filterAlreadyDeprecatedItem(
-				ConfigDiffEntry<ConfigurationMetadataProperty> entry) {
-			return !entry.getLeft().isDeprecated()
-					&& (entry.getRight() == null || !entry.getRight().isDeprecated());
+		private boolean isValidCandidate(ConfigDiffEntry<ConfigurationMetadataProperty> entry) {
+			if (isAlreadyDeprecated(entry)) {
+				return false;
+			}
+			String id = entry.getLeft().getId();
+			for (String knownExclude : this.knownExcludes) {
+				if (id.startsWith(knownExclude)) {
+					return false;
+				}
+			}
+			return true;
 		}
 
+		private boolean isAlreadyDeprecated(
+				ConfigDiffEntry<ConfigurationMetadataProperty> entry) {
+			return (entry.getLeft().isDeprecated() && entry.getRight() == null);
+		}
+
+		private DeprecatedItem toDeprecatedItem(
+				ConfigDiffEntry<ConfigurationMetadataProperty> e) {
+			return new DeprecatedItem(e.getLeft(),
+					detectReplacement(e.getLeft()), detectReason(e.getLeft()));
+		}
 
 		private String detectReplacement(ConfigurationMetadataProperty property) {
 			String[] parts = property.getId().split("\\.");
