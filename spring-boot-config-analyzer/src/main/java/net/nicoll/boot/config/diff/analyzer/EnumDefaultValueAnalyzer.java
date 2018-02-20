@@ -25,9 +25,6 @@ public class EnumDefaultValueAnalyzer {
 	private static final String NEW_LINE = System.getProperty("line.separator");
 
 	private static final List<String> EXCLUDES = Arrays.asList(
-			"management.ssl.client-auth", // no default
-			"security.oauth2.client.authentication-scheme", // Bound to 3rd party pojo
-			"security.oauth2.client.client-authentication-scheme", // Ditto :(
 			"server.ssl.client-auth", // no default
 			"spring.artemis.mode", // no default
 			"spring.cache.type", // no default
@@ -40,7 +37,8 @@ public class EnumDefaultValueAnalyzer {
 			"spring.jpa.database", // no default
 			"spring.kafka.listener.ack-mode", // no default
 			"spring.mvc.message-codes-resolver-format", // no default
-			"spring.rabbitmq.listener.acknowledge-mode", // no default
+			"spring.rabbitmq.listener.direct.acknowledge-mode", // no default
+			"spring.rabbitmq.listener.simple.acknowledge-mode", // no default
 			"spring.session.store-type" // no default
 	);
 
@@ -50,15 +48,17 @@ public class EnumDefaultValueAnalyzer {
 	public static void main(String[] args) throws Exception {
 		ConfigurationMetadataLoader loader =
 				new ConfigurationMetadataLoader(AetherDependencyResolver.withAllRepositories());
-		ConfigurationMetadataRepository repo = loader.loadRepository("1.5.0.BUILD-SNAPSHOT");
+		ConfigurationMetadataRepository repo = loader.loadRepository("2.0.0.BUILD-SNAPSHOT");
 		List<ConfigurationMetadataGroup> groups = MetadataUtils.sortGroups(repo.getAllGroups().values());
 		List<ConfigurationMetadataProperty> matchingProperties = new ArrayList<>();
+		List<String> excludes = new ArrayList<>(EXCLUDES);
 		for (ConfigurationMetadataGroup group : groups) {
 			List<ConfigurationMetadataProperty> properties =
 					MetadataUtils.sortProperties(group.getProperties().values());
 			for (ConfigurationMetadataProperty property : properties) {
 				if (property.getDefaultValue() == null && isEnum(property.getType())) {
-					if (EXCLUDES.contains(property.getId())) {
+					if (excludes.contains(property.getId())) {
+						excludes.remove(property.getId());
 						System.out.println("Validate that " + property.getId()
 								+ " has still no default value.");
 					}
@@ -70,6 +70,14 @@ public class EnumDefaultValueAnalyzer {
 		}
 		matchingProperties.sort(Comparator.comparing(ConfigurationMetadataProperty::getId));
 		StringBuilder sb = new StringBuilder();
+		if (!excludes.isEmpty()) {
+			sb.append(NEW_LINE).append(NEW_LINE);
+			sb.append("WARNING: excludes list is not up to date. The following "
+					+ "properties no longer exist:").append(NEW_LINE);
+			for (String exclude : excludes) {
+				sb.append("\t").append(exclude).append(NEW_LINE);
+			}
+		}
 		sb.append(NEW_LINE).append(NEW_LINE);
 		if (matchingProperties.isEmpty()) {
 			sb.append("All other enums have default values");
