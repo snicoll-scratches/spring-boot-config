@@ -25,17 +25,21 @@ public class EnumDefaultValueAnalyzer {
 	private static final String NEW_LINE = System.getProperty("line.separator");
 
 	private static final List<String> EXCLUDES = Arrays.asList(
+			"management.server.ssl.client-auth", // no default
 			"server.ssl.client-auth", // no default
 			"spring.artemis.mode", // no default
 			"spring.cache.type", // no default
 			"spring.data.cassandra.consistency-level", // no default
 			"spring.data.cassandra.serial-consistency-level", // no default
+			"spring.gson.field-naming-policy", // no default
+			"spring.gson.long-serialization-policy", // no default
 			"spring.jackson.default-property-inclusion", // no default
 			"spring.jms.listener.acknowledge-mode", // no default
 			"spring.jms.template.delivery-mode", // no default
 			"spring.jooq.sql-dialect", // no default
 			"spring.jpa.database", // no default
 			"spring.kafka.listener.ack-mode", // no default
+			"spring.main.web-application-type", // no default
 			"spring.mvc.message-codes-resolver-format", // no default
 			"spring.rabbitmq.listener.direct.acknowledge-mode", // no default
 			"spring.rabbitmq.listener.simple.acknowledge-mode", // no default
