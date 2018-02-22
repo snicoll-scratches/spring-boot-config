@@ -1,6 +1,8 @@
 package net.nicoll.boot.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,6 +15,7 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataPrope
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
 import org.springframework.boot.configurationmetadata.Deprecation;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * Provide a report matching the appendix with the actual metadata.
@@ -61,24 +64,26 @@ class ConfigurationAppendixReporter {
 					undocumented.add(value);
 				}
 			}
-			else {
+			else if (!ignoreMismatchKey(key)) {
 				StringBuilder sb = new StringBuilder(key);
 				ConfigurationMetadataProperty metadata = this.items.get(key);
 				AdvertizedProperty advertizedProperty = this.analysis
 						.getResolvedProperties().get(key);
-				if (!isDefaultValueSimilar(metadata.getDefaultValue(),
+				String expectedDefaultValue = determineDefaultValue(metadata.getDefaultValue());
+				if (!isDefaultValueSimilar(expectedDefaultValue,
 						advertizedProperty.getDefaultValue())) {
 					sb.append(String.format("%n\tWrong default value%n"));
 					sb.append(String.format("\t\texpected: '%s'%n",
-							metadata.getDefaultValue()));
+							expectedDefaultValue));
 					sb.append(String.format("\t\tgot:      '%s'%n",
 							advertizedProperty.getDefaultValue()));
 				}
-				String expected = sanitizeDescription(metadata.getDescription());
-				if (!isDescriptionSimilar(key, expected,
+				String expectedDescription = sanitizeDescription(
+						metadata.getDescription());
+				if (!isDescriptionSimilar(key, expectedDescription,
 						advertizedProperty.getDescription())) {
 					sb.append(String.format("%n\tWrong description%n"));
-					sb.append(String.format("\t\texpected: '%s'%n", expected));
+					sb.append(String.format("\t\texpected: '%s'%n", expectedDescription));
 					sb.append(String.format("\t\tgot:      '%s'%n",
 							advertizedProperty.getDescription()));
 				}
@@ -171,9 +176,36 @@ class ConfigurationAppendixReporter {
 		return sb.toString();
 	}
 
-	private boolean isDefaultValueSimilar(Object expected, String actual) {
+	// Nested class in a separate module (no documentation available)
+	private static final List<String> NON_MANAGED_GROUPS = Arrays.asList(
+			"management.server.ssl.", "server.compression.", "server.http2.",
+			"server.servlet.jsp.", "server.servlet.session.", "server.ssl.");
+
+	private boolean ignoreMismatchKey(String key) {
+		for (String group : NON_MANAGED_GROUPS) {
+			if (key.startsWith(group)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isDefaultValueSimilar(String expected, String actual) {
 		return expected == null && actual == null
-				|| expected != null && expected.toString().equals(actual);
+				|| expected != null && expected.equals(actual);
+	}
+
+	private String determineDefaultValue(Object value) {
+		if (ObjectUtils.isEmpty(value)) {
+			return null;
+		}
+		if (value.getClass().isArray()) {
+			return StringUtils.arrayToCommaDelimitedString((Object[]) value);
+		}
+		if (value instanceof Collection) {
+			return StringUtils.collectionToCommaDelimitedString((Collection<?>) value);
+		}
+		return value.toString();
 	}
 
 	private boolean isDescriptionSimilar(String key, String expected, String actual) {
