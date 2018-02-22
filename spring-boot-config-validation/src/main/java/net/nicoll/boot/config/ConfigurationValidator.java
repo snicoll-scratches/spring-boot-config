@@ -1,5 +1,6 @@
 package net.nicoll.boot.config;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import net.nicoll.boot.config.loader.AetherDependencyResolver;
@@ -25,13 +26,20 @@ public class ConfigurationValidator {
 	}
 
 	@Bean
-	public ApplicationRunner runner(Properties advertizedProperties,
+	public ApplicationRunner runner(AdvertizedPropertiesAnalysis analysis,
 			ConfigurationMetadataRepository repository) {
 		return args -> {
 			String report = new ConfigurationAppendixReporter(
-					advertizedProperties, repository).getReport();
+					analysis, repository).getReport();
 			logger.info(report);
 		};
+	}
+
+	@Bean
+	public AdvertizedPropertiesAnalysis advertizedPropertiesAnalysis() throws Exception {
+		AdvertizedPropertiesAnalyzer analyzer = new AdvertizedPropertiesAnalyzer(
+				advertizedProperties(), configurationMetadataRepository());
+		return analyzer.analyze();
 	}
 
 	@Bean
@@ -42,11 +50,12 @@ public class ConfigurationValidator {
 	}
 
 	@Bean
-	public PropertiesFactoryBean advertizedProperties() {
+	public Properties advertizedProperties() throws IOException {
 		PropertiesFactoryBean factory = new PropertiesFactoryBean();
 		factory.setLocation(new PathMatchingResourcePatternResolver()
 				.getResource("classpath:advertized.properties"));
-		return factory;
+		factory.afterPropertiesSet();
+		return factory.getObject();
 	}
 
 }

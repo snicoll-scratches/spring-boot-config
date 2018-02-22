@@ -2,20 +2,17 @@ package net.nicoll.boot.config;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import org.springframework.boot.bind.RelaxedNames;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
 import org.springframework.boot.configurationmetadata.Deprecation;
+import org.springframework.util.ObjectUtils;
 
 /**
  * Provide a report matching the appendix with the actual metadata.
@@ -24,40 +21,29 @@ import org.springframework.boot.configurationmetadata.Deprecation;
  */
 class ConfigurationAppendixReporter {
 
-	private final Properties advertizedProperties;
+	private static final Logger logger = LoggerFactory.getLogger(ConfigurationAppendixReporter.class);
 
-	private Map<String, ConfigurationMetadataProperty> items = new HashMap<>();
+	private final AdvertizedPropertiesAnalysis analysis;
 
-	public ConfigurationAppendixReporter(Properties advertizedProperties,
+	private Map<String, ConfigurationMetadataProperty> items;
+
+	public ConfigurationAppendixReporter(AdvertizedPropertiesAnalysis analysis,
 			ConfigurationMetadataRepository repository) {
-		this.advertizedProperties = advertizedProperties;
+		this.analysis = analysis;
 		this.items = repository.getAllProperties();
 	}
 
 	public String getReport() {
-		List<String> found = new ArrayList<>();
+		List<String> found = new ArrayList<>(
+				this.analysis.getResolvedProperties().keySet());
 		List<String> undocumented = new ArrayList<>();
-		List<String> unresolved = new ArrayList<>();
+		List<String> unresolved = new ArrayList<>(
+				this.analysis.getUnresolvedProperties().keySet());
+		List<String> mismatch = new ArrayList<>();
 		List<String> deprecated = new ArrayList<>();
 		Map<String, List<String>> groups = new LinkedHashMap<>();
 
-		// Generate relax names for all properties
-		List<ConfigKeyCandidates> advertized = advertizedProperties.keySet()
-				.stream().map(item -> new ConfigKeyCandidates((String) item))
-				.collect(Collectors.toList());
-
-		// Check advertized properties
-		for (ConfigKeyCandidates propertyItem : advertized) {
-			String key = getDocumentedKey(propertyItem);
-			if (key != null) {
-				found.add(key);
-			}
-			else {
-				unresolved.add(propertyItem.item);
-			}
-		}
-
-		// Check non advertized properties
+		// Check non advertized properties and mismatch
 		for (String key : this.items.keySet()) {
 			if (!found.contains(key)) {
 				String value = key;
@@ -73,6 +59,32 @@ class ConfigurationAppendixReporter {
 				}
 				else {
 					undocumented.add(value);
+				}
+			}
+			else {
+				StringBuilder sb = new StringBuilder(key);
+				ConfigurationMetadataProperty metadata = this.items.get(key);
+				AdvertizedProperty advertizedProperty = this.analysis
+						.getResolvedProperties().get(key);
+				if (!isDefaultValueSimilar(metadata.getDefaultValue(),
+						advertizedProperty.getDefaultValue())) {
+					sb.append(String.format("%n\tWrong default value%n"));
+					sb.append(String.format("\t\texpected: '%s'%n",
+							metadata.getDefaultValue()));
+					sb.append(String.format("\t\tgot:      '%s'%n",
+							advertizedProperty.getDefaultValue()));
+				}
+				String expected = sanitizeDescription(metadata.getDescription());
+				if (!isDescriptionSimilar(key, expected,
+						advertizedProperty.getDescription())) {
+					sb.append(String.format("%n\tWrong description%n"));
+					sb.append(String.format("\t\texpected: '%s'%n", expected));
+					sb.append(String.format("\t\tgot:      '%s'%n",
+							advertizedProperty.getDescription()));
+				}
+				String message = sb.toString();
+				if (!message.equals(key)) {
+					mismatch.add(String.format("%s%n", message));
 				}
 			}
 		}
@@ -97,13 +109,14 @@ class ConfigurationAppendixReporter {
 
 		StringBuilder sb = new StringBuilder("\n");
 		sb.append("Configuration key statistics").append("\n");
-		sb.append("Advertized keys: ").append(advertizedProperties.size()).append("\n");
+		sb.append("Advertized keys: ").append(this.analysis.propertiesCount()).append("\n");
 		sb.append("Repository items: ").append(this.items.size()).append("\n");
 		sb.append("Matching items: ").append(found.size()).append("\n");
 		sb.append("Unresolved items (found in documentation but not in generated metadata): ").append(unresolved.size()).append("\n");
 		sb.append("Groups (group defined in the documentation but not each individual elements): ").append(groups.size()).append("\n");
 		sb.append("Undocumented items (found in generated metadata but not in documentation): ").append(undocumented.size()).append("\n");
 		sb.append("Deprecated items (found in generated metadata but not in documentation): ").append(deprecated.size()).append("\n");
+		sb.append("Mismatch items (description or default value not matching): ").append(mismatch.size()).append("\n");
 		sb.append("\n");
 		sb.append("\n");
 		if (!unresolved.isEmpty()) {
@@ -144,57 +157,53 @@ class ConfigurationAppendixReporter {
 			}
 			sb.append("\n");
 		}
+		if (!mismatch.isEmpty()) {
+			sb.append("Mismatch items").append("\n");
+			sb.append("--------------------").append("\n");
+			List<String> ids = new ArrayList<>(mismatch);
+			Collections.sort(ids);
+			for (String id : ids) {
+				sb.append(id).append("\n");
+			}
+			sb.append("\n");
+		}
 
 		return sb.toString();
 	}
 
-	private String getDocumentedKey(ConfigKeyCandidates candidates) {
-		for (String candidate : candidates) {
-			boolean hasKey = this.items.containsKey(candidate);
-			if (hasKey) {
-				return candidate;
-			}
-		}
-		return null;
+	private boolean isDefaultValueSimilar(Object expected, String actual) {
+		return expected == null && actual == null
+				|| expected != null && expected.toString().equals(actual);
 	}
 
-	private static class ConfigKeyCandidates implements Iterable<String> {
-		private final String item;
-
-		private final Set<String> values;
-
-		private ConfigKeyCandidates(String item) {
-			this.item = item;
-			this.values = initialize(item);
+	private boolean isDescriptionSimilar(String key, String expected, String actual) {
+		if (ObjectUtils.nullSafeEquals(expected, actual)) {
+			return true;
 		}
-
-		@Override
-		public Iterator<String> iterator() {
-			return this.values.iterator();
+		if (expected != null && actual != null) {
+			if (expected.startsWith(actual) && actual.endsWith(".")) {
+				logger.info(String.format("Shortened description for '%s%n\t%s%n\t%s%n",
+						key, expected, actual));
+				return true;
+			}
 		}
+		return false;
+	}
 
-		private static Set<String> initialize(String item) {
-			String itemToUse = item;
-			if (itemToUse.endsWith(".*")) {
-				itemToUse = itemToUse.substring(0, itemToUse.length() - 2);
-			}
-
-			Set<String> values = new LinkedHashSet<String>();
-			int i = itemToUse.lastIndexOf('.');
-			if (i == -1) {
-				for (String o : new RelaxedNames(itemToUse)) {
-					values.add(o);
-				}
-			}
-			else {
-				String prefix = itemToUse.substring(0, i + 1);
-				String suffix = itemToUse.substring(i + 1, itemToUse.length());
-				for (String value : new RelaxedNames(suffix)) {
-					values.add(prefix + value);
-				}
-			}
-			return values;
+	private static String sanitizeDescription(String text) {
+		if (text == null) {
+			return null;
 		}
+		return removeSpaceBetweenLine(text);
+	}
+
+	private static String removeSpaceBetweenLine(String text) {
+		String[] lines = text.split(System.lineSeparator());
+		StringBuilder sb = new StringBuilder();
+		for (String line : lines) {
+			sb.append(line.trim()).append(" ");
+		}
+		return sb.toString().trim();
 	}
 
 }
