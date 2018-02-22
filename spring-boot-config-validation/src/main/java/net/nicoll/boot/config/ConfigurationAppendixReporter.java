@@ -181,8 +181,18 @@ class ConfigurationAppendixReporter {
 			"management.server.ssl.", "server.compression.", "server.http2.",
 			"server.servlet.jsp.", "server.servlet.session.", "server.ssl.");
 
+	// Metadata generated from third party class
+	private static final List<String> THIRD_PARTY_GROUPS = Arrays.asList(
+			"spring.jta.atomikos.connectionfactory.", "spring.jta.atomikos.datasource.",
+			"spring.jta.bitronix.connectionfactory.", "spring.jta.bitronix.datasource.");
+
 	private boolean ignoreMismatchKey(String key) {
 		for (String group : NON_MANAGED_GROUPS) {
+			if (key.startsWith(group)) {
+				return true;
+			}
+		}
+		for (String group : THIRD_PARTY_GROUPS) {
 			if (key.startsWith(group)) {
 				return true;
 			}
