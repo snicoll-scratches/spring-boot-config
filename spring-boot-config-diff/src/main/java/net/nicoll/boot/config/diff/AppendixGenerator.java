@@ -22,7 +22,7 @@ public class AppendixGenerator {
 	public static void main(String[] args) throws Exception {
 		ConfigurationMetadataLoader loader =
 				new ConfigurationMetadataLoader(AetherDependencyResolver.withAllRepositories());
-		ConfigurationMetadataRepository repo = loader.loadRepository("2.0.0.BUILD-SNAPSHOT");
+		ConfigurationMetadataRepository repo = loader.loadRepository("2.1.0.BUILD-SNAPSHOT");
 		attachRootPropertyToGroup(repo);
 
 		List<ConfigurationMetadataGroup> groups = MetadataUtils.sortGroups(repo.getAllGroups().values());
