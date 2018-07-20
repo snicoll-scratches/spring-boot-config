@@ -1,20 +1,17 @@
 package net.nicoll.boot.config;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.boot.bind.RelaxedNames;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
+import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
 import org.springframework.util.StringUtils;
 
 /**
@@ -59,11 +56,10 @@ class AdvertizedPropertiesAnalyzer {
 	}
 
 	private String getDocumentedKey(ConfigKeyCandidates candidates) {
-		for (String candidate : candidates) {
-			boolean hasKey = this.items.containsKey(candidate);
-			if (hasKey) {
-				return candidate;
-			}
+		String candidate = candidates.configurationPropertyName.toString();
+		boolean hasKey = this.items.containsKey(candidate);
+		if (hasKey) {
+			return candidate;
 		}
 		return null;
 	}
@@ -84,43 +80,23 @@ class AdvertizedPropertiesAnalyzer {
 		}
 	}
 
-	private static class ConfigKeyCandidates implements Iterable<String> {
+	private static class ConfigKeyCandidates {
 
 		private final String item;
 
-		private final Set<String> values;
+		private final ConfigurationPropertyName configurationPropertyName;
 
 		private ConfigKeyCandidates(String item) {
 			this.item = item;
-			this.values = initialize(item);
+			this.configurationPropertyName = initialize(item);
 		}
 
-		@Override
-		public Iterator<String> iterator() {
-			return this.values.iterator();
-		}
-
-		private static Set<String> initialize(String item) {
+		private static ConfigurationPropertyName initialize(String item) {
 			String itemToUse = item;
 			if (itemToUse.endsWith(".*")) {
 				itemToUse = itemToUse.substring(0, itemToUse.length() - 2);
 			}
-
-			Set<String> values = new LinkedHashSet<String>();
-			int i = itemToUse.lastIndexOf('.');
-			if (i == -1) {
-				for (String o : new RelaxedNames(itemToUse)) {
-					values.add(o);
-				}
-			}
-			else {
-				String prefix = itemToUse.substring(0, i + 1);
-				String suffix = itemToUse.substring(i + 1, itemToUse.length());
-				for (String value : new RelaxedNames(suffix)) {
-					values.add(prefix + value);
-				}
-			}
-			return values;
+			return ConfigurationPropertyName.of(itemToUse);
 		}
 	}
 
