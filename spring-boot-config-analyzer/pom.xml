@@ -11,10 +11,6 @@
 	<artifactId>spring-boot-config-analyzer</artifactId>
 	<name>Spring Boot Config :: Analyzer</name>
 
-	<properties>
-		<spring.boot.version>2.0.1.RELEASE</spring.boot.version>
-	</properties>
-	
 	<dependencies>
 		<dependency>
 			<groupId>net.nicoll.scratch.boot.config</groupId>
