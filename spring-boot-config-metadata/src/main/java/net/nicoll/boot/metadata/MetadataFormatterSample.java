@@ -31,7 +31,7 @@ public class MetadataFormatterSample {
 	public static void main(String[] args) throws Exception {
 		ConfigurationMetadataLoader loader = new ConfigurationMetadataLoader(
 				AetherDependencyResolver.withAllRepositories());
-		ConfigurationMetadataRepository repo = loader.loadRepository("1.5.9.RELEASE");
+		ConfigurationMetadataRepository repo = loader.loadRepository("2.0.5.RELEASE");
 		System.out.println(getMetadataFormatter().formatMetadata(repo));
 	}
 
