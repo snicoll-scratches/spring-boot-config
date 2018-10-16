@@ -14,6 +14,7 @@ import net.nicoll.boot.config.loader.ConfigurationMetadataLoader;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
+import org.springframework.boot.configurationmetadata.Deprecation;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -103,7 +104,9 @@ public class DeprecatedPropertiesMetadataGenerator {
 
 		private boolean isAlreadyDeprecated(
 				ConfigDiffEntry<ConfigurationMetadataProperty> entry) {
-			return (entry.getLeft().isDeprecated() && entry.getRight() == null);
+			return (entry.getLeft().isDeprecated()
+					&& entry.getLeft().getDeprecation().getLevel().equals(Deprecation.Level.ERROR)
+					&& entry.getRight() == null);
 		}
 
 		private DeprecatedItem toDeprecatedItem(
