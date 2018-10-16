@@ -52,7 +52,8 @@ public class DeprecatedPropertiesMetadataGenerator {
 	private static class DeprecatedPropertyJsonFormatter implements ConfigDiffFormatter {
 
 		private final List<String> knownExcludes = Arrays.asList("security.oauth2",
-				"spring.datasource.dbcp", "spring.mobile", "spring.social");
+				"spring.datasource.dbcp", "spring.datasource.hikari", "spring.mobile",
+				"spring.social");
 
 		private final ConfigurationMetadataRepository repository;
 
