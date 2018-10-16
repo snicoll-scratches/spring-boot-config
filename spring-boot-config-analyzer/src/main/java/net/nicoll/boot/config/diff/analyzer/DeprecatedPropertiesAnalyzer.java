@@ -27,7 +27,7 @@ import org.springframework.boot.configurationmetadata.Deprecation;
 public class DeprecatedPropertiesAnalyzer {
 
 	public static void main(String[] args) throws Exception {
-		String from = "2.0.5.RELEASE";
+		String from = "2.0.6.BUILD-SNAPSHOT";
 		String to = "2.1.0.BUILD-SNAPSHOT";
 
 		AetherDependencyResolver dependencyResolver = AetherDependencyResolver
@@ -66,7 +66,7 @@ public class DeprecatedPropertiesAnalyzer {
 				String candidate = current.getDeprecation().getReplacement();
 				ConfigurationMetadataProperty replacement = getReplacementMetadata(candidate);
 				if (replacement != null) {
-					valid.add(current.getId() + " replaced by " + replacement.getId());
+					valid.add(current.getId() + " replaced by " + candidate);
 				}
 				else {
 					invalid.add(current.getId() + " with invalid replacement " + candidate);
@@ -113,15 +113,22 @@ public class DeprecatedPropertiesAnalyzer {
 			if (replacement != null) {
 				return replacement;
 			}
+			return findMapReplacement(candidate);
+		}
+
+		private ConfigurationMetadataProperty findMapReplacement(String candidate) {
 			int lastDot = candidate.lastIndexOf('.');
 			if (lastDot != -1) {
+				String mapCandidate = candidate.substring(0, lastDot);
 				ConfigurationMetadataProperty property = this.repository.getAllProperties()
-						.get(candidate.substring(0, lastDot));
+						.get(mapCandidate);
 				if (property != null) {
 					String type = property.getType();
 					if (type != null && type.startsWith(Map.class.getName())) {
 						return property;
 					}
+				} else {
+					return findMapReplacement(mapCandidate);
 				}
 			}
 			return null;
