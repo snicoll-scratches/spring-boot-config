@@ -44,7 +44,7 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 		out.append(String.format(".New keys in `%s`%n", result.getRightVersion()));
 		appendAddedProperties(out, result);
 		out.append(System.lineSeparator());
-		out.append(String.format(".Removed keys in `%s``%n", result.getRightVersion()));
+		out.append(String.format(".Removed keys in `%s`%n", result.getRightVersion()));
 		appendRemovedProperties(out, result);
 		return out.toString();
 	}
