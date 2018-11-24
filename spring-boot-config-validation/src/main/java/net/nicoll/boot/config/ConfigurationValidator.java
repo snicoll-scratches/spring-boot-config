@@ -46,7 +46,7 @@ public class ConfigurationValidator {
 	public ConfigurationMetadataRepository configurationMetadataRepository() throws Exception {
 		ConfigurationMetadataLoader loader =
 				new ConfigurationMetadataLoader(AetherDependencyResolver.withAllRepositories());
-		return loader.loadRepository("2.1.0.BUILD-SNAPSHOT");
+		return loader.loadRepository("2.1.1.BUILD-SNAPSHOT");
 	}
 
 	@Bean
