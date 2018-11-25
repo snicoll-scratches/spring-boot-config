@@ -28,7 +28,7 @@ public class DeprecatedPropertiesAnalyzer {
 
 	public static void main(String[] args) throws Exception {
 		String from = "2.0.6.RELEASE";
-		String to = "2.1.0.BUILD-SNAPSHOT";
+		String to = "2.1.1.BUILD-SNAPSHOT";
 
 		AetherDependencyResolver dependencyResolver = AetherDependencyResolver
 				.withAllRepositories();
