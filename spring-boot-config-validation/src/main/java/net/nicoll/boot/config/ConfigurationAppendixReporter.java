@@ -24,7 +24,8 @@ import org.springframework.util.StringUtils;
  */
 class ConfigurationAppendixReporter {
 
-	private static final Logger logger = LoggerFactory.getLogger(ConfigurationAppendixReporter.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(ConfigurationAppendixReporter.class);
 
 	private final AdvertizedPropertiesAnalysis analysis;
 
@@ -69,12 +70,13 @@ class ConfigurationAppendixReporter {
 				ConfigurationMetadataProperty metadata = this.items.get(key);
 				AdvertizedProperty advertizedProperty = this.analysis
 						.getResolvedProperties().get(key);
-				String expectedDefaultValue = determineDefaultValue(metadata.getDefaultValue());
+				String expectedDefaultValue = determineDefaultValue(
+						metadata.getDefaultValue());
 				if (!isDefaultValueSimilar(expectedDefaultValue,
 						advertizedProperty.getDefaultValue())) {
 					sb.append(String.format("%n\tWrong default value%n"));
-					sb.append(String.format("\t\texpected: '%s'%n",
-							expectedDefaultValue));
+					sb.append(
+							String.format("\t\texpected: '%s'%n", expectedDefaultValue));
 					sb.append(String.format("\t\tgot:      '%s'%n",
 							advertizedProperty.getDefaultValue()));
 				}
@@ -111,17 +113,26 @@ class ConfigurationAppendixReporter {
 		}
 		groups.keySet().forEach(item -> unresolved.remove(item + ".*"));
 
-
 		StringBuilder sb = new StringBuilder("\n");
 		sb.append("Configuration key statistics").append("\n");
-		sb.append("Advertized keys: ").append(this.analysis.propertiesCount()).append("\n");
+		sb.append("Advertized keys: ").append(this.analysis.propertiesCount())
+				.append("\n");
 		sb.append("Repository items: ").append(this.items.size()).append("\n");
 		sb.append("Matching items: ").append(found.size()).append("\n");
-		sb.append("Unresolved items (found in documentation but not in generated metadata): ").append(unresolved.size()).append("\n");
-		sb.append("Groups (group defined in the documentation but not each individual elements): ").append(groups.size()).append("\n");
-		sb.append("Undocumented items (found in generated metadata but not in documentation): ").append(undocumented.size()).append("\n");
-		sb.append("Deprecated items (found in generated metadata but not in documentation): ").append(deprecated.size()).append("\n");
-		sb.append("Mismatch items (description or default value not matching): ").append(mismatch.size()).append("\n");
+		sb.append(
+				"Unresolved items (found in documentation but not in generated metadata): ")
+				.append(unresolved.size()).append("\n");
+		sb.append(
+				"Groups (group defined in the documentation but not each individual elements): ")
+				.append(groups.size()).append("\n");
+		sb.append(
+				"Undocumented items (found in generated metadata but not in documentation): ")
+				.append(undocumented.size()).append("\n");
+		sb.append(
+				"Deprecated items (found in generated metadata but not in documentation): ")
+				.append(deprecated.size()).append("\n");
+		sb.append("Mismatch items (description or default value not matching): ")
+				.append(mismatch.size()).append("\n");
 		sb.append("\n");
 		sb.append("\n");
 		if (!unresolved.isEmpty()) {
@@ -137,8 +148,8 @@ class ConfigurationAppendixReporter {
 			sb.append("Groups").append("\n");
 			sb.append("----------------").append("\n");
 			for (Map.Entry<String, List<String>> group : groups.entrySet()) {
-				sb.append(group.getKey()).append(" with ")
-						.append(group.getValue().size()).append(" elements").append("\n");
+				sb.append(group.getKey()).append(" with ").append(group.getValue().size())
+						.append(" elements").append("\n");
 			}
 			sb.append("\n");
 		}
@@ -176,17 +187,7 @@ class ConfigurationAppendixReporter {
 		return sb.toString();
 	}
 
-	// Metadata generated from third party class
-	private static final List<String> THIRD_PARTY_GROUPS = Arrays.asList(
-			"spring.jta.atomikos.connectionfactory.", "spring.jta.atomikos.datasource.",
-			"spring.jta.bitronix.connectionfactory.", "spring.jta.bitronix.datasource.");
-
 	private boolean ignoreMismatchKey(String key) {
-		for (String group : THIRD_PARTY_GROUPS) {
-			if (key.startsWith(group)) {
-				return true;
-			}
-		}
 		return false;
 	}
 
