@@ -25,12 +25,14 @@ public class EnumDefaultValueAnalyzer {
 	private static final String NEW_LINE = System.getProperty("line.separator");
 
 	private static final List<String> EXCLUDES = Arrays.asList(
+			"management.endpoint.health.show-components",
 			"management.server.ssl.client-auth", // no default
+			"server.forward-headers-strategy",
 			"server.ssl.client-auth", // no default
 			"spring.artemis.mode", // no default
 			"spring.cache.type", // no default
-			"spring.data.cassandra.consistency-level", // no default
-			"spring.data.cassandra.serial-consistency-level", // no default
+			"spring.data.cassandra.request.consistency", // no default
+			"spring.data.cassandra.request.serial-consistency", // no default
 			"spring.gson.field-naming-policy", // no default
 			"spring.gson.long-serialization-policy", // no default
 			"spring.jackson.default-property-inclusion", // no default
@@ -43,6 +45,7 @@ public class EnumDefaultValueAnalyzer {
 			"spring.mvc.message-codes-resolver-format", // no default
 			"spring.rabbitmq.listener.direct.acknowledge-mode", // no default
 			"spring.rabbitmq.listener.simple.acknowledge-mode", // no default
+			"spring.rabbitmq.publisher-confirm-type",
 			"spring.session.store-type" // no default
 	);
 
@@ -52,7 +55,7 @@ public class EnumDefaultValueAnalyzer {
 	public static void main(String[] args) throws Exception {
 		ConfigurationMetadataLoader loader =
 				new ConfigurationMetadataLoader(AetherDependencyResolver.withAllRepositories());
-		ConfigurationMetadataRepository repo = loader.loadRepository("2.1.0.BUILD-SNAPSHOT");
+		ConfigurationMetadataRepository repo = loader.loadRepository("2.3.0.BUILD-SNAPSHOT");
 		List<ConfigurationMetadataGroup> groups = MetadataUtils.sortGroups(repo.getAllGroups().values());
 		List<ConfigurationMetadataProperty> matchingProperties = new ArrayList<>();
 		List<String> excludes = new ArrayList<>(EXCLUDES);
