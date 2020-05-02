@@ -23,6 +23,8 @@ import java.util.Map;
 
 import net.nicoll.boot.config.loader.AetherDependencyResolver;
 import net.nicoll.boot.config.loader.ConfigurationMetadataLoader;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
@@ -33,6 +35,8 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepos
  * @author Stephane Nicoll
  */
 public class ConfigDiffGenerator {
+
+	private static final Log logger = LogFactory.getLog(ConfigDiffGenerator.class);
 
 	private final ConfigurationMetadataLoader loader;
 
@@ -88,7 +92,11 @@ public class ConfigDiffGenerator {
 			ConfigurationMetadataProperty rightProperty = rightProperties.get(id);
 			if (rightProperty == null) {
 				matches.add(id);
-				result.register(ConfigDiffType.DELETE, leftProperty, null);
+				if (leftProperty.isDeprecated()) {
+					logger.info("Ignoring removal of deprecated property: " + id);
+				} else {
+					result.register(ConfigDiffType.DELETE, leftProperty, null);
+				}
 			}
 			else if (rightProperty.isDeprecated() && !leftProperty.isDeprecated()) {
 				matches.add(id);
