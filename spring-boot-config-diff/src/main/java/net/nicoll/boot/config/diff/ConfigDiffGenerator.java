@@ -94,7 +94,8 @@ public class ConfigDiffGenerator {
 				matches.add(id);
 				if (leftProperty.isDeprecated()) {
 					logger.info("Ignoring removal of deprecated property: " + id);
-				} else {
+				}
+				else {
 					result.register(ConfigDiffType.DELETE, leftProperty, null);
 				}
 			}
@@ -111,7 +112,12 @@ public class ConfigDiffGenerator {
 		}
 		for (ConfigurationMetadataProperty rightProperty : rightProperties.values()) {
 			if (!matches.contains(rightProperty.getId())) {
-				result.register(ConfigDiffType.ADD, null, rightProperty);
+				if (rightProperty.isDeprecated()) {
+					logger.info("Ignoring late addition of deprecated property: " + rightProperty.getId());
+				}
+				else {
+					result.register(ConfigDiffType.ADD, null, rightProperty);
+				}
 			}
 		}
 		return this;
