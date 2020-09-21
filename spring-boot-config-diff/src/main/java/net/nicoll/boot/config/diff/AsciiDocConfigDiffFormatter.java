@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 the original author or authors.
+ * Copyright 2012-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import net.nicoll.boot.metadata.ConsoleMetadataFormatter;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 import org.springframework.boot.configurationmetadata.Deprecation;
+import org.springframework.util.ObjectUtils;
 
 /**
  * Renders the diff in asciidoc format.
@@ -38,13 +39,13 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 		out.append(String.format("Configuration properties change between `%s` and "
 				+ "`%s`%n", result.getLeftVersion(), result.getRightVersion()));
 		out.append(System.lineSeparator());
-		out.append(String.format(".Deprecated keys in `%s`%n", result.getRightVersion()));
+		out.append(String.format("== Deprecated in `%s`%n", result.getRightVersion()));
 		appendDeprecatedProperties(out, result);
 		out.append(System.lineSeparator());
-		out.append(String.format(".New keys in `%s`%n", result.getRightVersion()));
+		out.append(String.format("== New in `%s`%n", result.getRightVersion()));
 		appendAddedProperties(out, result);
 		out.append(System.lineSeparator());
-		out.append(String.format(".Removed keys in `%s`%n", result.getRightVersion()));
+		out.append(String.format("== Removed in `%s`%n", result.getRightVersion()));
 		appendRemovedProperties(out, result);
 		return out.toString();
 	}
@@ -54,13 +55,19 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 				result.getPropertiesDiffFor(ConfigDiffType.DEPRECATE), false)
 				.stream().filter(this::isDeprecatedInRelease)
 				.collect(Collectors.toList());
-		out.append(String.format("|======================%n"));
-		out.append(String.format("|Key  |Replacement |Reason%n"));
-		properties.forEach(diff -> {
-			ConfigurationMetadataProperty property = diff.getRight();
-			appendDeprecatedProperty(out, property);
-		});
-		out.append(String.format("|======================%n"));
+		if (ObjectUtils.isEmpty(properties)) {
+			out.append(String.format("None.%n"));
+		}
+		else {
+			out.append(String.format("|======================%n"));
+			out.append(String.format("|Key  |Replacement |Reason%n"));
+			properties.forEach(diff -> {
+				ConfigurationMetadataProperty property = diff.getRight();
+				appendDeprecatedProperty(out, property);
+			});
+			out.append(String.format("|======================%n"));
+		}
+		out.append(String.format("%n%n"));
 	}
 
 	private boolean isDeprecatedInRelease(
@@ -72,30 +79,41 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 	private void appendAddedProperties(StringBuilder out, ConfigDiffResult result) {
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = sortProperties(
 				result.getPropertiesDiffFor(ConfigDiffType.ADD), false);
-		out.append(String.format("|======================%n"));
-		out.append(String.format("|Key  |Default value |Description%n"));
-		properties.forEach(diff -> {
-			appendRegularProperty(out, diff.getRight());
+		if (ObjectUtils.isEmpty(properties)) {
+			out.append(String.format("None.%n"));
+		}
+		else {
+			out.append(String.format("|======================%n"));
+			out.append(String.format("|Key  |Default value |Description%n"));
+			properties.forEach(diff -> {
+				appendRegularProperty(out, diff.getRight());
 
-		});
-		out.append(String.format("|======================%n"));
+			});
+			out.append(String.format("|======================%n"));
+		}
+		out.append(String.format("%n%n"));
 	}
 
 	private void appendRemovedProperties(StringBuilder out,
 			ConfigDiffResult result) {
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = getRemovedProperties(result);
-		out.append(String.format("|======================%n"));
-		out.append(String.format("|Key  |Replacement |Reason%n"));
-		properties.forEach(diff -> {
-					if (diff.getRight() != null) {
-						appendDeprecatedProperty(out, diff.getRight());
+		if (ObjectUtils.isEmpty(properties)) {
+			out.append(String.format("None.%n"));
+		}
+		else {
+			out.append(String.format("|======================%n"));
+			out.append(String.format("|Key  |Replacement |Reason%n"));
+			properties.forEach(diff -> {
+						if (diff.getRight() != null) {
+							appendDeprecatedProperty(out, diff.getRight());
+						}
+						else {
+							appendRegularProperty(out, diff.getLeft());
+						}
 					}
-					else {
-						appendRegularProperty(out, diff.getLeft());
-					}
-				}
-		);
-		out.append(String.format("|======================%n"));
+			);
+			out.append(String.format("|======================%n"));
+		}
 	}
 
 	private List<ConfigDiffEntry<ConfigurationMetadataProperty>> getRemovedProperties(
