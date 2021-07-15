@@ -29,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
+import org.springframework.boot.configurationmetadata.Deprecation.Level;
 
 /**
  *
@@ -92,8 +93,8 @@ public class ConfigDiffGenerator {
 			ConfigurationMetadataProperty rightProperty = rightProperties.get(id);
 			if (rightProperty == null) {
 				matches.add(id);
-				if (leftProperty.isDeprecated()) {
-					logger.info("Ignoring removal of deprecated property: " + id);
+				if (leftProperty.isDeprecated() && leftProperty.getDeprecation().getLevel() == Level.ERROR) {
+					logger.info("Ignoring removal of ERROR deprecated property: " + id);
 				}
 				else {
 					result.register(ConfigDiffType.DELETE, leftProperty, null);
