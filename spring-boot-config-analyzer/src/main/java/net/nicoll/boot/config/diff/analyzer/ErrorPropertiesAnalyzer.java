@@ -23,7 +23,7 @@ public class ErrorPropertiesAnalyzer {
 	public static void main(String[] args) throws Exception {
 		ConfigurationMetadataLoader loader =
 				new ConfigurationMetadataLoader(AetherDependencyResolver.withAllRepositories());
-		ConfigurationMetadataRepository repo = loader.loadRepository("2.4.0-SNAPSHOT");
+		ConfigurationMetadataRepository repo = loader.loadRepository("2.6.0-SNAPSHOT");
 		List<ConfigurationMetadataGroup> groups = MetadataUtils.sortGroups(repo.getAllGroups().values());
 		List<ConfigurationMetadataProperty> validProperties = new ArrayList<>();
 		List<ConfigurationMetadataProperty> invalidProperties = new ArrayList<>();
