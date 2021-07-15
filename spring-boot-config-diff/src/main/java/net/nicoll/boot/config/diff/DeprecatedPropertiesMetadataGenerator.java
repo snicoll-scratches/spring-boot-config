@@ -31,8 +31,8 @@ import org.springframework.util.MultiValueMap;
 public class DeprecatedPropertiesMetadataGenerator {
 
 	public static void main(String[] args) throws Exception {
-		String from = "2.3.5.RELEASE";
-		String to = "2.4.0-SNAPSHOT";
+		String from = "2.5.3-SNAPSHOT";
+		String to = "2.6.0-SNAPSHOT";
 
 		AetherDependencyResolver dependencyResolver = AetherDependencyResolver
 				.withAllRepositories();
@@ -169,18 +169,12 @@ public class DeprecatedPropertiesMetadataGenerator {
 
 		private final String type;
 
-		private final String description;
-
-		private final Object defaultValue;
-
 		private final Deprecation deprecation;
 
 		public DeprecatedItem(ConfigurationMetadataProperty property,
 				String replacement, String reason) {
 			this.name = property.getId();
 			this.type = property.getType();
-			this.description = property.getDescription();
-			this.defaultValue = property.getDefaultValue();
 			this.deprecation = new Deprecation(replacement, reason);
 		}
 
@@ -190,14 +184,6 @@ public class DeprecatedPropertiesMetadataGenerator {
 
 		public String getType() {
 			return this.type;
-		}
-
-		public String getDescription() {
-			return this.description;
-		}
-
-		public Object getDefaultValue() {
-			return this.defaultValue;
 		}
 
 		public Deprecation getDeprecation() {
