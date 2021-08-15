@@ -31,7 +31,7 @@ import org.springframework.util.MultiValueMap;
 public class DeprecatedPropertiesMetadataGenerator {
 
 	public static void main(String[] args) throws Exception {
-		String from = "2.5.3-SNAPSHOT";
+		String from = "2.6.0-M1";
 		String to = "2.6.0-SNAPSHOT";
 
 		AetherDependencyResolver dependencyResolver = AetherDependencyResolver
