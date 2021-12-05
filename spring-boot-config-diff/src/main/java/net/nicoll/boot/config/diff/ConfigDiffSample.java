@@ -28,7 +28,7 @@ public class ConfigDiffSample {
 		ConfigDiffGenerator configDiffGenerator = new ConfigDiffGenerator(
 				AetherDependencyResolver.withAllRepositories());
 		ConfigDiffResult configDiffResult = configDiffGenerator.generateDiff(
-				"2.5.7", "2.6.0");
+				"2.6.1", "2.7.0-SNAPSHOT");
 		ConfigDiffFormatter formatter = new AsciiDocConfigDiffFormatter();
 		System.out.println(formatter.formatDiff(configDiffResult));
 	}
