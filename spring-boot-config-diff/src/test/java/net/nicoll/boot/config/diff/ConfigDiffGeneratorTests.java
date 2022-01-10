@@ -41,8 +41,10 @@ public class ConfigDiffGeneratorTests {
 		assertProperty(added.get(0).getRight(), "test.add", String.class, "new");
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> delete = diff.getPropertiesDiffFor(
 				ConfigDiffType.DELETE);
-		assertThat(delete).hasSize(1);
-		assertProperty(delete.get(0).getLeft(), "test.delete", String.class, "delete");
+		assertThat(delete)
+				.anySatisfy((entry) -> assertProperty(entry.getLeft(), "test.delete", String.class, "delete"))
+				.anySatisfy((entry) -> assertProperty(entry.getRight(), "test.delete.deprecated", String.class, "delete"))
+				.hasSize(2);
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> deprecate = diff.getPropertiesDiffFor(
 				ConfigDiffType.DEPRECATE);
 		assertThat(deprecate).hasSize(1);

@@ -104,6 +104,11 @@ public class ConfigDiffGenerator {
 				matches.add(id);
 				result.register(ConfigDiffType.DEPRECATE, leftProperty, rightProperty);
 			}
+			else if (leftProperty.isDeprecated() && leftProperty.getDeprecation().getLevel() == Level.WARNING
+					&& rightProperty.isDeprecated() && rightProperty.getDeprecation().getLevel() == Level.ERROR) {
+				matches.add(id);
+				result.register(ConfigDiffType.DELETE, leftProperty, rightProperty);
+			}
 			else {
 				matches.add(id);
 				ConfigDiffType diffType = (equals(leftProperty, rightProperty)

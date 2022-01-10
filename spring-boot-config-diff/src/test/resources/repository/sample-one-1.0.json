@@ -17,6 +17,15 @@
       "type": "java.lang.String",
       "description": "Test delete.",
       "defaultValue": "delete"
+    },
+    {
+      "name": "test.delete.deprecated",
+      "type": "java.lang.String",
+      "description": "Test delete deprecated.",
+      "defaultValue": "delete",
+      "deprecation": {
+        "level": "warning"
+      }
     }
   ]
 }
