@@ -108,7 +108,7 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 							appendDeprecatedProperty(out, diff.getRight());
 						}
 						else {
-							appendRegularProperty(out, diff.getLeft());
+							appendDeprecatedProperty(out, diff.getLeft());
 						}
 					}
 			);
@@ -140,7 +140,7 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 	}
 
 	private void appendDeprecatedProperty(StringBuilder out, ConfigurationMetadataProperty property) {
-		Deprecation deprecation = property.getDeprecation();
+		Deprecation deprecation = (property.getDeprecation() != null) ? property.getDeprecation() :  new Deprecation();
 		out.append("|`").append(property.getId()).append("` |");
 		if (deprecation.getReplacement() != null) {
 			out.append("`").append(deprecation.getReplacement()).append("`");
