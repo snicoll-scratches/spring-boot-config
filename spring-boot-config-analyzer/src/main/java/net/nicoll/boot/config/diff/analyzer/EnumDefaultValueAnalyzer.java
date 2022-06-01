@@ -59,7 +59,7 @@ public class EnumDefaultValueAnalyzer {
 	public static void main(String[] args) throws Exception {
 		ConfigurationMetadataLoader loader =
 				new ConfigurationMetadataLoader(AetherDependencyResolver.withAllRepositories());
-		ConfigurationMetadataRepository repo = loader.loadRepository("2.4.0-SNAPSHOT");
+		ConfigurationMetadataRepository repo = loader.loadRepository("3.0.0-SNAPSHOT");
 		List<ConfigurationMetadataGroup> groups = MetadataUtils.sortGroups(repo.getAllGroups().values());
 		List<ConfigurationMetadataProperty> matchingProperties = new ArrayList<>();
 		List<String> excludes = new ArrayList<>(EXCLUDES);
