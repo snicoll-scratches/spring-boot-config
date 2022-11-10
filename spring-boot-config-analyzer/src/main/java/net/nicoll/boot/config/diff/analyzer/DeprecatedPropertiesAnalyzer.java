@@ -15,6 +15,7 @@ import net.nicoll.boot.config.loader.ConfigurationMetadataLoader;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
+import org.springframework.boot.configurationmetadata.Deprecation.Level;
 
 /**
  * Analyze deprecated configuration, making sure that the replacement refers to an
@@ -25,8 +26,8 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepos
 public class DeprecatedPropertiesAnalyzer {
 
 	public static void main(String[] args) throws Exception {
-		String from = "2.5.3-SNAPSHOT";
-		String to = "2.6.0-SNAPSHOT";
+		String from = "2.7.5";
+		String to = "3.0.0-SNAPSHOT";
 
 		AetherDependencyResolver dependencyResolver = AetherDependencyResolver.withAllRepositories();
 		ConfigDiffGenerator configDiffGenerator = new ConfigDiffGenerator(dependencyResolver);
@@ -52,7 +53,7 @@ public class DeprecatedPropertiesAnalyzer {
 			List<String> invalid = new ArrayList<>();
 			List<String> errors = new ArrayList<>();
 			List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = diff
-					.getPropertiesDiffFor(ConfigDiffType.DEPRECATE);
+					.getPropertiesDiffFor(ConfigDiffType.DEPRECATE).stream().filter(this::isSupported).toList();
 
 			properties.stream().filter(this::hasReplacement).forEach(e -> {
 				ConfigurationMetadataProperty current = e.right();
@@ -124,8 +125,12 @@ public class DeprecatedPropertiesAnalyzer {
 			return null;
 		}
 
+		private boolean isSupported(ConfigDiffEntry<ConfigurationMetadataProperty> e) {
+			return e.right().getDeprecation().getLevel() == Level.WARNING;
+		}
+
 		private boolean hasReplacement(ConfigDiffEntry<ConfigurationMetadataProperty> e) {
-			return e.right().getDeprecation() != null && e.right().getDeprecation().getReplacement() != null;
+			return e.right().getDeprecation().getReplacement() != null;
 		}
 
 	}
