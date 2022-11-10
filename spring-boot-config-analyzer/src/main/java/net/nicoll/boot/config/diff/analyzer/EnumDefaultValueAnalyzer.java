@@ -23,15 +23,36 @@ public class EnumDefaultValueAnalyzer {
 
 	private static final String NEW_LINE = System.getProperty("line.separator");
 
-	private static final List<String> EXCLUDES = Arrays.asList("management.endpoint.health.show-components",
+	// @formatter:off
+	private static final List<String> EXCLUDES = Arrays.asList(
+			"management.influx.metrics.export.api-version", // auto-detected
+			"management.metrics.export.ganglia.addressing-mode", // deprecated
+			"management.metrics.export.graphite.protocol", // deprecated
+			"management.metrics.export.influx.api-version", // deprecated
+			"management.metrics.export.influx.consistency", // deprecated
+			"management.metrics.export.prometheus.pushgateway.shutdown-operation", // deprecated
+			"management.metrics.export.simple.mode", // deprecated
+			"management.metrics.export.statsd.flavor", // deprecated
+			"management.metrics.export.statsd.protocol", // deprecated
 			"management.server.ssl.client-auth", // no default
-			"server.forward-headers-strategy", "server.ssl.client-auth", // no default
+			"server.forward-headers-strategy",
+			"server.ssl.client-auth", // no default
+			"server.reactive.session.cookie.same-site",
+			"server.servlet.session.cookie.same-site",
 			"spring.artemis.mode", // no default
+			"spring.banner.image.pixelmode", // removed
+			"spring.batch.initialize-schema", // deprecated
+			"spring.batch.jdbc.isolation-level-for-create", // auto-detected
 			"spring.cache.type", // no default
-			"spring.data.cassandra.consistency-level", // no default
+			"spring.cassandra.request.consistency", // deprecated
+			"spring.cassandra.request.serial-consistency", // deprecated
+			"spring.config.activate.on-cloud-platform", // no default
 			"spring.data.cassandra.request.consistency", // no default
-			"spring.data.cassandra.serial-consistency-level", // no default
 			"spring.data.cassandra.request.serial-consistency", // no default
+			"spring.data.couchbase.consistency", // removed
+			"spring.data.redis.client-type", // auto-detected
+			"spring.datasource.embedded-database-connection", // auto-detected
+			"spring.datasource.initialization-mode", // removed
 			"spring.gson.field-naming-policy", // no default
 			"spring.gson.long-serialization-policy", // no default
 			"spring.jackson.default-property-inclusion", // no default
@@ -41,13 +62,17 @@ public class EnumDefaultValueAnalyzer {
 			"spring.jpa.database", // no default
 			"spring.kafka.listener.ack-mode", // no default
 			"spring.main.web-application-type", // no default
+			"spring.main.cloud-platform", // no default
+			"spring.mvc.locale-resolver", // removed
 			"spring.mvc.message-codes-resolver-format", // no default
+			"spring.netty.leak-detection", // auto-detected
 			"spring.rabbitmq.listener.direct.acknowledge-mode", // no default
 			"spring.rabbitmq.listener.simple.acknowledge-mode", // no default
-			"spring.rabbitmq.publisher-confirm-type", "spring.redis.client-type",
-			"spring.rsocket.server.ssl.client-auth", "spring.session.store-type" // no
-																					// default
+			"spring.rabbitmq.publisher-confirm-type",
+			"spring.redis.client-type",
+			"spring.rsocket.server.ssl.client-auth"
 	);
+	// @formatter:on
 
 	private static final Logger logger = LoggerFactory.getLogger(EnumDefaultValueAnalyzer.class);
 
