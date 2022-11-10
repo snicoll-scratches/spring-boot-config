@@ -32,7 +32,6 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepos
 import org.springframework.boot.configurationmetadata.Deprecation.Level;
 
 /**
- *
  * @author Stephane Nicoll
  */
 public class ConfigDiffGenerator {
@@ -58,8 +57,8 @@ public class ConfigDiffGenerator {
 		return result;
 	}
 
-	protected ConfigDiffGenerator diffGroup(ConfigDiffResult result,
-			ConfigurationMetadataRepository left, ConfigurationMetadataRepository right) {
+	protected ConfigDiffGenerator diffGroup(ConfigDiffResult result, ConfigurationMetadataRepository left,
+			ConfigurationMetadataRepository right) {
 		List<String> matches = new ArrayList<>();
 		Map<String, ConfigurationMetadataGroup> leftGroups = left.getAllGroups();
 		Map<String, ConfigurationMetadataGroup> rightGroups = right.getAllGroups();
@@ -71,7 +70,8 @@ public class ConfigDiffGenerator {
 			}
 			else {
 				matches.add(id);
-				ConfigDiffType diffType = (equals(leftGroup, rightGroup) ? ConfigDiffType.EQUALS : ConfigDiffType.MODIFY);
+				ConfigDiffType diffType = (equals(leftGroup, rightGroup) ? ConfigDiffType.EQUALS
+						: ConfigDiffType.MODIFY);
 				result.register(diffType, leftGroup, rightGroup);
 			}
 		}
@@ -83,8 +83,8 @@ public class ConfigDiffGenerator {
 		return this;
 	}
 
-	protected ConfigDiffGenerator diffItem(ConfigDiffResult result,
-			ConfigurationMetadataRepository left, ConfigurationMetadataRepository right) {
+	protected ConfigDiffGenerator diffItem(ConfigDiffResult result, ConfigurationMetadataRepository left,
+			ConfigurationMetadataRepository right) {
 		List<String> matches = new ArrayList<>();
 		Map<String, ConfigurationMetadataProperty> leftProperties = left.getAllProperties();
 		Map<String, ConfigurationMetadataProperty> rightProperties = right.getAllProperties();
@@ -111,8 +111,8 @@ public class ConfigDiffGenerator {
 			}
 			else {
 				matches.add(id);
-				ConfigDiffType diffType = (equals(leftProperty, rightProperty)
-						? ConfigDiffType.EQUALS : ConfigDiffType.MODIFY);
+				ConfigDiffType diffType = (equals(leftProperty, rightProperty) ? ConfigDiffType.EQUALS
+						: ConfigDiffType.MODIFY);
 				result.register(diffType, leftProperty, rightProperty);
 			}
 		}

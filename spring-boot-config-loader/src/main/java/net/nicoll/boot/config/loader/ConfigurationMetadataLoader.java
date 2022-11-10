@@ -31,7 +31,6 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepos
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepositoryJsonBuilder;
 
 /**
- *
  * @author Stephane Nicoll
  */
 public class ConfigurationMetadataLoader {
@@ -60,14 +59,12 @@ public class ConfigurationMetadataLoader {
 		load(consumer, "org.springframework.boot:spring-boot-test-autoconfigure:" + version, false);
 	}
 
-	private void load(Consumer consumer, String coordinates, boolean mandatory)
-			throws IOException {
+	private void load(Consumer consumer, String coordinates, boolean mandatory) throws IOException {
 		try {
 			ArtifactResult artifactResult = dependencyResolver.resolveDependency(coordinates);
 			File file = artifactResult.getArtifact().getFile();
-			try (URLClassLoader classLoader = new URLClassLoader(new URL[] {file.toURI().toURL()}, null)) {
-				InputStream stream = classLoader
-						.getResourceAsStream("META-INF/spring-configuration-metadata.json");
+			try (URLClassLoader classLoader = new URLClassLoader(new URL[] { file.toURI().toURL() }, null)) {
+				InputStream stream = classLoader.getResourceAsStream("META-INF/spring-configuration-metadata.json");
 				if (stream != null) {
 					try (stream) {
 						logger.info("Adding meta-data from '" + coordinates + "'");
@@ -90,6 +87,7 @@ public class ConfigurationMetadataLoader {
 	private interface Consumer {
 
 		void accept(InputStream in) throws IOException;
+
 	}
 
 }

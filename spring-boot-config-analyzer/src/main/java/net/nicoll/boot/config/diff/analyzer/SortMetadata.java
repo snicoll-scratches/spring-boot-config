@@ -50,8 +50,8 @@ public class SortMetadata {
 	}
 
 	private static List<JsonNode> sortByName(ArrayNode elements) {
-		return StreamSupport.stream(
-				Spliterators.spliteratorUnknownSize(elements.elements(), Spliterator.ORDERED), false)
+		return StreamSupport
+				.stream(Spliterators.spliteratorUnknownSize(elements.elements(), Spliterator.ORDERED), false)
 				.sorted(Comparator.comparing(o -> o.get("name").asText())).collect(Collectors.toList());
 	}
 

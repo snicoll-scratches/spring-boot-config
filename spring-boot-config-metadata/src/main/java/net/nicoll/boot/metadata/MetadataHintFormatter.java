@@ -23,20 +23,17 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepos
 import org.springframework.util.StringUtils;
 
 /**
- *
  * @author Stephane Nicoll
  */
-public class MetadataHintFormatter
-		extends AbstractMetadataFormatter implements MetadataFormatter {
+public class MetadataHintFormatter extends AbstractMetadataFormatter implements MetadataFormatter {
 
 	@Override
 	public String formatMetadata(ConfigurationMetadataRepository repository) {
 		StringBuilder out = new StringBuilder();
 		for (ConfigurationMetadataProperty property : repository.getAllProperties().values()) {
 			if (hasDocumentationHints(property)) {
-				out.append("Hints - ").append(property.getId()).append(" (")
-						.append(property.getDescription()).append(")")
-						.append(System.lineSeparator());
+				out.append("Hints - ").append(property.getId()).append(" (").append(property.getDescription())
+						.append(")").append(System.lineSeparator());
 			}
 		}
 		return out.toString();
@@ -50,4 +47,5 @@ public class MetadataHintFormatter
 		String content = description.toLowerCase();
 		return content.contains("possible values") || content.contains("can be");
 	}
+
 }

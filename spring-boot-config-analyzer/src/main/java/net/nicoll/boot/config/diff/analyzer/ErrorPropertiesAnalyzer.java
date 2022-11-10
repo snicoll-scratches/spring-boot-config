@@ -21,15 +21,15 @@ import org.springframework.boot.configurationmetadata.Deprecation.Level;
 public class ErrorPropertiesAnalyzer {
 
 	public static void main(String[] args) throws Exception {
-		ConfigurationMetadataLoader loader =
-				new ConfigurationMetadataLoader(AetherDependencyResolver.withAllRepositories());
+		ConfigurationMetadataLoader loader = new ConfigurationMetadataLoader(
+				AetherDependencyResolver.withAllRepositories());
 		ConfigurationMetadataRepository repo = loader.loadRepository("2.6.0-SNAPSHOT");
 		List<ConfigurationMetadataGroup> groups = MetadataUtils.sortGroups(repo.getAllGroups().values());
 		List<ConfigurationMetadataProperty> validProperties = new ArrayList<>();
 		List<ConfigurationMetadataProperty> invalidProperties = new ArrayList<>();
 		for (ConfigurationMetadataGroup group : groups) {
-			List<ConfigurationMetadataProperty> properties =
-					MetadataUtils.sortProperties(group.getProperties().values());
+			List<ConfigurationMetadataProperty> properties = MetadataUtils
+					.sortProperties(group.getProperties().values());
 			for (ConfigurationMetadataProperty property : properties) {
 				if (property.isDeprecated() && property.getDeprecation().getLevel() == Level.ERROR) {
 					String replacement = property.getDeprecation().getReplacement();
@@ -54,8 +54,8 @@ public class ErrorPropertiesAnalyzer {
 		if (!invalidProperties.isEmpty()) {
 			message.append(String.format("%n%n"));
 			message.append(String.format("Error properties with a replacement. Should they be flagged with error%n"));
-			invalidProperties.forEach(e -> message.append(String.format("\t%s (replacement: %s)%n", e.getId(),
-					e.getDeprecation().getReplacement())));
+			invalidProperties.forEach(e -> message
+					.append(String.format("\t%s (replacement: %s)%n", e.getId(), e.getDeprecation().getReplacement())));
 		}
 		if (!validProperties.isEmpty()) {
 			message.append(String.format("%n%n"));
@@ -64,4 +64,5 @@ public class ErrorPropertiesAnalyzer {
 		}
 		System.out.println(message);
 	}
+
 }

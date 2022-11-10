@@ -36,8 +36,8 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 	@Override
 	public String formatDiff(ConfigDiffResult result) {
 		StringBuilder out = new StringBuilder();
-		out.append(String.format("Configuration properties change between `%s` and "
-				+ "`%s`%n", result.getLeftVersion(), result.getRightVersion()));
+		out.append(String.format("Configuration properties change between `%s` and " + "`%s`%n",
+				result.getLeftVersion(), result.getRightVersion()));
 		out.append(System.lineSeparator());
 		out.append(String.format("== Deprecated in `%s`%n", result.getRightVersion()));
 		appendDeprecatedProperties(out, result);
@@ -52,9 +52,8 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 
 	private void appendDeprecatedProperties(StringBuilder out, ConfigDiffResult result) {
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = sortProperties(
-				result.getPropertiesDiffFor(ConfigDiffType.DEPRECATE), false)
-				.stream().filter(this::isDeprecatedInRelease)
-				.collect(Collectors.toList());
+				result.getPropertiesDiffFor(ConfigDiffType.DEPRECATE), false).stream()
+						.filter(this::isDeprecatedInRelease).collect(Collectors.toList());
 		if (ObjectUtils.isEmpty(properties)) {
 			out.append(String.format("None.%n"));
 		}
@@ -70,10 +69,9 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 		out.append(String.format("%n%n"));
 	}
 
-	private boolean isDeprecatedInRelease(
-			ConfigDiffEntry<ConfigurationMetadataProperty> diff) {
-		return diff.right().getDeprecation() != null &&
-				Deprecation.Level.ERROR != diff.right().getDeprecation().getLevel();
+	private boolean isDeprecatedInRelease(ConfigDiffEntry<ConfigurationMetadataProperty> diff) {
+		return diff.right().getDeprecation() != null
+				&& Deprecation.Level.ERROR != diff.right().getDeprecation().getLevel();
 	}
 
 	private void appendAddedProperties(StringBuilder out, ConfigDiffResult result) {
@@ -91,8 +89,7 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 		out.append(String.format("%n%n"));
 	}
 
-	private void appendRemovedProperties(StringBuilder out,
-			ConfigDiffResult result) {
+	private void appendRemovedProperties(StringBuilder out, ConfigDiffResult result) {
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = getRemovedProperties(result);
 		if (ObjectUtils.isEmpty(properties)) {
 			out.append(String.format("None.%n"));
@@ -101,20 +98,18 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 			out.append(String.format("|======================%n"));
 			out.append(String.format("|Key  |Replacement |Reason%n"));
 			properties.forEach(diff -> {
-						if (diff.right() != null) {
-							appendDeprecatedProperty(out, diff.right());
-						}
-						else {
-							appendDeprecatedProperty(out, diff.left());
-						}
-					}
-			);
+				if (diff.right() != null) {
+					appendDeprecatedProperty(out, diff.right());
+				}
+				else {
+					appendDeprecatedProperty(out, diff.left());
+				}
+			});
 			out.append(String.format("|======================%n"));
 		}
 	}
 
-	private List<ConfigDiffEntry<ConfigurationMetadataProperty>> getRemovedProperties(
-			ConfigDiffResult result) {
+	private List<ConfigDiffEntry<ConfigurationMetadataProperty>> getRemovedProperties(ConfigDiffResult result) {
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = new ArrayList<>(
 				result.getPropertiesDiffFor(ConfigDiffType.DELETE));
 		properties.addAll(result.getPropertiesDiffFor(ConfigDiffType.DEPRECATE).stream()
@@ -122,12 +117,11 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 		return sortProperties(properties, null);
 	}
 
-	private void appendRegularProperty(StringBuilder out,
-			ConfigurationMetadataProperty property) {
+	private void appendRegularProperty(StringBuilder out, ConfigurationMetadataProperty property) {
 		out.append("|`").append(property.getId()).append("` |");
 		if (property.getDefaultValue() != null) {
-			out.append("`").append(ConsoleMetadataFormatter
-					.defaultValueToString(property.getDefaultValue())).append("`");
+			out.append("`").append(ConsoleMetadataFormatter.defaultValueToString(property.getDefaultValue()))
+					.append("`");
 		}
 		out.append(" |");
 		if (property.getDescription() != null) {
@@ -137,7 +131,7 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 	}
 
 	private void appendDeprecatedProperty(StringBuilder out, ConfigurationMetadataProperty property) {
-		Deprecation deprecation = (property.getDeprecation() != null) ? property.getDeprecation() :  new Deprecation();
+		Deprecation deprecation = (property.getDeprecation() != null) ? property.getDeprecation() : new Deprecation();
 		out.append("|`").append(property.getId()).append("` |");
 		if (deprecation.getReplacement() != null) {
 			out.append("`").append(deprecation.getReplacement()).append("`");

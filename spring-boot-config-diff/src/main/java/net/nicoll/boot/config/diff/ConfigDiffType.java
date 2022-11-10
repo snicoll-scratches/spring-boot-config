@@ -38,8 +38,8 @@ public enum ConfigDiffType {
 	MODIFY,
 
 	/**
-	 * The entry has been made deprecated. It may or may not still exist in the
-	 * previous version.
+	 * The entry has been made deprecated. It may or may not still exist in the previous
+	 * version.
 	 */
 	DEPRECATE,
 

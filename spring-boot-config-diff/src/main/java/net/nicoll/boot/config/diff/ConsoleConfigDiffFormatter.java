@@ -28,7 +28,6 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 
 /**
- *
  * @author Stephane Nicoll
  */
 public class ConsoleConfigDiffFormatter extends AbstractConfigDiffFormatter {
@@ -37,8 +36,8 @@ public class ConsoleConfigDiffFormatter extends AbstractConfigDiffFormatter {
 	public String formatDiff(ConfigDiffResult result) {
 		StringBuilder out = new StringBuilder();
 		out.append(String.format("===========================================================================%n"));
-		out.append(String.format("Config meta-data diff between '%s' and '%s'%n",
-				result.getLeftVersion(), result.getRightVersion()));
+		out.append(String.format("Config meta-data diff between '%s' and '%s'%n", result.getLeftVersion(),
+				result.getRightVersion()));
 		outputGroups(out, result, true);
 		outputGroups(out, result, false);
 		outputModifiedGroups(out, result);
@@ -50,45 +49,41 @@ public class ConsoleConfigDiffFormatter extends AbstractConfigDiffFormatter {
 
 	private void outputGroups(StringBuilder out, ConfigDiffResult result, boolean added) {
 		out.append(String.format("===========================================================================%n"));
-		List<ConfigDiffEntry<ConfigurationMetadataGroup>> groups =
-				sortGroups(result.getGroupsDiffFor(added ? ConfigDiffType.ADD : ConfigDiffType.DELETE), !added);
-		out.append(String.format("Groups %s (%d):%n", added ? "added" : "removed",
-				groups.size()));
+		List<ConfigDiffEntry<ConfigurationMetadataGroup>> groups = sortGroups(
+				result.getGroupsDiffFor(added ? ConfigDiffType.ADD : ConfigDiffType.DELETE), !added);
+		out.append(String.format("Groups %s (%d):%n", added ? "added" : "removed", groups.size()));
 		out.append(System.lineSeparator());
 		for (ConfigDiffEntry<ConfigurationMetadataGroup> diff : groups) {
 			ConfigurationMetadataGroup group = added ? diff.right() : diff.left();
 			int size = group.getProperties().size();
-			out.append(getGroupId(group)).append(" (").append(added ? "+" : "-").append(
-					propertiesCount(size)).append(")").append(System.lineSeparator());
+			out.append(getGroupId(group)).append(" (").append(added ? "+" : "-").append(propertiesCount(size))
+					.append(")").append(System.lineSeparator());
 		}
 	}
 
 	private void outputProperties(StringBuilder out, ConfigDiffResult result, boolean added) {
 		out.append(String.format("===========================================================================%n"));
-		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties =
-				sortProperties(result.getPropertiesDiffFor(added ? ConfigDiffType.ADD : ConfigDiffType.DELETE), !added);
-		out.append("Properties ").append(added ? "added" : "removed").append(" (")
-				.append(properties.size()).append("):").append(System.lineSeparator());
+		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = sortProperties(
+				result.getPropertiesDiffFor(added ? ConfigDiffType.ADD : ConfigDiffType.DELETE), !added);
+		out.append("Properties ").append(added ? "added" : "removed").append(" (").append(properties.size())
+				.append("):").append(System.lineSeparator());
 		out.append(System.lineSeparator());
 		for (ConfigDiffEntry<ConfigurationMetadataProperty> diff : properties) {
 			ConfigurationMetadataProperty property = (added ? diff.right() : diff.left());
-			out.append(ConsoleMetadataFormatter.formatProperty(property))
-					.append(System.lineSeparator());
+			out.append(ConsoleMetadataFormatter.formatProperty(property)).append(System.lineSeparator());
 		}
 	}
 
 	private void outputModifiedGroups(StringBuilder out, ConfigDiffResult result) {
 		out.append(String.format("===========================================================================%n"));
-		List<ConfigDiffEntry<ConfigurationMetadataGroup>> groups =
-				sortGroups(result.getGroupsDiffFor(ConfigDiffType.MODIFY), true);
-		out.append("Groups modified (").
-				append(groups.size()).append("):").append(System.lineSeparator());
+		List<ConfigDiffEntry<ConfigurationMetadataGroup>> groups = sortGroups(
+				result.getGroupsDiffFor(ConfigDiffType.MODIFY), true);
+		out.append("Groups modified (").append(groups.size()).append("):").append(System.lineSeparator());
 		out.append(System.lineSeparator());
 		for (ConfigDiffEntry<ConfigurationMetadataGroup> diff : groups) {
 			outputModifiedGroup(out, diff);
 		}
 	}
-
 
 	private void outputModifiedGroup(StringBuilder out, ConfigDiffEntry<ConfigurationMetadataGroup> diff) {
 		Collection<String> deleted = new ArrayList<>();
@@ -105,9 +100,8 @@ public class ConsoleConfigDiffFormatter extends AbstractConfigDiffFormatter {
 				added.add(key);
 			}
 		}
-		out.append(getGroupId(diff.left())).append(" (+").append(propertiesCount(
-				added.size())).append(" -").append(propertiesCount(deleted.size()))
-				.append(")").append(System.lineSeparator());
+		out.append(getGroupId(diff.left())).append(" (+").append(propertiesCount(added.size())).append(" -")
+				.append(propertiesCount(deleted.size())).append(")").append(System.lineSeparator());
 
 	}
 

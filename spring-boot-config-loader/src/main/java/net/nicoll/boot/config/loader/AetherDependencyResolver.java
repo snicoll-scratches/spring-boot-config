@@ -49,14 +49,14 @@ import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy;
  */
 public class AetherDependencyResolver {
 
-	public static final RemoteRepository SPRING_IO_RELEASE = new RemoteRepository.Builder("release",
-			"default", "https://repo.spring.io/release").build();
+	public static final RemoteRepository SPRING_IO_RELEASE = new RemoteRepository.Builder("release", "default",
+			"https://repo.spring.io/release").build();
 
-	public static final RemoteRepository SPRING_IO_MILESTONE = new RemoteRepository.Builder("milestone",
-			"default", "https://repo.spring.io/milestone").build();
+	public static final RemoteRepository SPRING_IO_MILESTONE = new RemoteRepository.Builder("milestone", "default",
+			"https://repo.spring.io/milestone").build();
 
-	public static final RemoteRepository SPRING_IO_SNAPSHOT = new RemoteRepository.Builder("snapshot",
-			"default", "https://repo.spring.io/snapshot").build();
+	public static final RemoteRepository SPRING_IO_SNAPSHOT = new RemoteRepository.Builder("snapshot", "default",
+			"https://repo.spring.io/snapshot").build();
 
 	private final RepositorySystem repositorySystem;
 
@@ -77,8 +77,7 @@ public class AetherDependencyResolver {
 
 	public ArtifactResult resolveDependency(String dependency) throws ArtifactResolutionException {
 		Artifact artifact = new DefaultArtifact(dependency);
-		ArtifactRequest request =
-				new ArtifactRequest(artifact, this.repositories, null);
+		ArtifactRequest request = new ArtifactRequest(artifact, this.repositories, null);
 		return this.repositorySystem.resolveArtifact(session, request);
 	}
 
@@ -90,12 +89,11 @@ public class AetherDependencyResolver {
 		DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
 
 		LocalRepository localRepository = new LocalRepository(getM2RepoDirectory());
-		LocalRepositoryManager localRepositoryManager = repositorySystem
-				.newLocalRepositoryManager(session, localRepository);
+		LocalRepositoryManager localRepositoryManager = repositorySystem.newLocalRepositoryManager(session,
+				localRepository);
 		session.setLocalRepositoryManager(localRepositoryManager);
 
-		session.setArtifactDescriptorPolicy(new SimpleArtifactDescriptorPolicy(
-				ArtifactDescriptorPolicy.STRICT));
+		session.setArtifactDescriptorPolicy(new SimpleArtifactDescriptorPolicy(ArtifactDescriptorPolicy.STRICT));
 
 		return session;
 	}
@@ -103,8 +101,7 @@ public class AetherDependencyResolver {
 	private static ServiceLocator createServiceLocator() {
 		DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
 		locator.addService(RepositorySystem.class, DefaultRepositorySystem.class);
-		locator.addService(RepositoryConnectorFactory.class,
-				BasicRepositoryConnectorFactory.class);
+		locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
 		locator.addService(TransporterFactory.class, HttpTransporterFactory.class);
 		locator.addService(TransporterFactory.class, FileTransporterFactory.class);
 		return locator;

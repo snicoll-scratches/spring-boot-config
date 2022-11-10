@@ -25,7 +25,6 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataSourc
 import org.springframework.util.StringUtils;
 
 /**
- *
  * @author Stephane Nicoll
  */
 public class ConsoleMetadataFormatter extends AbstractMetadataFormatter implements MetadataFormatter {
@@ -40,7 +39,7 @@ public class ConsoleMetadataFormatter extends AbstractMetadataFormatter implemen
 			for (ConfigurationMetadataSource source : group.getSources().values()) {
 				sb.append(source.getType()).append(" ");
 			}
-			out.append(String.format("Group --- %s(%s)%n",group.getId(), sb.toString().trim()));
+			out.append(String.format("Group --- %s(%s)%n", group.getId(), sb.toString().trim()));
 			out.append(String.format("========================================%n"));
 			List<ConfigurationMetadataProperty> properties = sortProperties(group.getProperties().values());
 			for (ConfigurationMetadataProperty property : properties) {

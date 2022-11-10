@@ -17,8 +17,8 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataPrope
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
 
 /**
- * Analyze deprecated configuration, making sure that the replacement refers to
- * an existing property.
+ * Analyze deprecated configuration, making sure that the replacement refers to an
+ * existing property.
  *
  * @author Stephane Nicoll
  */
@@ -28,26 +28,21 @@ public class DeprecatedPropertiesAnalyzer {
 		String from = "2.5.3-SNAPSHOT";
 		String to = "2.6.0-SNAPSHOT";
 
-		AetherDependencyResolver dependencyResolver = AetherDependencyResolver
-				.withAllRepositories();
-		ConfigDiffGenerator configDiffGenerator = new ConfigDiffGenerator(
-				dependencyResolver);
-		ConfigurationMetadataLoader loader =
-				new ConfigurationMetadataLoader(dependencyResolver);
+		AetherDependencyResolver dependencyResolver = AetherDependencyResolver.withAllRepositories();
+		ConfigDiffGenerator configDiffGenerator = new ConfigDiffGenerator(dependencyResolver);
+		ConfigurationMetadataLoader loader = new ConfigurationMetadataLoader(dependencyResolver);
 		ConfigDiffResult diff = configDiffGenerator.generateDiff(from, to);
-		DeprecatedPropertiesReporter reporter = new DeprecatedPropertiesReporter(diff,
-				loader.loadRepository(to));
+		DeprecatedPropertiesReporter reporter = new DeprecatedPropertiesReporter(diff, loader.loadRepository(to));
 		System.out.println(reporter.getReport());
 	}
-
 
 	private static class DeprecatedPropertiesReporter {
 
 		private final ConfigDiffResult diff;
+
 		private final ConfigurationMetadataRepository repository;
 
-		DeprecatedPropertiesReporter(ConfigDiffResult diff,
-				ConfigurationMetadataRepository repository) {
+		DeprecatedPropertiesReporter(ConfigDiffResult diff, ConfigurationMetadataRepository repository) {
 			this.diff = diff;
 			this.repository = repository;
 		}
@@ -56,8 +51,8 @@ public class DeprecatedPropertiesAnalyzer {
 			List<String> valid = new ArrayList<>();
 			List<String> invalid = new ArrayList<>();
 			List<String> errors = new ArrayList<>();
-			List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = diff.getPropertiesDiffFor(
-					ConfigDiffType.DEPRECATE);
+			List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = diff
+					.getPropertiesDiffFor(ConfigDiffType.DEPRECATE);
 
 			properties.stream().filter(this::hasReplacement).forEach(e -> {
 				ConfigurationMetadataProperty current = e.right();
@@ -73,10 +68,8 @@ public class DeprecatedPropertiesAnalyzer {
 
 			properties.stream().filter(e -> !hasReplacement(e)).forEach(e -> {
 				ConfigurationMetadataProperty current = e.right();
-				errors.add(String.format("%s - %s", current.getId(),
-						current.getDeprecation().getReason() != null
-								? SentenceExtractor.getFirstSentence(current.getDeprecation().getReason())
-								: "none"));
+				errors.add(String.format("%s - %s", current.getId(), current.getDeprecation().getReason() != null
+						? SentenceExtractor.getFirstSentence(current.getDeprecation().getReason()) : "none"));
 			});
 			StringBuilder message = new StringBuilder();
 			message.append(String.format("Found %d deprecated properties%n", properties.size()));
@@ -106,8 +99,7 @@ public class DeprecatedPropertiesAnalyzer {
 		}
 
 		private ConfigurationMetadataProperty getReplacementMetadata(String candidate) {
-			ConfigurationMetadataProperty replacement = this.repository.getAllProperties().get(
-					candidate);
+			ConfigurationMetadataProperty replacement = this.repository.getAllProperties().get(candidate);
 			if (replacement != null) {
 				return replacement;
 			}
@@ -118,14 +110,14 @@ public class DeprecatedPropertiesAnalyzer {
 			int lastDot = candidate.lastIndexOf('.');
 			if (lastDot != -1) {
 				String mapCandidate = candidate.substring(0, lastDot);
-				ConfigurationMetadataProperty property = this.repository.getAllProperties()
-						.get(mapCandidate);
+				ConfigurationMetadataProperty property = this.repository.getAllProperties().get(mapCandidate);
 				if (property != null) {
 					String type = property.getType();
 					if (type != null && type.startsWith(Map.class.getName())) {
 						return property;
 					}
-				} else {
+				}
+				else {
 					return findMapReplacement(mapCandidate);
 				}
 			}
@@ -133,8 +125,7 @@ public class DeprecatedPropertiesAnalyzer {
 		}
 
 		private boolean hasReplacement(ConfigDiffEntry<ConfigurationMetadataProperty> e) {
-			return e.right().getDeprecation() != null
-					&& e.right().getDeprecation().getReplacement() != null;
+			return e.right().getDeprecation() != null && e.right().getDeprecation().getReplacement() != null;
 		}
 
 	}

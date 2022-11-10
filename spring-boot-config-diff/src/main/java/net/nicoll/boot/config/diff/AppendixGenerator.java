@@ -18,10 +18,9 @@ public class AppendixGenerator {
 
 	static final String NEW_LINE = System.getProperty("line.separator");
 
-
 	public static void main(String[] args) throws Exception {
-		ConfigurationMetadataLoader loader =
-				new ConfigurationMetadataLoader(AetherDependencyResolver.withAllRepositories());
+		ConfigurationMetadataLoader loader = new ConfigurationMetadataLoader(
+				AetherDependencyResolver.withAllRepositories());
 		ConfigurationMetadataRepository repo = loader.loadRepository("2.1.0.BUILD-SNAPSHOT");
 		attachRootPropertyToGroup(repo);
 
@@ -29,16 +28,14 @@ public class AppendixGenerator {
 		StringBuilder sb = new StringBuilder();
 		for (ConfigurationMetadataGroup group : groups) {
 			sb.append("# ").append(group.getId()).append(NEW_LINE);
-			List<ConfigurationMetadataProperty> properties =
-					MetadataUtils.sortProperties(group.getProperties().values())
-							.stream().filter(p -> !p.isDeprecated()).toList();
+			List<ConfigurationMetadataProperty> properties = MetadataUtils
+					.sortProperties(group.getProperties().values()).stream().filter(p -> !p.isDeprecated()).toList();
 			for (ConfigurationMetadataProperty property : properties) {
 				sb.append(property.getId()).append("=");
 				if (property.getDefaultValue() != null) {
 					sb.append(defaultValueToString(property.getDefaultValue()));
 				}
-				sb.append(" # ").append(cleanDescription(property.getDescription()))
-						.append(NEW_LINE);
+				sb.append(" # ").append(cleanDescription(property.getDescription())).append(NEW_LINE);
 			}
 			sb.append(NEW_LINE);
 		}
@@ -52,8 +49,8 @@ public class AppendixGenerator {
 	 * @param repository the metadata repository to use
 	 */
 	private static void attachRootPropertyToGroup(ConfigurationMetadataRepository repository) {
-		ConfigurationMetadataGroup rootGroup = repository.getAllGroups().get(
-				ConfigurationMetadataRepository.ROOT_GROUP);
+		ConfigurationMetadataGroup rootGroup = repository.getAllGroups()
+				.get(ConfigurationMetadataRepository.ROOT_GROUP);
 		Iterator<Map.Entry<String, ConfigurationMetadataProperty>> it = rootGroup.getProperties().entrySet().iterator();
 		while (it.hasNext()) {
 			ConfigurationMetadataProperty property = it.next().getValue();
@@ -63,8 +60,8 @@ public class AppendixGenerator {
 				String groupId = id.substring(0, lastdot);
 				ConfigurationMetadataGroup group = repository.getAllGroups().get(groupId);
 				if (group != null) {
-					System.out.println("Please consider moving property " + id + " to group " +
-							"" + groupId + " (currently on the root group).");
+					System.out.println("Please consider moving property " + id + " to group " + "" + groupId
+							+ " (currently on the root group).");
 					group.getProperties().put(id, property);
 					it.remove();
 				}
@@ -92,4 +89,5 @@ public class AppendixGenerator {
 		}
 		return description;
 	}
+
 }

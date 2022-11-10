@@ -34,47 +34,37 @@ public class DeprecatedPropertiesMetadataGenerator {
 		String from = "2.7.0";
 		String to = "3.0.0-SNAPSHOT";
 
-		AetherDependencyResolver dependencyResolver = AetherDependencyResolver
-				.withAllRepositories();
-		ConfigDiffResult configDiffResult = new ConfigDiffGenerator(dependencyResolver)
-				.generateDiff(from, to);
-		ConfigurationMetadataLoader loader = new ConfigurationMetadataLoader(
-				dependencyResolver);
+		AetherDependencyResolver dependencyResolver = AetherDependencyResolver.withAllRepositories();
+		ConfigDiffResult configDiffResult = new ConfigDiffGenerator(dependencyResolver).generateDiff(from, to);
+		ConfigurationMetadataLoader loader = new ConfigurationMetadataLoader(dependencyResolver);
 		ConfigurationMetadataRepository repository = loader.loadRepository(to);
 
-		DeprecatedPropertyJsonFormatter formatter = new DeprecatedPropertyJsonFormatter(
-				repository);
+		DeprecatedPropertyJsonFormatter formatter = new DeprecatedPropertyJsonFormatter(repository);
 
 		System.out.println(formatter.formatDiff(configDiffResult));
 	}
 
-
 	private static class DeprecatedPropertyJsonFormatter implements ConfigDiffFormatter {
 
-		private final List<String> knownExcludes = Arrays.asList("security.oauth2",
-				"spring.datasource.dbcp", "spring.datasource.hikari", "spring.mobile",
-				"spring.social");
+		private final List<String> knownExcludes = Arrays.asList("security.oauth2", "spring.datasource.dbcp",
+				"spring.datasource.hikari", "spring.mobile", "spring.social");
 
 		private final ConfigurationMetadataRepository repository;
 
-		private DeprecatedPropertyJsonFormatter(
-				ConfigurationMetadataRepository repository) {
+		private DeprecatedPropertyJsonFormatter(ConfigurationMetadataRepository repository) {
 			this.repository = repository;
 		}
 
 		@Override
 		public String formatDiff(ConfigDiffResult result) throws IOException {
-			List<ConfigDiffEntry<ConfigurationMetadataProperty>> deleted
-					= result.getPropertiesDiffFor(ConfigDiffType.DELETE);
+			List<ConfigDiffEntry<ConfigurationMetadataProperty>> deleted = result
+					.getPropertiesDiffFor(ConfigDiffType.DELETE);
 
-
-			List<DeprecatedItem> items = deleted.stream()
-					.filter(this::isValidCandidate)
-					.map(this::toDeprecatedItem).toList();
+			List<DeprecatedItem> items = deleted.stream().filter(this::isValidCandidate).map(this::toDeprecatedItem)
+					.toList();
 
 			MultiValueMap<String, DeprecatedItem> groups = new LinkedMultiValueMap<>();
 			items.forEach(item -> groups.add(detectGroup(item.getName()), item));
-
 
 			StringBuilder sb = new StringBuilder();
 			ObjectMapper mapper = new ObjectMapper();
@@ -83,7 +73,7 @@ public class DeprecatedPropertiesMetadataGenerator {
 				groupItems.sort(Comparator.comparing(DeprecatedItem::getName));
 				sb.append(String.format("Add to `%s`%n%n", e.getKey()));
 				sb.append(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(groupItems));
-				//groupItems.forEach(i -> sb.append(String.format("%s%n", i.getName())));
+				// groupItems.forEach(i -> sb.append(String.format("%s%n", i.getName())));
 				sb.append(String.format("%n"));
 			}
 			return sb.toString();
@@ -102,17 +92,14 @@ public class DeprecatedPropertiesMetadataGenerator {
 			return true;
 		}
 
-		private boolean isAlreadyDeprecated(
-				ConfigDiffEntry<ConfigurationMetadataProperty> entry) {
+		private boolean isAlreadyDeprecated(ConfigDiffEntry<ConfigurationMetadataProperty> entry) {
 			return (entry.left().isDeprecated()
 					&& entry.left().getDeprecation().getLevel().equals(Deprecation.Level.ERROR)
 					&& entry.right() == null);
 		}
 
-		private DeprecatedItem toDeprecatedItem(
-				ConfigDiffEntry<ConfigurationMetadataProperty> e) {
-			return new DeprecatedItem(e.left(),
-					detectReplacement(e.left()), detectReason(e.left()));
+		private DeprecatedItem toDeprecatedItem(ConfigDiffEntry<ConfigurationMetadataProperty> e) {
+			return new DeprecatedItem(e.left(), detectReplacement(e.left()), detectReason(e.left()));
 		}
 
 		private String detectReplacement(ConfigurationMetadataProperty property) {
@@ -145,8 +132,7 @@ public class DeprecatedPropertiesMetadataGenerator {
 		}
 
 		private List<ConfigurationMetadataProperty> extractSimilarKey(String part) {
-			return this.repository.getAllProperties().values().stream()
-					.filter(p -> p.getId().endsWith(part))
+			return this.repository.getAllProperties().values().stream().filter(p -> p.getId().endsWith(part))
 					.collect(Collectors.toList());
 		}
 
@@ -159,6 +145,7 @@ public class DeprecatedPropertiesMetadataGenerator {
 			}
 			return "spring-boot-autoconfigure";
 		}
+
 	}
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
@@ -170,8 +157,7 @@ public class DeprecatedPropertiesMetadataGenerator {
 
 		private final Deprecation deprecation;
 
-		public DeprecatedItem(ConfigurationMetadataProperty property,
-				String replacement, String reason) {
+		public DeprecatedItem(ConfigurationMetadataProperty property, String replacement, String reason) {
 			this.name = property.getId();
 			this.type = property.getType();
 			this.deprecation = new Deprecation(replacement, reason);
@@ -191,6 +177,7 @@ public class DeprecatedPropertiesMetadataGenerator {
 
 		@JsonInclude(JsonInclude.Include.NON_NULL)
 		public static class Deprecation {
+
 			private final String replacement;
 
 			private final String reason;
@@ -211,6 +198,9 @@ public class DeprecatedPropertiesMetadataGenerator {
 			public String getReason() {
 				return this.reason;
 			}
+
 		}
+
 	}
+
 }

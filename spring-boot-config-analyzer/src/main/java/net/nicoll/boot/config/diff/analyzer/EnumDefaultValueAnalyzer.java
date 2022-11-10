@@ -17,18 +17,15 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepos
 import org.springframework.util.ClassUtils;
 
 /**
- *
  * @author Stephane Nicoll
  */
 public class EnumDefaultValueAnalyzer {
 
 	private static final String NEW_LINE = System.getProperty("line.separator");
 
-	private static final List<String> EXCLUDES = Arrays.asList(
-			"management.endpoint.health.show-components",
+	private static final List<String> EXCLUDES = Arrays.asList("management.endpoint.health.show-components",
 			"management.server.ssl.client-auth", // no default
-			"server.forward-headers-strategy",
-			"server.ssl.client-auth", // no default
+			"server.forward-headers-strategy", "server.ssl.client-auth", // no default
 			"spring.artemis.mode", // no default
 			"spring.cache.type", // no default
 			"spring.data.cassandra.consistency-level", // no default
@@ -47,31 +44,28 @@ public class EnumDefaultValueAnalyzer {
 			"spring.mvc.message-codes-resolver-format", // no default
 			"spring.rabbitmq.listener.direct.acknowledge-mode", // no default
 			"spring.rabbitmq.listener.simple.acknowledge-mode", // no default
-			"spring.rabbitmq.publisher-confirm-type",
-			"spring.redis.client-type",
-			"spring.rsocket.server.ssl.client-auth",
-			"spring.session.store-type" // no default
+			"spring.rabbitmq.publisher-confirm-type", "spring.redis.client-type",
+			"spring.rsocket.server.ssl.client-auth", "spring.session.store-type" // no
+																					// default
 	);
 
 	private static final Logger logger = LoggerFactory.getLogger(EnumDefaultValueAnalyzer.class);
 
-
 	public static void main(String[] args) throws Exception {
-		ConfigurationMetadataLoader loader =
-				new ConfigurationMetadataLoader(AetherDependencyResolver.withAllRepositories());
+		ConfigurationMetadataLoader loader = new ConfigurationMetadataLoader(
+				AetherDependencyResolver.withAllRepositories());
 		ConfigurationMetadataRepository repo = loader.loadRepository("3.0.0-SNAPSHOT");
 		List<ConfigurationMetadataGroup> groups = MetadataUtils.sortGroups(repo.getAllGroups().values());
 		List<ConfigurationMetadataProperty> matchingProperties = new ArrayList<>();
 		List<String> excludes = new ArrayList<>(EXCLUDES);
 		for (ConfigurationMetadataGroup group : groups) {
-			List<ConfigurationMetadataProperty> properties =
-					MetadataUtils.sortProperties(group.getProperties().values());
+			List<ConfigurationMetadataProperty> properties = MetadataUtils
+					.sortProperties(group.getProperties().values());
 			for (ConfigurationMetadataProperty property : properties) {
 				if (property.getDefaultValue() == null && isEnum(property.getType())) {
 					if (excludes.contains(property.getId())) {
 						excludes.remove(property.getId());
-						System.out.println("Validate that " + property.getId()
-								+ " has still no default value.");
+						System.out.println("Validate that " + property.getId() + " has still no default value.");
 					}
 					else {
 						matchingProperties.add(property);
@@ -83,8 +77,8 @@ public class EnumDefaultValueAnalyzer {
 		StringBuilder sb = new StringBuilder();
 		if (!excludes.isEmpty()) {
 			sb.append(NEW_LINE).append(NEW_LINE);
-			sb.append("WARNING: excludes list is not up to date. The following "
-					+ "properties no longer exist:").append(NEW_LINE);
+			sb.append("WARNING: excludes list is not up to date. The following " + "properties no longer exist:")
+					.append(NEW_LINE);
 			for (String exclude : excludes) {
 				sb.append("\t").append(exclude).append(NEW_LINE);
 			}
@@ -96,9 +90,8 @@ public class EnumDefaultValueAnalyzer {
 		else {
 			for (ConfigurationMetadataProperty property : matchingProperties) {
 				sb.append("  {").append(NEW_LINE);
-				sb.append("    \"name\": \"").append(property.getId()).append("\",")
-						.append(NEW_LINE).append("    \"defaultValue\": ")
-						.append("TODO").append(NEW_LINE).append("  },")
+				sb.append("    \"name\": \"").append(property.getId()).append("\",").append(NEW_LINE)
+						.append("    \"defaultValue\": ").append("TODO").append(NEW_LINE).append("  },")
 						.append(NEW_LINE);
 			}
 		}
@@ -114,8 +107,7 @@ public class EnumDefaultValueAnalyzer {
 			return false;
 		}
 		try {
-			Class<?> target = ClassUtils.forName(type,
-					EnumDefaultValueAnalyzer.class.getClassLoader());
+			Class<?> target = ClassUtils.forName(type, EnumDefaultValueAnalyzer.class.getClassLoader());
 			return target.isEnum();
 		}
 		catch (ClassNotFoundException ex) {

@@ -10,7 +10,6 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataPrope
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
 
 /**
- *
  * @author Stephane Nicoll
  */
 public abstract class MetadataUtils {
@@ -19,18 +18,15 @@ public abstract class MetadataUtils {
 
 	public static final Comparator<ConfigurationMetadataProperty> PROPERTY_COMPARATOR = new PropertyComparator();
 
-	public static List<ConfigurationMetadataGroup> sortGroups(
-			Collection<ConfigurationMetadataGroup> groups) {
-		List<ConfigurationMetadataGroup> result
-				= new ArrayList<>(groups);
+	public static List<ConfigurationMetadataGroup> sortGroups(Collection<ConfigurationMetadataGroup> groups) {
+		List<ConfigurationMetadataGroup> result = new ArrayList<>(groups);
 		result.sort(GROUP_COMPARATOR);
 		return result;
 	}
 
-	public static  List<ConfigurationMetadataProperty> sortProperties(
+	public static List<ConfigurationMetadataProperty> sortProperties(
 			Collection<ConfigurationMetadataProperty> properties) {
-		List<ConfigurationMetadataProperty> result =
-				new ArrayList<>(properties);
+		List<ConfigurationMetadataProperty> result = new ArrayList<>(properties);
 		result.sort(PROPERTY_COMPARATOR);
 		return result;
 	}
@@ -47,12 +43,16 @@ public abstract class MetadataUtils {
 			}
 			return o1.getId().compareTo(o2.getId());
 		}
+
 	}
 
 	private static class PropertyComparator implements Comparator<ConfigurationMetadataProperty> {
+
 		@Override
 		public int compare(ConfigurationMetadataProperty o1, ConfigurationMetadataProperty o2) {
 			return o1.getId().compareTo(o2.getId());
 		}
+
 	}
+
 }

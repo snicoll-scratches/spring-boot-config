@@ -21,7 +21,6 @@ import java.io.IOException;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
 
 /**
- *
  * @author Stephane Nicoll
  */
 public interface MetadataFormatter {

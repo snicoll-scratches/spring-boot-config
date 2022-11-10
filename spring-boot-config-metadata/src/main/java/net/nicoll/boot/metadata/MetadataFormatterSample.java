@@ -37,7 +37,7 @@ public class MetadataFormatterSample {
 
 	private static MetadataFormatter getMetadataFormatter() {
 		return new ConsoleMetadataFormatter();
-		//return new CsvMetadataFormatter();
+		// return new CsvMetadataFormatter();
 	}
 
 }

@@ -19,10 +19,10 @@ package net.nicoll.boot.config.diff;
 import java.io.IOException;
 
 /**
- *
  * @author Stephane Nicoll
  */
 public interface ConfigDiffFormatter {
 
 	String formatDiff(ConfigDiffResult result) throws IOException;
+
 }

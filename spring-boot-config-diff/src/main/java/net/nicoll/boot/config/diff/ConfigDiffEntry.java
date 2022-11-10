@@ -20,7 +20,6 @@ package net.nicoll.boot.config.diff;
  *
  * @author Stephane Nicoll
  */
-public record ConfigDiffEntry<T>(T left, T right) {
-
+public record ConfigDiffEntry<T> (T left, T right) {
 
 }

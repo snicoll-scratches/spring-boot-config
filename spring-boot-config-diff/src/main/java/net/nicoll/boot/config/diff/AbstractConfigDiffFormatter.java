@@ -26,14 +26,11 @@ import net.nicoll.boot.metadata.MetadataUtils;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataGroup;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 
-public abstract class AbstractConfigDiffFormatter
-		extends AbstractMetadataFormatter implements ConfigDiffFormatter {
-
+public abstract class AbstractConfigDiffFormatter extends AbstractMetadataFormatter implements ConfigDiffFormatter {
 
 	protected List<ConfigDiffEntry<ConfigurationMetadataGroup>> sortGroups(
 			List<ConfigDiffEntry<ConfigurationMetadataGroup>> groups, final boolean useLeft) {
-		List<ConfigDiffEntry<ConfigurationMetadataGroup>> result =
-				new ArrayList<>(groups);
+		List<ConfigDiffEntry<ConfigurationMetadataGroup>> result = new ArrayList<>(groups);
 		result.sort((o1, o2) -> {
 			ConfigurationMetadataGroup first = (useLeft ? o1.left() : o1.right());
 			ConfigurationMetadataGroup second = (useLeft ? o2.left() : o2.right());
@@ -44,21 +41,16 @@ public abstract class AbstractConfigDiffFormatter
 
 	protected List<ConfigDiffEntry<ConfigurationMetadataProperty>> sortProperties(
 			List<ConfigDiffEntry<ConfigurationMetadataProperty>> groups, Boolean useLeft) {
-		List<ConfigDiffEntry<ConfigurationMetadataProperty>> result =
-				new ArrayList<>(groups);
+		List<ConfigDiffEntry<ConfigurationMetadataProperty>> result = new ArrayList<>(groups);
 		result.sort((o1, o2) -> {
 			if (useLeft != null) {
-				ConfigurationMetadataProperty first = (useLeft ? o1.left()
-						: o1.right());
-				ConfigurationMetadataProperty second = (useLeft ? o2.left()
-						: o2.right());
+				ConfigurationMetadataProperty first = (useLeft ? o1.left() : o1.right());
+				ConfigurationMetadataProperty second = (useLeft ? o2.left() : o2.right());
 				return MetadataUtils.PROPERTY_COMPARATOR.compare(first, second);
 			}
 			else {
-				ConfigurationMetadataProperty first = (o1.left() != null
-						? o1.left() : o1.right());
-				ConfigurationMetadataProperty second = (o2.left() != null
-						? o2.left() : o2.right());
+				ConfigurationMetadataProperty first = (o1.left() != null ? o1.left() : o1.right());
+				ConfigurationMetadataProperty second = (o2.left() != null ? o2.left() : o2.right());
 				return MetadataUtils.PROPERTY_COMPARATOR.compare(first, second);
 			}
 		});

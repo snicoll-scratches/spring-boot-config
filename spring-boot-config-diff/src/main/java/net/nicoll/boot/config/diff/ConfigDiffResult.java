@@ -25,7 +25,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 /**
- *
  * @author Stephane Nicoll
  */
 public class ConfigDiffResult {
@@ -34,11 +33,9 @@ public class ConfigDiffResult {
 
 	private final String rightVersion;
 
-	private final MultiValueMap<ConfigDiffType, ConfigDiffEntry<ConfigurationMetadataGroup>> groups =
-			new LinkedMultiValueMap<>();
+	private final MultiValueMap<ConfigDiffType, ConfigDiffEntry<ConfigurationMetadataGroup>> groups = new LinkedMultiValueMap<>();
 
-	private final MultiValueMap<ConfigDiffType, ConfigDiffEntry<ConfigurationMetadataProperty>> properties =
-			new LinkedMultiValueMap<>();
+	private final MultiValueMap<ConfigDiffType, ConfigDiffEntry<ConfigurationMetadataProperty>> properties = new LinkedMultiValueMap<>();
 
 	public ConfigDiffResult(String leftVersion, String rightVersion) {
 		this.leftVersion = leftVersion;
@@ -69,13 +66,11 @@ public class ConfigDiffResult {
 		return content;
 	}
 
-	void register(ConfigDiffType type, ConfigurationMetadataGroup left,
-			ConfigurationMetadataGroup right) {
+	void register(ConfigDiffType type, ConfigurationMetadataGroup left, ConfigurationMetadataGroup right) {
 		this.groups.add(type, new ConfigDiffEntry<>(left, right));
 	}
 
-	void register(ConfigDiffType type, ConfigurationMetadataProperty left,
-			ConfigurationMetadataProperty right) {
+	void register(ConfigDiffType type, ConfigurationMetadataProperty left, ConfigurationMetadataProperty right) {
 		this.properties.add(type, new ConfigDiffEntry<>(left, right));
 	}
 

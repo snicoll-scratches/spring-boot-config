@@ -31,32 +31,24 @@ public class ConfigDiffGeneratorTests {
 		assertThat(diff).isNotNull();
 		assertThat(diff.getLeftVersion()).isEqualTo("1.0");
 		assertThat(diff.getRightVersion()).isEqualTo("2.0");
-		List<ConfigDiffEntry<ConfigurationMetadataProperty>> equal = diff.getPropertiesDiffFor(
-				ConfigDiffType.EQUALS);
+		List<ConfigDiffEntry<ConfigurationMetadataProperty>> equal = diff.getPropertiesDiffFor(ConfigDiffType.EQUALS);
 		assertThat(equal).hasSize(1);
 		assertProperty(equal.get(0).right(), "test.equal", String.class, "test");
-		List<ConfigDiffEntry<ConfigurationMetadataProperty>> added = diff.getPropertiesDiffFor(
-				ConfigDiffType.ADD);
+		List<ConfigDiffEntry<ConfigurationMetadataProperty>> added = diff.getPropertiesDiffFor(ConfigDiffType.ADD);
 		assertThat(added).hasSize(1);
 		assertProperty(added.get(0).right(), "test.add", String.class, "new");
-		List<ConfigDiffEntry<ConfigurationMetadataProperty>> delete = diff.getPropertiesDiffFor(
-				ConfigDiffType.DELETE);
-		assertThat(delete)
-				.anySatisfy((entry) -> assertProperty(entry.left(), "test.delete", String.class, "delete"))
+		List<ConfigDiffEntry<ConfigurationMetadataProperty>> delete = diff.getPropertiesDiffFor(ConfigDiffType.DELETE);
+		assertThat(delete).anySatisfy((entry) -> assertProperty(entry.left(), "test.delete", String.class, "delete"))
 				.anySatisfy((entry) -> assertProperty(entry.right(), "test.delete.deprecated", String.class, "delete"))
 				.hasSize(2);
-		List<ConfigDiffEntry<ConfigurationMetadataProperty>> deprecate = diff.getPropertiesDiffFor(
-				ConfigDiffType.DEPRECATE);
+		List<ConfigDiffEntry<ConfigurationMetadataProperty>> deprecate = diff
+				.getPropertiesDiffFor(ConfigDiffType.DEPRECATE);
 		assertThat(deprecate).hasSize(1);
-		assertProperty(deprecate.get(0).left(), "test.deprecate", String.class,
-				"wrong");
-		assertProperty(deprecate.get(0).right(), "test.deprecate", String.class,
-				"wrong");
+		assertProperty(deprecate.get(0).left(), "test.deprecate", String.class, "wrong");
+		assertProperty(deprecate.get(0).right(), "test.deprecate", String.class, "wrong");
 	}
 
-
-	private void assertProperty(ConfigurationMetadataProperty property, String id,
-			Class<?> type, Object defaultValue) {
+	private void assertProperty(ConfigurationMetadataProperty property, String id, Class<?> type, Object defaultValue) {
 		assertThat(property).isNotNull();
 		assertThat(property.getId()).isEqualTo(id);
 		assertThat(property.getType()).isEqualTo(type.getName());
@@ -76,8 +68,7 @@ public class ConfigDiffGeneratorTests {
 	}
 
 	private ConfigurationMetadataRepository load(String path) throws Exception {
-		return ConfigurationMetadataRepositoryJsonBuilder.create(
-				new ClassPathResource(path).getInputStream()).build();
+		return ConfigurationMetadataRepositoryJsonBuilder.create(new ClassPathResource(path).getInputStream()).build();
 	}
 
 }

@@ -38,24 +38,21 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataSourc
  *
  * @author Stephane Nicoll
  */
-public class CsvMetadataFormatter
-		extends AbstractMetadataFormatter implements MetadataFormatter {
+public class CsvMetadataFormatter extends AbstractMetadataFormatter implements MetadataFormatter {
 
-	private static final CellProcessor[] processors = new CellProcessor[] {
-			new NotNull(), // id
+	private static final CellProcessor[] processors = new CellProcessor[] { new NotNull(), // id
 			new Optional(), // description
 			new Optional(), // default value
 			new Optional(), // type
 	};
 
-	private static final String[] header = new String[] {"id", "description", "defaultValue", "type"};
+	private static final String[] header = new String[] { "id", "description", "defaultValue", "type" };
 
 	@Override
 	public String formatMetadata(ConfigurationMetadataRepository repository) throws IOException {
 		StringWriter out = new StringWriter();
 		try (CsvMapWriter writer = new CsvMapWriter(out, CsvPreference.STANDARD_PREFERENCE)) {
-			List<ConfigurationMetadataGroup> groups = sortGroups(
-					repository.getAllGroups().values());
+			List<ConfigurationMetadataGroup> groups = sortGroups(repository.getAllGroups().values());
 			Map<String, Object> content = new HashMap<>();
 			for (ConfigurationMetadataGroup group : groups) {
 				content.clear();
@@ -66,8 +63,7 @@ public class CsvMetadataFormatter
 				content.put("id", groupSb.toString());
 				writer.write(content, header, processors);
 
-				List<ConfigurationMetadataProperty> properties = sortProperties(
-						group.getProperties().values());
+				List<ConfigurationMetadataProperty> properties = sortProperties(group.getProperties().values());
 				for (ConfigurationMetadataProperty property : properties) {
 					content.clear();
 					content.put("id", property.getId());

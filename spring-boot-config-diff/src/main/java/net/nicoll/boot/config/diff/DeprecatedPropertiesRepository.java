@@ -13,8 +13,8 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepos
 import org.springframework.boot.configurationmetadata.Deprecation;
 
 /**
- * Dumps error keys for a given version, making sure they're actually reporting
- * a key that exists in the previous version.
+ * Dumps error keys for a given version, making sure they're actually reporting a key that
+ * exists in the previous version.
  *
  * @author Stephane Nicoll
  */
@@ -24,10 +24,8 @@ public class DeprecatedPropertiesRepository {
 		String previous = "1.5.9.RELEASE";
 		String current = "2.0.0.BUILD-SNAPSHOT";
 
-		AetherDependencyResolver dependencyResolver = AetherDependencyResolver
-				.withAllRepositories();
-		ConfigurationMetadataLoader loader = new ConfigurationMetadataLoader(
-				dependencyResolver);
+		AetherDependencyResolver dependencyResolver = AetherDependencyResolver.withAllRepositories();
+		ConfigurationMetadataLoader loader = new ConfigurationMetadataLoader(dependencyResolver);
 		ConfigurationMetadataRepository repository = loader.loadRepository(current);
 		ConfigurationMetadataRepository previousRepository = loader.loadRepository(previous);
 
