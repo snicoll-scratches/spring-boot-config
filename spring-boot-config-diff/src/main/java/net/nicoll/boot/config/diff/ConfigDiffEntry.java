@@ -20,22 +20,7 @@ package net.nicoll.boot.config.diff;
  *
  * @author Stephane Nicoll
  */
-public class ConfigDiffEntry<T> {
+public record ConfigDiffEntry<T>(T left, T right) {
 
-	private final T left;
 
-	private final T right;
-
-	public ConfigDiffEntry(T left, T right) {
-		this.left = left;
-		this.right = right;
-	}
-
-	public T getLeft() {
-		return left;
-	}
-
-	public T getRight() {
-		return right;
-	}
 }

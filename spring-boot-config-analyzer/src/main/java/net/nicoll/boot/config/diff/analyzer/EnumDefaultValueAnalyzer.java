@@ -102,7 +102,7 @@ public class EnumDefaultValueAnalyzer {
 						.append(NEW_LINE);
 			}
 		}
-		System.out.println(sb.toString());
+		System.out.println(sb);
 
 	}
 

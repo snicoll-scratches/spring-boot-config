@@ -34,7 +34,7 @@ import org.springframework.boot.configurationmetadata.ConfigurationMetadataPrope
 public class ConsoleConfigDiffFormatter extends AbstractConfigDiffFormatter {
 
 	@Override
-	public String formatDiff(ConfigDiffResult result) throws IOException {
+	public String formatDiff(ConfigDiffResult result) {
 		StringBuilder out = new StringBuilder();
 		out.append(String.format("===========================================================================%n"));
 		out.append(String.format("Config meta-data diff between '%s' and '%s'%n",
@@ -56,7 +56,7 @@ public class ConsoleConfigDiffFormatter extends AbstractConfigDiffFormatter {
 				groups.size()));
 		out.append(System.lineSeparator());
 		for (ConfigDiffEntry<ConfigurationMetadataGroup> diff : groups) {
-			ConfigurationMetadataGroup group = added ? diff.getRight() : diff.getLeft();
+			ConfigurationMetadataGroup group = added ? diff.right() : diff.left();
 			int size = group.getProperties().size();
 			out.append(getGroupId(group)).append(" (").append(added ? "+" : "-").append(
 					propertiesCount(size)).append(")").append(System.lineSeparator());
@@ -71,7 +71,7 @@ public class ConsoleConfigDiffFormatter extends AbstractConfigDiffFormatter {
 				.append(properties.size()).append("):").append(System.lineSeparator());
 		out.append(System.lineSeparator());
 		for (ConfigDiffEntry<ConfigurationMetadataProperty> diff : properties) {
-			ConfigurationMetadataProperty property = (added ? diff.getRight() : diff.getLeft());
+			ConfigurationMetadataProperty property = (added ? diff.right() : diff.left());
 			out.append(ConsoleMetadataFormatter.formatProperty(property))
 					.append(System.lineSeparator());
 		}
@@ -91,10 +91,10 @@ public class ConsoleConfigDiffFormatter extends AbstractConfigDiffFormatter {
 
 
 	private void outputModifiedGroup(StringBuilder out, ConfigDiffEntry<ConfigurationMetadataGroup> diff) {
-		Collection<String> deleted = new ArrayList<String>();
-		Collection<String> added = new ArrayList<String>();
-		Map<String, ConfigurationMetadataProperty> leftProperties = diff.getLeft().getProperties();
-		Map<String, ConfigurationMetadataProperty> rightProperties = diff.getRight().getProperties();
+		Collection<String> deleted = new ArrayList<>();
+		Collection<String> added = new ArrayList<>();
+		Map<String, ConfigurationMetadataProperty> leftProperties = diff.left().getProperties();
+		Map<String, ConfigurationMetadataProperty> rightProperties = diff.right().getProperties();
 		for (String key : leftProperties.keySet()) {
 			if (!rightProperties.containsKey(key)) {
 				deleted.add(key);
@@ -105,7 +105,7 @@ public class ConsoleConfigDiffFormatter extends AbstractConfigDiffFormatter {
 				added.add(key);
 			}
 		}
-		out.append(getGroupId(diff.getLeft())).append(" (+").append(propertiesCount(
+		out.append(getGroupId(diff.left())).append(" (+").append(propertiesCount(
 				added.size())).append(" -").append(propertiesCount(deleted.size()))
 				.append(")").append(System.lineSeparator());
 

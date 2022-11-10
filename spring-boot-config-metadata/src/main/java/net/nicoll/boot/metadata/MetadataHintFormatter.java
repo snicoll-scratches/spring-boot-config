@@ -30,7 +30,7 @@ public class MetadataHintFormatter
 		extends AbstractMetadataFormatter implements MetadataFormatter {
 
 	@Override
-	public String formatMetadata(ConfigurationMetadataRepository repository) throws IOException {
+	public String formatMetadata(ConfigurationMetadataRepository repository) {
 		StringBuilder out = new StringBuilder();
 		for (ConfigurationMetadataProperty property : repository.getAllProperties().values()) {
 			if (hasDocumentationHints(property)) {

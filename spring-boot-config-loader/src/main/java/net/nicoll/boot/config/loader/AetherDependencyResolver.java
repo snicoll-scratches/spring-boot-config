@@ -82,11 +82,11 @@ public class AetherDependencyResolver {
 		return this.repositorySystem.resolveArtifact(session, request);
 	}
 
-	private static RepositorySystem createRepositorySystem(ServiceLocator serviceLocator) throws Exception {
+	private static RepositorySystem createRepositorySystem(ServiceLocator serviceLocator) {
 		return serviceLocator.getService(RepositorySystem.class);
 	}
 
-	private static RepositorySystemSession createRepositorySystemSession(RepositorySystem repositorySystem) throws Exception {
+	private static RepositorySystemSession createRepositorySystemSession(RepositorySystem repositorySystem) {
 		DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
 
 		LocalRepository localRepository = new LocalRepository(getM2RepoDirectory());

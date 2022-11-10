@@ -31,8 +31,7 @@ public class AppendixGenerator {
 			sb.append("# ").append(group.getId()).append(NEW_LINE);
 			List<ConfigurationMetadataProperty> properties =
 					MetadataUtils.sortProperties(group.getProperties().values())
-							.stream().filter(p -> !p.isDeprecated())
-							.collect(Collectors.toList());
+							.stream().filter(p -> !p.isDeprecated()).toList();
 			for (ConfigurationMetadataProperty property : properties) {
 				sb.append(property.getId()).append("=");
 				if (property.getDefaultValue() != null) {
@@ -44,13 +43,13 @@ public class AppendixGenerator {
 			sb.append(NEW_LINE);
 		}
 
-		System.out.println(sb.toString());
+		System.out.println(sb);
 
 	}
 
 	/**
 	 * Attempt to attach a property from the root group to an existing group.
-	 * @param repository
+	 * @param repository the metadata repository to use
 	 */
 	private static void attachRootPropertyToGroup(ConfigurationMetadataRepository repository) {
 		ConfigurationMetadataGroup rootGroup = repository.getAllGroups().get(

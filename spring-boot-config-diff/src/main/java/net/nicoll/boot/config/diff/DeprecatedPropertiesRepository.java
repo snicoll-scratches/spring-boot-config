@@ -35,7 +35,7 @@ public class DeprecatedPropertiesRepository {
 		List<String> keys = repository.getAllProperties().entrySet().stream()
 				.filter(e -> e.getValue().isDeprecated()
 						&& Deprecation.Level.ERROR == e.getValue().getDeprecation().getLevel())
-				.map(Map.Entry::getKey).sorted().collect(Collectors.toList());
+				.map(Map.Entry::getKey).sorted().toList();
 		List<String> invalidKeys = new ArrayList<>();
 		keys.forEach(k -> {
 			sb.append(k);
@@ -60,7 +60,7 @@ public class DeprecatedPropertiesRepository {
 			invalidKeys.forEach(k -> sb.append(String.format("%s%n", k)));
 		}
 
-		System.out.println(sb.toString());
+		System.out.println(sb);
 	}
 
 }

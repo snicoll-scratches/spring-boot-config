@@ -2,7 +2,6 @@ package net.nicoll.boot.metadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public abstract class MetadataUtils {
 	public static List<ConfigurationMetadataGroup> sortGroups(
 			Collection<ConfigurationMetadataGroup> groups) {
 		List<ConfigurationMetadataGroup> result
-				= new ArrayList<ConfigurationMetadataGroup>(groups);
+				= new ArrayList<>(groups);
 		result.sort(GROUP_COMPARATOR);
 		return result;
 	}
@@ -31,7 +30,7 @@ public abstract class MetadataUtils {
 	public static  List<ConfigurationMetadataProperty> sortProperties(
 			Collection<ConfigurationMetadataProperty> properties) {
 		List<ConfigurationMetadataProperty> result =
-				new ArrayList<ConfigurationMetadataProperty>(properties);
+				new ArrayList<>(properties);
 		result.sort(PROPERTY_COMPARATOR);
 		return result;
 	}

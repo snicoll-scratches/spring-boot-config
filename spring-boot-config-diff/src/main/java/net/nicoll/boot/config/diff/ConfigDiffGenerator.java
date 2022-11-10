@@ -60,7 +60,7 @@ public class ConfigDiffGenerator {
 
 	protected ConfigDiffGenerator diffGroup(ConfigDiffResult result,
 			ConfigurationMetadataRepository left, ConfigurationMetadataRepository right) {
-		List<String> matches = new ArrayList<String>();
+		List<String> matches = new ArrayList<>();
 		Map<String, ConfigurationMetadataGroup> leftGroups = left.getAllGroups();
 		Map<String, ConfigurationMetadataGroup> rightGroups = right.getAllGroups();
 		for (ConfigurationMetadataGroup leftGroup : leftGroups.values()) {

@@ -62,6 +62,6 @@ public class ErrorPropertiesAnalyzer {
 			message.append(String.format("Error properties that should be double checked if they are still needed%n"));
 			validProperties.forEach(e -> message.append(String.format("\t%s%n", e.getId())));
 		}
-		System.out.println(message.toString());
+		System.out.println(message);
 	}
 }

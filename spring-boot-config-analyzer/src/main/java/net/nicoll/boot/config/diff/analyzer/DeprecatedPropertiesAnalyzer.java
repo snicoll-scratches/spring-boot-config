@@ -1,7 +1,6 @@
 package net.nicoll.boot.config.diff.analyzer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import net.nicoll.boot.config.loader.ConfigurationMetadataLoader;
 
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataProperty;
 import org.springframework.boot.configurationmetadata.ConfigurationMetadataRepository;
-import org.springframework.boot.configurationmetadata.Deprecation;
 
 /**
  * Analyze deprecated configuration, making sure that the replacement refers to
@@ -62,7 +60,7 @@ public class DeprecatedPropertiesAnalyzer {
 					ConfigDiffType.DEPRECATE);
 
 			properties.stream().filter(this::hasReplacement).forEach(e -> {
-				ConfigurationMetadataProperty current = e.getRight();
+				ConfigurationMetadataProperty current = e.right();
 				String candidate = current.getDeprecation().getReplacement();
 				ConfigurationMetadataProperty replacement = getReplacementMetadata(candidate);
 				if (replacement != null) {
@@ -74,7 +72,7 @@ public class DeprecatedPropertiesAnalyzer {
 			});
 
 			properties.stream().filter(e -> !hasReplacement(e)).forEach(e -> {
-				ConfigurationMetadataProperty current = e.getRight();
+				ConfigurationMetadataProperty current = e.right();
 				errors.add(String.format("%s - %s", current.getId(),
 						current.getDeprecation().getReason() != null
 								? SentenceExtractor.getFirstSentence(current.getDeprecation().getReason())
@@ -135,8 +133,8 @@ public class DeprecatedPropertiesAnalyzer {
 		}
 
 		private boolean hasReplacement(ConfigDiffEntry<ConfigurationMetadataProperty> e) {
-			return e.getRight().getDeprecation() != null
-					&& e.getRight().getDeprecation().getReplacement() != null;
+			return e.right().getDeprecation() != null
+					&& e.right().getDeprecation().getReplacement() != null;
 		}
 
 	}

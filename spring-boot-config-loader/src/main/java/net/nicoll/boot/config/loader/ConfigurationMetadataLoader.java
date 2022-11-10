@@ -69,12 +69,9 @@ public class ConfigurationMetadataLoader {
 				InputStream stream = classLoader
 						.getResourceAsStream("META-INF/spring-configuration-metadata.json");
 				if (stream != null) {
-					try {
+					try (stream) {
 						logger.info("Adding meta-data from '" + coordinates + "'");
 						consumer.accept(stream);
-					}
-					finally {
-						stream.close();
 					}
 				}
 				else {

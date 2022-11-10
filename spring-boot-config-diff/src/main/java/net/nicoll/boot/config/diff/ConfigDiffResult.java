@@ -35,10 +35,10 @@ public class ConfigDiffResult {
 	private final String rightVersion;
 
 	private final MultiValueMap<ConfigDiffType, ConfigDiffEntry<ConfigurationMetadataGroup>> groups =
-			new LinkedMultiValueMap<ConfigDiffType, ConfigDiffEntry<ConfigurationMetadataGroup>>();
+			new LinkedMultiValueMap<>();
 
 	private final MultiValueMap<ConfigDiffType, ConfigDiffEntry<ConfigurationMetadataProperty>> properties =
-			new LinkedMultiValueMap<ConfigDiffType, ConfigDiffEntry<ConfigurationMetadataProperty>>();
+			new LinkedMultiValueMap<>();
 
 	public ConfigDiffResult(String leftVersion, String rightVersion) {
 		this.leftVersion = leftVersion;
