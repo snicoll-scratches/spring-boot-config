@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012-2023 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.nicoll.boot.config.diff.analyzer;
 
 import java.util.ArrayList;
@@ -85,7 +101,7 @@ public class EnumDefaultValueAnalyzer {
 		List<String> excludes = new ArrayList<>(EXCLUDES);
 		for (ConfigurationMetadataGroup group : groups) {
 			List<ConfigurationMetadataProperty> properties = MetadataUtils
-					.sortProperties(group.getProperties().values());
+				.sortProperties(group.getProperties().values());
 			for (ConfigurationMetadataProperty property : properties) {
 				if (property.getDefaultValue() == null && isEnum(property.getType())) {
 					if (excludes.contains(property.getId())) {
@@ -103,7 +119,7 @@ public class EnumDefaultValueAnalyzer {
 		if (!excludes.isEmpty()) {
 			sb.append(NEW_LINE).append(NEW_LINE);
 			sb.append("WARNING: excludes list is not up to date. The following " + "properties no longer exist:")
-					.append(NEW_LINE);
+				.append(NEW_LINE);
 			for (String exclude : excludes) {
 				sb.append("\t").append(exclude).append(NEW_LINE);
 			}
@@ -115,9 +131,15 @@ public class EnumDefaultValueAnalyzer {
 		else {
 			for (ConfigurationMetadataProperty property : matchingProperties) {
 				sb.append("  {").append(NEW_LINE);
-				sb.append("    \"name\": \"").append(property.getId()).append("\",").append(NEW_LINE)
-						.append("    \"defaultValue\": ").append("TODO").append(NEW_LINE).append("  },")
-						.append(NEW_LINE);
+				sb.append("    \"name\": \"")
+					.append(property.getId())
+					.append("\",")
+					.append(NEW_LINE)
+					.append("    \"defaultValue\": ")
+					.append("TODO")
+					.append(NEW_LINE)
+					.append("  },")
+					.append(NEW_LINE);
 			}
 		}
 		System.out.println(sb);

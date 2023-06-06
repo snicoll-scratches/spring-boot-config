@@ -1,11 +1,11 @@
 /*
- * Copyright 2012-2020 the original author or authors.
+ * Copyright 2012-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -52,8 +52,10 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 
 	private void appendDeprecatedProperties(StringBuilder out, ConfigDiffResult result) {
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = sortProperties(
-				result.getPropertiesDiffFor(ConfigDiffType.DEPRECATE), false).stream()
-						.filter(this::isDeprecatedInRelease).collect(Collectors.toList());
+				result.getPropertiesDiffFor(ConfigDiffType.DEPRECATE), false)
+			.stream()
+			.filter(this::isDeprecatedInRelease)
+			.collect(Collectors.toList());
 		if (ObjectUtils.isEmpty(properties)) {
 			out.append(String.format("None.%n"));
 		}
@@ -112,16 +114,19 @@ public class AsciiDocConfigDiffFormatter extends AbstractConfigDiffFormatter {
 	private List<ConfigDiffEntry<ConfigurationMetadataProperty>> getRemovedProperties(ConfigDiffResult result) {
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = new ArrayList<>(
 				result.getPropertiesDiffFor(ConfigDiffType.DELETE));
-		properties.addAll(result.getPropertiesDiffFor(ConfigDiffType.DEPRECATE).stream()
-				.filter(p -> !isDeprecatedInRelease(p)).toList());
+		properties.addAll(result.getPropertiesDiffFor(ConfigDiffType.DEPRECATE)
+			.stream()
+			.filter(p -> !isDeprecatedInRelease(p))
+			.toList());
 		return sortProperties(properties, null);
 	}
 
 	private void appendRegularProperty(StringBuilder out, ConfigurationMetadataProperty property) {
 		out.append("|`").append(property.getId()).append("` |");
 		if (property.getDefaultValue() != null) {
-			out.append("`").append(ConsoleMetadataFormatter.defaultValueToString(property.getDefaultValue()))
-					.append("`");
+			out.append("`")
+				.append(ConsoleMetadataFormatter.defaultValueToString(property.getDefaultValue()))
+				.append("`");
 		}
 		out.append(" |");
 		if (property.getDescription() != null) {

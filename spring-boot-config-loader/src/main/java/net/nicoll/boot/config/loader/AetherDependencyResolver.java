@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -50,13 +50,16 @@ import java.util.List;
 public class AetherDependencyResolver {
 
 	public static final RemoteRepository MAVEN_CENTRAL = new RemoteRepository.Builder("central", "default",
-			"https://repo1.maven.org/maven2").build();
+			"https://repo1.maven.org/maven2")
+		.build();
 
 	public static final RemoteRepository SPRING_IO_MILESTONE = new RemoteRepository.Builder("milestone", "default",
-			"https://repo.spring.io/milestone").build();
+			"https://repo.spring.io/milestone")
+		.build();
 
 	public static final RemoteRepository SPRING_IO_SNAPSHOT = new RemoteRepository.Builder("snapshot", "default",
-			"https://repo.spring.io/snapshot").build();
+			"https://repo.spring.io/snapshot")
+		.build();
 
 	private final RepositorySystem repositorySystem;
 

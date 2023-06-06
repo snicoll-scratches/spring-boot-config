@@ -1,11 +1,11 @@
 /*
- * Copyright 2012-2015 the original author or authors.
+ * Copyright 2012-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -56,8 +56,12 @@ public class ConsoleConfigDiffFormatter extends AbstractConfigDiffFormatter {
 		for (ConfigDiffEntry<ConfigurationMetadataGroup> diff : groups) {
 			ConfigurationMetadataGroup group = added ? diff.right() : diff.left();
 			int size = group.getProperties().size();
-			out.append(getGroupId(group)).append(" (").append(added ? "+" : "-").append(propertiesCount(size))
-					.append(")").append(System.lineSeparator());
+			out.append(getGroupId(group))
+				.append(" (")
+				.append(added ? "+" : "-")
+				.append(propertiesCount(size))
+				.append(")")
+				.append(System.lineSeparator());
 		}
 	}
 
@@ -65,8 +69,12 @@ public class ConsoleConfigDiffFormatter extends AbstractConfigDiffFormatter {
 		out.append(String.format("===========================================================================%n"));
 		List<ConfigDiffEntry<ConfigurationMetadataProperty>> properties = sortProperties(
 				result.getPropertiesDiffFor(added ? ConfigDiffType.ADD : ConfigDiffType.DELETE), !added);
-		out.append("Properties ").append(added ? "added" : "removed").append(" (").append(properties.size())
-				.append("):").append(System.lineSeparator());
+		out.append("Properties ")
+			.append(added ? "added" : "removed")
+			.append(" (")
+			.append(properties.size())
+			.append("):")
+			.append(System.lineSeparator());
 		out.append(System.lineSeparator());
 		for (ConfigDiffEntry<ConfigurationMetadataProperty> diff : properties) {
 			ConfigurationMetadataProperty property = (added ? diff.right() : diff.left());
@@ -100,8 +108,13 @@ public class ConsoleConfigDiffFormatter extends AbstractConfigDiffFormatter {
 				added.add(key);
 			}
 		}
-		out.append(getGroupId(diff.left())).append(" (+").append(propertiesCount(added.size())).append(" -")
-				.append(propertiesCount(deleted.size())).append(")").append(System.lineSeparator());
+		out.append(getGroupId(diff.left()))
+			.append(" (+")
+			.append(propertiesCount(added.size()))
+			.append(" -")
+			.append(propertiesCount(deleted.size()))
+			.append(")")
+			.append(System.lineSeparator());
 
 	}
 

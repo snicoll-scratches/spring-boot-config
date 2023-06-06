@@ -14,7 +14,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>17</java.version>
 		<spring.boot.version>2.7.5</spring.boot.version>
-		<spring-javaformat.version>0.0.35</spring-javaformat.version>
+		<spring-javaformat.version>0.0.39</spring-javaformat.version>
 	</properties>
 
 	<modules>
