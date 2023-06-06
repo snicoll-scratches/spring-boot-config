@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 the original author or authors.
+ * Copyright 2012-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,6 @@
  */
 
 package net.nicoll.boot.config.loader;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
@@ -43,14 +39,18 @@ import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author Andy Wilkinson
  * @author Stephane Nicoll
  */
 public class AetherDependencyResolver {
 
-	public static final RemoteRepository SPRING_IO_RELEASE = new RemoteRepository.Builder("release", "default",
-			"https://repo.spring.io/release").build();
+	public static final RemoteRepository MAVEN_CENTRAL = new RemoteRepository.Builder("central", "default",
+			"https://repo1.maven.org/maven2").build();
 
 	public static final RemoteRepository SPRING_IO_MILESTONE = new RemoteRepository.Builder("milestone", "default",
 			"https://repo.spring.io/milestone").build();
@@ -72,7 +72,7 @@ public class AetherDependencyResolver {
 	}
 
 	public static AetherDependencyResolver withAllRepositories() throws Exception {
-		return new AetherDependencyResolver(SPRING_IO_RELEASE, SPRING_IO_MILESTONE, SPRING_IO_SNAPSHOT);
+		return new AetherDependencyResolver(MAVEN_CENTRAL, SPRING_IO_MILESTONE, SPRING_IO_SNAPSHOT);
 	}
 
 	public ArtifactResult resolveDependency(String dependency) throws ArtifactResolutionException {
